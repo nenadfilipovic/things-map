@@ -4,7 +4,7 @@
 # this will act as main config for our application.
 #-------------------------------------------------------------------------------------------------------------
 
-version: "3"
+version: '3'
 services:
   application:
     build:

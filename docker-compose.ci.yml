@@ -4,7 +4,7 @@
 # this will act as config for our continuous integration environment.
 #-------------------------------------------------------------------------------------------------------------
 
-version: "3"
+version: '3'
 services:
   application:
     # Override default environment variables

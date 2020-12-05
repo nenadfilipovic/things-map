@@ -4,7 +4,6 @@ about: Suggest an idea for this project
 title: ''
 labels: enhancement
 assignees: nenadfilipovic
-
 ---
 
 **Please describe is your feature request related to a problem**
