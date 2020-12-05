@@ -1,0 +1,33 @@
+{
+  // Choose default parser.
+  "parser": "@typescript-eslint/parser",
+
+  // Parser options.
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+
+  // Add plugins.
+  "extends": [
+    // Prevent double linting from ts and eslint.
+    "plugin:@typescript-eslint/recommended",
+
+    // Prevent double linting from ts and prettier.
+    "prettier/@typescript-eslint",
+
+    // Add rules for test files, it forbids you from writing tests
+    // without describe part, it doesn't allow you to write tests that doesn't
+    // have assertions, and many more.
+    "plugin:jest/all",
+
+    // Prevent from writing promises with no resolve.
+    "plugin:promise/recommended",
+
+    // Add recommended prettier rules.
+    "plugin:prettier/recommended"
+  ],
+
+  // Add rules if needed, I am happy as it is.
+  "rules": {}
+}
