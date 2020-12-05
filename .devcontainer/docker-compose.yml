@@ -1,0 +1,25 @@
+---
+#-------------------------------------------------------------------------------------------------------------
+# Here we define our development container file ,
+# this will act as development config for our application.
+#-------------------------------------------------------------------------------------------------------------
+
+version: "3"
+services:
+  application:
+    # Define override for build location.
+    build: ./.devcontainer
+
+    # Development environment will use env file as
+    # source.
+    env_file: .env
+
+    # Uncomment the next line if using host operating system's file system
+    volumes:
+      - .:/workspace:cached
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    depends_on:
+      - database

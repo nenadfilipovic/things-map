@@ -1,0 +1,47 @@
+---
+#-------------------------------------------------------------------------------------------------------------
+# Here we define our base docker-compose file,
+# this will act as main config for our application.
+#-------------------------------------------------------------------------------------------------------------
+
+version: "3"
+services:
+  application:
+    build:
+      # Location of default Dockerfile.
+      context: .
+
+      # Define default arguments to be used
+      # across all environments.
+      args:
+        node_version: 14.15.1-alpine3.12
+
+    depends_on:
+      - database
+
+    container_name: application
+
+  # Name of this service can be anything but it needs to be same value as value
+  # under depends_on for app service.
+  database:
+    # Main database used by application, act as relation and
+    # time series database.
+    image: timescale/timescaledb:2.0.0-rc3-pg12
+
+    restart: always
+
+    # Get all needed data from environment.
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+
+    container_name: database
+
+    # Set custom network name so we can name this service
+    # from environment, other services will use this name to
+    # connect to this service.
+    networks:
+      default:
+        aliases:
+          - ${DATABASE_HOST}

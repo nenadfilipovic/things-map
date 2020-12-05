@@ -1,0 +1,43 @@
+{
+    // Name of project.
+    "name": "things-map",
+  
+    // Service must match service name under docker-compose file.
+    "service": "application",
+  
+    // Use main docker-compose as base and
+    // override it with development version from devcontainer folder.
+    "dockerComposeFile": ["../docker-compose.yml", "docker-compose.yml"],
+  
+    // These settings act as settings.json file.
+    "settings": {
+      "editor.tabSize": 2,
+      "editor.formatOnSave": true,
+      "extensions.ignoreRecommendations": true
+    },
+  
+    // Extensions I want to enable in development
+    // phase.
+    "extensions": [
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "wallabyjs.wallaby-vscode",
+      "wallabyjs.quokka-vscode",
+      "ms-azuretools.vscode-docker",
+      "mikestead.dotenv"
+    ],
+  
+    // Which ports I need to open
+    // in development phase.
+    "forwardPorts": [3000, 3005],
+  
+    // Startup script, just basic node version check.
+    "postCreateCommand": "node -v",
+  
+    // Comment out the next line to run as root instead.
+    "remoteUser": "node",
+  
+    // Workspace folder works with volumes value
+    // inside docker-compose.
+    "workspaceFolder": "/workspace"
+  }
