@@ -108,7 +108,7 @@ export async function seed(knex: Knex): Promise<void> {
     { code: 'HU', longName: 'Hungary' },
     { code: 'IS', longName: 'Iceland' },
     { code: 'IN', longName: 'India' },
-    { code: 'code', longName: 'Indonesia' },
+    { code: 'ID', longName: 'Indonesia' },
     { code: 'IR', longName: 'Iran' },
     { code: 'IQ', longName: 'Iraq' },
     { code: 'IE', longName: 'Ireland' },

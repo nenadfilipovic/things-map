@@ -9,7 +9,6 @@ export async function up(knex: Knex): Promise<void> {
     table.string('ipAddress');
     table.string('userAgent');
     table.dateTime('createdDate').defaultTo(knex.fn.now());
-    table.dateTime('modifiedDate').defaultTo(knex.fn.now());
   });
 }
 

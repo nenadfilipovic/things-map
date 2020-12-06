@@ -15,7 +15,6 @@ export async function up(knex: Knex): Promise<void> {
       .onDelete('CASCADE')
       .notNullable();
     table.dateTime('createdDate').defaultTo(knex.fn.now());
-    table.dateTime('modifiedDate').defaultTo(knex.fn.now());
   });
 }
 
