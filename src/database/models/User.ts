@@ -1,4 +1,5 @@
 import { Model, RelationMappings } from 'objection';
+
 import { Country } from './Country';
 
 class User extends Model {
