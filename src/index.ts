@@ -1,52 +1,47 @@
 import Knex from 'knex';
-import Pino from 'pino';
 import { Model } from 'objection';
 import { DefaultContext } from 'koa';
-import { ApolloServer } from 'apollo-server-koa';
-
+import { ApolloServer, gql } from 'apollo-server-koa';
+import { config } from './config';
+import { knexConfig } from './config';
 import { application } from './application';
-import knexConfig from './database/config';
 
-const port = process.env.APP_PORT;
-const development = process.env.NODE_ENV == 'development';
+Model.knex(Knex(knexConfig));
 
-const knexConnection = Knex(knexConfig);
-Model.knex(knexConnection);
+process.on('unhandledRejection', (reason: string) => {
+  throw reason;
+});
 
-const logger = Pino({ prettyPrint: development });
-
-if (!port) {
-  logger.error('Port must be defined!');
+process.on('uncaughtException', () => {
   process.exit(1);
-}
+});
 
-process.on(
-  'uncaughtException',
-  Pino.final(logger, (err, finalLogger) => {
-    finalLogger.error(err, 'uncaughtException');
-    process.exit(1);
-  }),
-);
-
-process.on(
-  'unhandledRejection',
-  Pino.final(logger, (err, finalLogger) => {
-    finalLogger.error(err, 'unhandledRejection');
-    process.exit(1);
-  }),
-);
+const typeDefs = gql`
+  type Query {
+    nenad: String!
+  }
+`;
 
 (() => {
   const server = new ApolloServer({
-    playground: true,
-    context: (ctx: DefaultContext) => ctx,
+    typeDefs: [typeDefs],
+    resolvers: [],
+    introspection: !config.isProd,
+    playground: !config.isProd,
+    context: (ctx: DefaultContext) => {
+      ctx;
+    },
   });
 
-  server.applyMiddleware({ app: application, path: '/graphql', cors: true });
+  server.applyMiddleware({
+    app: application,
+    path: config.SERVER_ENDPOINT,
+    cors: { credentials: true },
+  });
 
-  application.listen({ port }, () =>
+  application.listen(config.SERVER_PORT, () =>
     console.log(
-      `👍 Server ready at http://localhost:${port}${server.graphqlPath}`,
+      `👍 Server ready at http://localhost:${config.SERVER_PORT}${server.graphqlPath}`,
     ),
   );
 })();
