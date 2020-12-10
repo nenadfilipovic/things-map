@@ -25,6 +25,8 @@
     "@graphql-codegen/typescript": "1.19.0",
     "@graphql-codegen/typescript-operations": "^1.17.12",
     "@graphql-codegen/typescript-resolvers": "1.18.0",
+    "@graphql-tools/load-files": "^6.2.5",
+    "@graphql-tools/merge": "^6.2.6",
     "@types/jest": "^26.0.17",
     "@types/koa-session": "^5.10.3",
     "@typescript-eslint/eslint-plugin": "^4.9.1",
@@ -37,6 +39,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
     "graphql": "^15.4.0",
+    "graphql-config": "^3.2.0",
     "graphql-schema-linter": "^1.0.1",
     "husky": "^5.0.4",
     "is-ci-cli": "^2.1.2",
@@ -71,7 +74,7 @@
       "jest --findRelatedTests"
     ],
     "**/*.graphql": [
-      "graphql-schema-linter"
+      "graphql-schema-linter --except relay-page-info-spec"
     ]
   },
   "keywords": [

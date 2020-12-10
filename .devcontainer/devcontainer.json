@@ -25,7 +25,9 @@
     "wallabyjs.wallaby-vscode",
     "wallabyjs.quokka-vscode",
     "ms-azuretools.vscode-docker",
-    "mikestead.dotenv"
+    "mikestead.dotenv",
+    "GraphQL.vscode-graphql",
+    "redhat.vscode-yaml"
   ],
 
   // Which ports I need to open

@@ -1,10 +1,11 @@
 import Knex from 'knex';
 import { Model } from 'objection';
 import { DefaultContext } from 'koa';
-import { ApolloServer, gql } from 'apollo-server-koa';
+import { ApolloServer } from 'apollo-server-koa';
 import { config } from './config';
 import { knexConfig } from './config';
 import { application } from './application';
+import { typeDefs, resolvers } from './schema';
 
 Model.knex(Knex(knexConfig));
 
@@ -16,16 +17,11 @@ process.on('uncaughtException', () => {
   process.exit(1);
 });
 
-const typeDefs = gql`
-  type Query {
-    nenad: String!
-  }
-`;
-
 (() => {
   const server = new ApolloServer({
-    typeDefs: [typeDefs],
-    resolvers: [],
+    typeDefs,
+    resolvers,
+    uploads: false,
     introspection: !config.isProd,
     playground: !config.isProd,
     context: (ctx: DefaultContext) => {

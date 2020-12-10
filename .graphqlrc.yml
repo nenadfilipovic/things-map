@@ -1,0 +1,10 @@
+schema: src/schema/**/*.graphql
+extensions:
+  codegen:
+    overwrite: true
+    generates:
+      ./src/generated/types.ts:
+        plugins:
+          - 'typescript'
+          - 'typescript-operations'
+          - 'typescript-resolvers'
