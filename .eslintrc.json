@@ -29,5 +29,60 @@
   ],
 
   // Add rules if needed, I am happy as it is.
-  "rules": {}
+  "rules": {},
+
+  // Add config for GraphQL files.
+  "overrides": [
+    {
+      "files": ["*.graphql"],
+      "parser": "@graphql-eslint/eslint-plugin",
+      "plugins": ["@graphql-eslint"],
+      "rules": {
+        "@graphql-eslint/validate-against-schema": ["error"],
+        "@graphql-eslint/require-description": [
+          "error",
+          {
+            "on": [
+              "SchemaDefinition",
+              "ObjectTypeDefinition",
+              "FieldDefinition",
+              "InputValueDefinition",
+              "InterfaceTypeDefinition",
+              "UnionTypeDefinition",
+              "EnumTypeDefinition",
+              "EnumValueDefinition",
+              "InputObjectTypeDefinition",
+              "DirectiveDefinition"
+            ]
+          }
+        ],
+        "@graphql-eslint/prettier": ["error"],
+        "@graphql-eslint/require-id-when-available": ["error"],
+        "@graphql-eslint/no-operation-name-suffix": ["error"],
+        "@graphql-eslint/no-case-insensitive-enum-values-duplicates": ["error"],
+        "@graphql-eslint/require-deprecation-reason": ["error"],
+        "@graphql-eslint/no-anonymous-operations": ["error"],
+        "@graphql-eslint/naming-convention": [
+          "error",
+          {
+            "ObjectTypeDefinition": "PascalCase",
+            "FieldDefinition": "camelCase",
+            "EnumValueDefinition": "camelCase",
+            "InputValueDefinition": "camelCase",
+            "FragmentDefinition": "PascalCase",
+            "ScalarTypeDefinition": "PascalCase",
+            "leadingUnderscore": "forbid",
+            "trailingUnderscore": "forbid"
+          }
+        ],
+        "@graphql-eslint/description-style": ["error", { "style": "inline" }],
+        "@graphql-eslint/input-name": ["error", { "checkInputType": true }],
+        "@graphql-eslint/avoid-operation-name-prefix": [
+          "error",
+          { "keywords": ["get"] }
+        ],
+        "prettier/prettier": "off"
+      }
+    }
+  ]
 }

@@ -1,31 +1,68 @@
-"""
-A type that describes the user.
-"""
+"A type that describes the user."
 type User {
-  """
-  User's email.
-  """
-  email: String!
-  """
-  User's first name.
-  """
+  "User's bio."
+  bio: String
+  "User's country code."
+  countryCode: String!
+  "User's created date."
+  createdDate: String
+  "User's current sign in date."
+  currentSignInDate: String
+  "User's current sign in ip address."
+  currentSignInIpAddress: String
+  "User's delete account token."
+  deleteAccountToken: String
+  "User's delete account token generated date."
+  deleteAccountTokenGenereatedDate: String
+  "User's failed password attempts."
+  failedPasswordAttempts: Int
+  "User's failed reset password attempts."
+  failedResetPasswordAttempts: Int
+  "User's first failed password attempt."
+  firstFailedPasswordAttempt: String
+  "User's first failed reset password attempt."
+  firstFailedResetPasswordAttempt: String
+  "User's first name."
   firstName: String!
-  """
-  User's last name.
-  """
+  "User's id."
+  id: ID!
+  "User's image."
+  image: String
+  "User's admin flag."
+  isAdmin: Boolean
+  "User's banned flag."
+  isBanned: Boolean
+  "User's public flag."
+  isPublic: Boolean
+  "User's verified flag."
+  isVerified: Boolean
+  "User's last name."
   lastName: String!
-  """
-  User's username.
-  """
+  "User's last sign in date."
+  lastSignInDate: String
+  "User's last sign in ip address."
+  lastSignInIpAddress: String
+  "User's modified date."
+  modifiedDate: String
+  "User's reset password token."
+  resetPasswordToken: String
+  "User's reset password token generated date."
+  resetPasswordTokenGeneratedDate: String
+  "User's sign in count."
+  signInCount: Int
+  "User's time zone."
+  timeZone: String
+  "User's username."
   username: String!
+  "User's website."
+  website: String
 }
 
-"""
-Root query type.
-"""
-type Query {
-  """
-  Returns type user.
-  """
-  me: User!
+extend type Query {
+  "Returns type user."
+  user: User!
+}
+extend type Mutation {
+  "Creates user node."
+  createUser: User!
 }

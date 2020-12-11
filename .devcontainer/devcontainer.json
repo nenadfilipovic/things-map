@@ -14,7 +14,8 @@
     "editor.tabSize": 2,
     "editor.formatOnSave": true,
     "extensions.ignoreRecommendations": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "eslint.validate": ["graphql"]
   },
 
   // Extensions I want to enable in development
