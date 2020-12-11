@@ -14,6 +14,9 @@ services:
     # source.
     env_file: .env
 
+    environment:
+      NODE_ENV: development
+
     # Uncomment the next line if using host operating system's file system
     volumes:
       - .:/workspace:cached

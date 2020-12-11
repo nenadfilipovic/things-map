@@ -1,0 +1,20 @@
+# lint-disable relay-page-info-spec
+"Root query type."
+type Query {
+  "Root query is mandatory."
+  empty: String
+  "Every connection must have page info field."
+  pageInfo: PageInfo
+}
+"Root mutation type."
+type Mutation {
+  "Root mutation is mandatory."
+  empty: String
+}
+"Required as realay spec."
+type PageInfo {
+  "Define if query has next page."
+  hasNextPage: Boolean!
+  "Define if query has previous page."
+  hasPreviousPage: Boolean!
+}

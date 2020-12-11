@@ -1,23 +1,23 @@
 import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable('watchedDevice', (table) => {
+  return knex.schema.createTable('watched_device', (table) => {
     table
-      .integer('userId')
+      .integer('user_id')
       .references('id')
       .inTable('user')
       .onDelete('CASCADE')
       .notNullable();
     table
-      .integer('deviceId')
+      .integer('device_id')
       .references('id')
       .inTable('device')
       .onDelete('CASCADE')
       .notNullable();
-    table.dateTime('createdDate').defaultTo(knex.fn.now());
+    table.dateTime('created_date');
   });
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable('watchedDevice');
+  return knex.schema.dropTable('watched_device');
 }

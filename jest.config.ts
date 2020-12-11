@@ -22,11 +22,7 @@ const config: Config.InitialOptions = {
     },
   },
 
-  projects: [
-    './test/jest.client.ts',
-    './test/jest.server.ts',
-    './test/jest.lint.ts',
-  ],
+  projects: ['./test/jest.client.ts', './test/jest.server.ts'],
 };
 
 export default config;

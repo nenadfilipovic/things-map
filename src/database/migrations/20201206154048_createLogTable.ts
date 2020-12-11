@@ -3,7 +3,7 @@ import * as Knex from 'knex';
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('log', (table) => {
     table.dateTime('time').primary();
-    table.integer('deviceId').references('id').inTable('device');
+    table.integer('device_id').references('id').inTable('device');
     table.string('field1');
     table.string('field2');
     table.string('field3');

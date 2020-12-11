@@ -1,7 +1,7 @@
-import config from './src/database/config';
+import { knexConfig } from './src/config';
 
 export default {
-  ...config,
+  ...knexConfig,
   migrations: {
     tableName: 'knex_migrations',
     directory: 'src/database/migrations',
