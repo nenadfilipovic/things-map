@@ -3,39 +3,39 @@ import * as Knex from 'knex';
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('user', (table) => {
     table.increments('id');
-    table.string('firstName').notNullable();
-    table.string('lastName').notNullable();
+    table.string('first_name').notNullable();
+    table.string('last_name').notNullable();
     table.string('username').unique().notNullable();
     table.string('email').unique().notNullable();
     table.string('password').notNullable();
     table.string('bio');
     table.string('website');
-    table.boolean('isPublic').defaultTo(false);
-    table.boolean('isBanned').defaultTo(false);
-    table.boolean('isAdmin').defaultTo(false);
-    table.boolean('isVerified').defaultTo(false);
+    table.boolean('is_public').defaultTo(false);
+    table.boolean('is_banned').defaultTo(false);
+    table.boolean('is_admin').defaultTo(false);
+    table.boolean('is_verified').defaultTo(false);
     table
-      .string('countryCode')
+      .string('country_code')
       .references('code')
       .inTable('country')
       .notNullable();
     table.string('image').defaultTo('default.png');
-    table.string('timeZone').defaultTo('UTC'); // Need fix
-    table.string('resetPasswordToken').unique();
-    table.dateTime('resetPasswordTokenGeneratedDate');
-    table.string('lastSignInIpAddress');
-    table.string('currentSignInIpAddress');
-    table.integer('failedPasswordAttempts');
-    table.dateTime('firstFailedPasswordAttempt');
-    table.integer('failedResetPasswordAttempts');
-    table.dateTime('firstFailedResetPasswordAttempt');
-    table.string('deleteAccountToken').unique();
-    table.dateTime('deleteAccountTokenGeneratedDate');
-    table.integer('signInCount').defaultTo(0);
-    table.dateTime('lastSignInDate');
-    table.dateTime('currentSignInDate');
-    table.dateTime('createdDate').defaultTo(knex.fn.now());
-    table.dateTime('modifiedDate').defaultTo(knex.fn.now());
+    table.string('time_zone').defaultTo('UTC'); // Need fix
+    table.string('reset_password_token').unique();
+    table.dateTime('reset_password_token_generated_date');
+    table.string('last_sign_in_ip_address');
+    table.string('current_sign_in_ip_address');
+    table.integer('failed_password_attempts');
+    table.dateTime('first_failed_password_attempt');
+    table.integer('failed_reset_password_attempts');
+    table.dateTime('first_failed_reset_password_attempt');
+    table.string('delete_account_token').unique();
+    table.dateTime('delete_account_token_generated_date');
+    table.integer('sign_in_count').defaultTo(0);
+    table.dateTime('last_sign_in_date');
+    table.dateTime('current_sign_in_date');
+    table.dateTime('created_date');
+    table.dateTime('modified_date');
   });
 }
 

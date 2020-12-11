@@ -1,8 +1,8 @@
 import { Model, RelationMappings } from 'objection';
-
+import { Base } from './Base';
 import { Country } from './Country';
 
-class User extends Model {
+class User extends Base {
   static get tableName(): string {
     return 'user';
   }

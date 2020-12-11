@@ -1,9 +1,0 @@
-overwrite: true
-schema: 'http://localhost:${SERVER_PORT}${SERVER_ENDPOINT}'
-documents: null
-generates:
-  src/generated/graphql.ts:
-    plugins:
-      - 'typescript'
-      - 'typescript-operations'
-      - 'typescript-resolvers'
