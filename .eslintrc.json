@@ -67,7 +67,7 @@
           {
             "ObjectTypeDefinition": "PascalCase",
             "FieldDefinition": "camelCase",
-            "EnumValueDefinition": "camelCase",
+            "EnumValueDefinition": "UPPER_CASE",
             "InputValueDefinition": "camelCase",
             "FragmentDefinition": "PascalCase",
             "ScalarTypeDefinition": "PascalCase",

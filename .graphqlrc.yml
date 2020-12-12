@@ -3,8 +3,9 @@ extensions:
   codegen:
     overwrite: true
     generates:
-      ./src/generated/types.ts:
+      ./src/generated/resolverTypes.ts:
+        config:
+          mappers:
         plugins:
           - 'typescript'
-          - 'typescript-operations'
           - 'typescript-resolvers'
