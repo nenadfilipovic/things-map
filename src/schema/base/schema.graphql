@@ -1,20 +1,42 @@
-# lint-disable relay-page-info-spec
+"Error blueprint."
+interface Error {
+  "Error message."
+  message: String!
+}
+
+"Globally unique id."
+interface Node {
+  "ID of the object."
+  id: ID!
+}
+
 "Root query type."
 type Query {
-  "Root query is mandatory."
+  "Needed for apollo server."
   empty: String
+  "Allow refetching."
+  node("Input for node." id: ID!): Node
   "Every connection must have page info field."
   pageInfo: PageInfo
 }
+
 "Root mutation type."
 type Mutation {
-  "Root mutation is mandatory."
+  "Needed for apollo server."
   empty: String
 }
-"Required as realay spec."
+
+"Required for relay spec."
 type PageInfo {
+  "Required for relay spec."
+  endCursor: String
   "Define if query has next page."
   hasNextPage: Boolean!
   "Define if query has previous page."
   hasPreviousPage: Boolean!
+  "Required for relay spec."
+  startCursor: String
 }
+
+"Custom scalar for timestamps."
+scalar DateTime

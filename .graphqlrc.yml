@@ -3,8 +3,14 @@ extensions:
   codegen:
     overwrite: true
     generates:
-      ./src/generated/types.ts:
+      src/generated/resolverTypes.ts:
+        config:
+          mappers:
+            User: src/database/models/User#User
+          # mapperTypeSuffix: Model
+          contextType: src/context#Context
         plugins:
+          - add:
+              content: '/* eslint-disable */'
           - 'typescript'
-          - 'typescript-operations'
           - 'typescript-resolvers'

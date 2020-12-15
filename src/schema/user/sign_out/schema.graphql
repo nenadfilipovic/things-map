@@ -1,0 +1,10 @@
+"Result for sign out user mutation."
+type SignOutUserResult {
+  "Sign out user message."
+  message: String!
+}
+
+extend type Mutation {
+  "Sign out user."
+  signOutUser: SignOutUserResult!
+}

@@ -2,7 +2,36 @@ import { Model, RelationMappings } from 'objection';
 import { Base } from './Base';
 import { Country } from './Country';
 
-class User extends Base {
+export class User extends Base {
+  id!: string;
+  firstName!: string;
+  lastName!: string;
+  username!: string;
+  email!: string;
+  password!: string;
+  bio!: string;
+  website!: string;
+  isPublic!: boolean;
+  isBanned!: boolean;
+  isAdmin!: boolean;
+  isVerified!: boolean;
+  countryCode!: string;
+  image!: string;
+  timeZone!: string;
+  resetPasswordToken!: string;
+  resetPasswordTokenGeneratedDate!: Date;
+  lastSignInIpAddress!: string;
+  currentSignInIpAddress!: string;
+  failedPasswordAttempts!: number;
+  firstFailedPasswordAttemp!: Date;
+  failedResetPasswordAttempts!: number;
+  firstFailedResetPasswordAttempt!: Date;
+  deleteAccountToken!: string;
+  deleteAccountTokenGeneratedDate!: Date;
+  signInCount!: number;
+  lastSignInDate!: Date;
+  surrentSignInDate!: Date;
+
   static get tableName(): string {
     return 'user';
   }
@@ -20,5 +49,3 @@ class User extends Base {
     };
   }
 }
-
-export { User };

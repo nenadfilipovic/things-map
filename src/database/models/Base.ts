@@ -1,15 +1,15 @@
 import { Model } from 'objection';
 
 class Base extends Model {
-  createdDate!: string;
-  modifiedDate!: string;
+  createdDate!: Date;
+  modifiedDate!: Date;
 
   $beforeInsert(): void {
-    this.createdDate = new Date().toISOString();
+    this.createdDate = new Date();
   }
 
   $beforeUpdate(): void {
-    this.modifiedDate = new Date().toISOString();
+    this.modifiedDate = new Date();
   }
 }
 

@@ -1,0 +1,50 @@
+"Sign up user input."
+input SignUpUserInput {
+  "User's country code."
+  countryCode: String!
+  "User's email."
+  email: String!
+  "User's first name."
+  firstName: String!
+  "User's last name."
+  lastName: String!
+  "User's password."
+  password: String!
+  "User's username."
+  username: String!
+}
+
+"Username taken error."
+type UserNameTaken implements Error {
+  "Error message."
+  message: String!
+  "Error path."
+  path: String!
+}
+
+"Email taken error."
+type EmailTaken implements Error {
+  "Error message."
+  message: String!
+  "Error path."
+  path: String!
+}
+
+"All sign up errors."
+union SingUpUserErrors = UserNameTaken | EmailTaken
+
+"Sign up user result."
+type SignUpUserResult {
+  "Possible errors during signing up."
+  errors: [SingUpUserErrors!]
+  "Return new user."
+  user: User
+}
+
+extend type Mutation {
+  "Sign up user."
+  signUpUser(
+    "Signing up user data."
+    input: SignUpUserInput! # eslint-disable-line
+  ): SignUpUserResult!
+}

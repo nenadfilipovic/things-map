@@ -14,7 +14,8 @@ const config = envalid.cleanEnv(
     SERVER_PORT: port(),
     SERVER_ENDPOINT: str(),
     COOKIE_KEY: str(),
-    COOKIE_MAX_AGE: num(),
+    JWT_COOKIE_MAX_AGE: num(),
+    JWT_KEY: str(),
   },
   { strict: true, dotEnvPath: null },
 );
@@ -35,4 +36,12 @@ const knexConfig = {
   ...knexSnakeCaseMappers(),
 };
 
-export { config, knexConfig };
+const cookieConfig = {
+  secure: config.isProd,
+  httpOnly: true,
+  signed: true,
+  sameSite: true,
+  maxAge: config.JWT_COOKIE_MAX_AGE * 1000 * 60,
+};
+
+export { config, knexConfig, cookieConfig };

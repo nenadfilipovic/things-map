@@ -3,7 +3,7 @@ import { loadFilesSync } from '@graphql-tools/load-files';
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
 
 const typesArray = loadFilesSync(path.join(__dirname, '**/*.graphql'));
-const resolversArray = loadFilesSync(path.join(__dirname, '**/resolvers.ts'));
+const resolversArray = loadFilesSync(path.join(__dirname, '**/resolver.ts'));
 
 const typeDefs = mergeTypeDefs(typesArray);
 const resolvers = mergeResolvers(resolversArray);
