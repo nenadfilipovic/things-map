@@ -1,0 +1,45 @@
+"Sign in user by username input."
+input SingInUserByUsernameInput {
+  "User's password."
+  password: String!
+  "User's username."
+  username: String!
+}
+
+"Sign in user by email input."
+input SignInUserByEmailInput {
+  "User's email."
+  email: String!
+  "User's password."
+  password: String!
+}
+
+"Bad credentials error."
+type BadCredentials implements Error {
+  "Error message."
+  message: String!
+}
+
+"All sign in errors."
+union SingInUserErrors = BadCredentials
+
+"Sign in user result."
+type SignInUserResult {
+  "Possible errors during signing in."
+  errors: [SingInUserErrors!]
+  "Return signed in user."
+  user: User
+}
+
+extend type Mutation {
+  "Sign in user by username."
+  singInUserByUsername(
+    "Sign in user by username input."
+    input: SingInUserByUsernameInput! # eslint-disable-line
+  ): SignInUserResult!
+  "Sign in user by email."
+  singInUserByEmail(
+    "Sign in user by email input."
+    input: SignInUserByEmailInput! # eslint-disable-line
+  ): SignInUserResult!
+}

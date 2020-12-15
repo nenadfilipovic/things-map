@@ -1,11 +1,10 @@
 import Knex from 'knex';
 import { Model } from 'objection';
-import { DefaultContext } from 'koa';
 import { ApolloServer } from 'apollo-server-koa';
-import { config } from './config';
-import { knexConfig } from './config';
+import { config, knexConfig } from './config';
 import { application } from './application';
 import { typeDefs, resolvers } from './schema';
+import { createContext } from './context';
 
 Model.knex(Knex(knexConfig));
 
@@ -24,15 +23,13 @@ process.on('uncaughtException', () => {
     uploads: false,
     introspection: !config.isProd,
     playground: !config.isProd,
-    context: (ctx: DefaultContext) => {
-      ctx;
-    },
+    context: createContext,
   });
 
   server.applyMiddleware({
     app: application,
     path: config.SERVER_ENDPOINT,
-    cors: { credentials: true },
+    cors: true,
   });
 
   application.listen(config.SERVER_PORT, () =>

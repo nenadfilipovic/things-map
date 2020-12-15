@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    // Base directory to resolve non-absolute module names.
-    "baseUrl": "./",
+    // Define base url to easier load files.
+    "baseUrl": ".",
 
     // Specify library files to be included in the compilation.
     "lib": ["ES2020"],

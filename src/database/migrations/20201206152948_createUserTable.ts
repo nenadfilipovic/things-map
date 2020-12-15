@@ -20,7 +20,7 @@ export async function up(knex: Knex): Promise<void> {
       .inTable('country')
       .notNullable();
     table.string('image').defaultTo('default.png');
-    table.string('time_zone').defaultTo('UTC'); // Need fix
+    table.string('time_zone').defaultTo('UTC');
     table.string('reset_password_token').unique();
     table.dateTime('reset_password_token_generated_date');
     table.string('last_sign_in_ip_address');
