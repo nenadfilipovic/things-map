@@ -1,0 +1,33 @@
+"Provided data for forgot password."
+input ForgotPasswordInput {
+  "User's email."
+  email: String!
+}
+
+"Provided data for reset password."
+input ResetPasswordInput {
+  "User's reset password token."
+  resetPasswordToken: String!
+}
+
+"Forgot password result."
+type ForgotPasswordResult {
+  "Response message."
+  message: String!
+}
+
+"Reset password result."
+type ResetPasswordResult {
+  "Response message."
+  message: String!
+}
+
+extend type Mutation {
+  "Forgot password."
+  forgotPassword(
+    "Input data."
+    input: ForgotPasswordInput!
+  ): ForgotPasswordResult!
+  "Reset password."
+  resetPassword("Input data." input: ResetPasswordInput!): ResetPasswordResult!
+}
