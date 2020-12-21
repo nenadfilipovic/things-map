@@ -1,0 +1,18 @@
+"Provided data for sign in by email."
+input SignInByEmailInput {
+  "User's email."
+  email: String!
+  "User's password."
+  password: String!
+}
+
+"Sign in by email result."
+type SignInByEmailResult {
+  "Response message."
+  message: String!
+}
+
+extend type Mutation {
+  "Sign in by email."
+  signInByEmail("Input data." input: SignInByEmailInput!): SignInByEmailResult!
+}

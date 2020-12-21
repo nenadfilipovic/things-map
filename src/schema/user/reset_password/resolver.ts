@@ -19,7 +19,7 @@ const resolvers: Resolvers = {
      */
 
     resetPassword: async (
-      root,
+      _,
       { input },
       { ctx },
     ): Promise<ResetPasswordResult> => {

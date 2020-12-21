@@ -16,11 +16,7 @@ const resolvers: Resolvers = {
      * Initiate forgot password process.
      */
 
-    forgotPassword: async (
-      root,
-      { input },
-      context,
-    ): Promise<ForgotPasswordResult> => {
+    forgotPassword: async (_, { input }): Promise<ForgotPasswordResult> => {
       /**
        * Prepare data.
        */
