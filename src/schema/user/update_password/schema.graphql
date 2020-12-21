@@ -1,0 +1,21 @@
+"Provided data for update password."
+input UpdatePasswordInput {
+  "User's new password."
+  newPassword: String!
+  "User's old password."
+  oldPassword: String!
+}
+
+"Update password result."
+type UpdatePasswordResult {
+  "Response message."
+  message: String!
+}
+
+extend type Mutation {
+  "Update password."
+  updatePassword(
+    "Input data"
+    input: UpdatePasswordInput!
+  ): UpdatePasswordResult!
+}
