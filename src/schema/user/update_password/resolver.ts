@@ -25,7 +25,7 @@ const resolvers: Resolvers = {
        * Prepare data.
        */
 
-      const { newPassword, oldPassword } = input;
+      const { newPassword, currentPassword } = input;
 
       /**
        * Check context for logged in user.
@@ -35,7 +35,7 @@ const resolvers: Resolvers = {
 
       if (!id) {
         return {
-          message: 'Not logged in',
+          message: 'User must be logged in to update password',
         };
       }
 
@@ -43,21 +43,21 @@ const resolvers: Resolvers = {
 
       if (!user) {
         return {
-          message: 'Something wrong happened',
+          message: `Error something went wrong`,
         };
       }
 
-      const { password, email, username } = user;
+      const { password, email } = user;
 
       /**
        * Validate provided password and update it with new one.
        */
 
-      const validPassword = await validatePassword(password, oldPassword);
+      const validPassword = await validatePassword(password, currentPassword);
 
       if (!validPassword) {
         return {
-          message: 'Bad password',
+          message: 'Invalid password',
         };
       }
 
@@ -79,8 +79,9 @@ const resolvers: Resolvers = {
       mail.sendMail({
         from: config.EMAIL_USERNAME,
         to: email,
-        subject: `Change password confirmation for user: ${username}`,
-        text: `You have successfully updated your password`,
+        subject: `Change password confirmation`,
+        text: `You have successfully updated your password.
+        \n Please sign in.`,
       });
 
       /**
@@ -90,7 +91,7 @@ const resolvers: Resolvers = {
       clearAuthenticationToken(ctx);
 
       return {
-        message: 'Successfully changed password',
+        message: `You have successfully updated your password`,
       };
     },
   },

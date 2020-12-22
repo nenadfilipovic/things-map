@@ -1,9 +1,9 @@
 "Provided data for update password."
 input UpdatePasswordInput {
+  "User's current password."
+  currentPassword: String!
   "User's new password."
   newPassword: String!
-  "User's old password."
-  oldPassword: String!
 }
 
 "Update password result."

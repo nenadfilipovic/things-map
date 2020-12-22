@@ -31,38 +31,48 @@ const resolvers: Resolvers = {
 
       const user = await User.query().findOne({ username });
 
-      if (!user) {
+      if (user) {
+        const { id, isAdmin, isVerified, signInCount } = user;
+
+        /**
+         * Validate password.
+         */
+
+        const validPassword = validatePassword(user.password, password);
+
+        if (!validPassword) {
+          return {
+            message: 'Bad username or password, please check your credentials',
+          };
+        }
+
+        /**
+         * Create authentication token for user.
+         */
+
+        const payload = {
+          id,
+          isAdmin,
+          isVerified,
+        };
+
+        await User.query()
+          .patch({
+            lastSignInDate: new Date(),
+            signInCount: signInCount + 1,
+            currentSignInIpAddress: ctx.req.connection.remoteAddress,
+          })
+          .findById(id);
+
+        buildAuthenticationToken(ctx, payload);
+
         return {
-          message: 'Bad username or password, please check your credentials',
+          message: 'Successfully signed in',
         };
       }
-
-      /**
-       * Validate password.
-       */
-
-      const validPassword = validatePassword(user.password, password);
-
-      if (!validPassword) {
-        return {
-          message: 'Bad username or password, please check your credentials',
-        };
-      }
-
-      /**
-       * Create authentication token for user.
-       */
-
-      const payload = {
-        id: user.id,
-        isAdmin: user.isAdmin,
-        isVerified: user.isVerified,
-      };
-
-      buildAuthenticationToken(ctx, payload);
 
       return {
-        message: 'ok',
+        message: 'Bad username or password, please check your credentials',
       };
     },
   },

@@ -28,6 +28,7 @@ const resolvers: Resolvers = {
        */
 
       const { resetPasswordToken } = input;
+
       const user = await User.query().findOne({ resetPasswordToken });
 
       /**
@@ -39,7 +40,7 @@ const resolvers: Resolvers = {
          * Prepare data.
          */
 
-        const { id, email, username } = user;
+        const { id, email } = user;
 
         /**
          * Reset helper variables, create new password and update user data.
@@ -63,8 +64,9 @@ const resolvers: Resolvers = {
         mail.sendMail({
           from: config.EMAIL_USERNAME,
           to: email,
-          subject: `New password for user: ${username}`,
-          text: `You have successfully reseted your password. \n Here is your new password: ${password}`,
+          subject: `Password reset`,
+          text: `Your password has been reset successfully.
+          \n Here is your new password: ${password}`,
         });
 
         /**
@@ -79,7 +81,8 @@ const resolvers: Resolvers = {
       }
 
       return {
-        message: 'Password reset token is invalid or expired',
+        message:
+          'Your password reset token is invalid or expired, please generate new one',
       };
     },
   },

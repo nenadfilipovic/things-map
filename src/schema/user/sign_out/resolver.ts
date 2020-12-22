@@ -20,7 +20,7 @@ const resolvers: Resolvers = {
       clearAuthenticationToken(ctx);
 
       return {
-        message: 'Successfully logged out',
+        message: 'Successfully signed out',
       };
     },
   },

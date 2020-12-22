@@ -40,7 +40,7 @@ const resolvers: Resolvers = {
 
       if (emailTaken) {
         return {
-          message: 'Email taken',
+          message: 'Email address already in use',
         };
       }
 
@@ -52,7 +52,7 @@ const resolvers: Resolvers = {
 
       if (usernameTaken) {
         return {
-          message: 'Username taken',
+          message: 'Username already in use',
         };
       }
 
@@ -99,12 +99,17 @@ const resolvers: Resolvers = {
       mail.sendMail({
         from: config.EMAIL_USERNAME,
         to: email,
-        subject: `Email verification for user ${user.username}`,
-        text: `Please use this code to verify your email address. \n Code: ${user.verifyEmailToken}`,
+        subject: `Verify email address`,
+        text: `Hello!
+          \n Please use provided code below to verify your email address.
+          \n Verification code: ${user.verifyEmailToken}
+          \n Token is valid until: ${user.verifyEmailTokenExpires}
+          \n Have a nice day.`,
       });
 
       return {
-        message: `Kindly check your provided email address "${user.email}" for further instructions`,
+        message:
+          'Please check your provided email address for further instructions to activate your account',
       };
     },
   },

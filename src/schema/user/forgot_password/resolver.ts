@@ -22,6 +22,7 @@ const resolvers: Resolvers = {
        */
 
       const { email } = input;
+
       const user = await User.query().findOne({ email, isVerified: true });
 
       /**
@@ -36,7 +37,6 @@ const resolvers: Resolvers = {
         const {
           id,
           email,
-          username,
           resetPasswordToken,
           resetPasswordTokenExpires,
         } = user;
@@ -75,8 +75,10 @@ const resolvers: Resolvers = {
         mail.sendMail({
           from: config.EMAIL_USERNAME,
           to: email,
-          subject: `Forgot password request from user: ${username}`,
-          text: `Please use this token to reset your password. \n Token: ${token} \n Token is valid until: ${tokenExpires}`,
+          subject: `Forgot password request`,
+          text: `You have requested a new password for account ${email}. No changes have been made to your account yet. 
+          \n Please use this code to reset your password: ${token} \n Code is valid until: ${tokenExpires} 
+          \n If you did not request a new password, please let us know immediately by replying to this email.`,
         });
       }
 

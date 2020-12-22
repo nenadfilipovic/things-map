@@ -19,6 +19,7 @@ const resolvers: Resolvers = {
        */
 
       const { verifyEmailToken } = input;
+
       const user = await User.query().findOne({
         verifyEmailToken,
         isVerified: false,
@@ -29,18 +30,21 @@ const resolvers: Resolvers = {
          * Prepare data.
          */
 
-        const { verifyEmailTokenExpires } = user;
+        const { verifyEmailTokenExpires, id } = user;
 
         if (verifyEmailTokenExpires > new Date()) {
           /**
            * Update user data.
            */
 
-          await User.query().patch({
-            isVerified: true,
-            verifyEmailToken: raw('NULL'),
-            verifyEmailTokenExpires: raw('NULL'),
-          });
+          await User.query()
+            .patch({
+              isVerified: true,
+              emailVerifiedDate: new Date(),
+              verifyEmailToken: raw('NULL'),
+              verifyEmailTokenExpires: raw('NULL'),
+            })
+            .findById(id);
 
           return {
             message:

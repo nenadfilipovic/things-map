@@ -1,0 +1,19 @@
+"Provided data for resend verify email."
+input ResendVerifyEmailInput {
+  "User's email."
+  email: String!
+}
+
+"Resend verify email result."
+type ResendVerifyEmailResult {
+  "Response message."
+  message: String!
+}
+
+extend type Mutation {
+  "Resend verify email."
+  resendVerifyEmail(
+    "Input data."
+    input: ResendVerifyEmailInput!
+  ): ResendVerifyEmailResult!
+}
