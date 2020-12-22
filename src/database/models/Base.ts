@@ -1,6 +1,10 @@
 import { Model } from 'objection';
 
 class Base extends Model {
+  /**
+   * Timestamps.
+   */
+
   createdDate!: Date;
   modifiedDate!: Date;
 

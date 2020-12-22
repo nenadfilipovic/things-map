@@ -1,9 +1,3 @@
-"Error blueprint."
-interface Error {
-  "Error message."
-  message: String!
-}
-
 "Globally unique id."
 interface Node {
   "ID of the object."

@@ -8,6 +8,9 @@
     "sourceType": "module"
   },
 
+  // Prevent linting of example env file.
+  "ignorePatterns": ["example.env"],
+
   // Add plugins.
   "extends": [
     // Prevent double linting from ts and eslint.
