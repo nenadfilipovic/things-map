@@ -16,6 +16,12 @@ const config = envalid.cleanEnv(
     COOKIE_KEY: str(),
     JWT_COOKIE_MAX_AGE: num(),
     JWT_KEY: str(),
+    EMAIL_HOST: str(),
+    EMAIL_PORT: port(),
+    EMAIL_USERNAME: str(),
+    EMAIL_PASSWORD: str(),
+    RESET_PASSWORD_TOKEN_MAX_AGE: num(),
+    VERIFY_EMAIL_TOKEN_MAX_AGE: num(),
   },
   { strict: true, dotEnvPath: null },
 );
@@ -44,4 +50,15 @@ const cookieConfig = {
   maxAge: config.JWT_COOKIE_MAX_AGE * 1000 * 60,
 };
 
-export { config, knexConfig, cookieConfig };
+const resetPasswordTokenMaxAge =
+  config.RESET_PASSWORD_TOKEN_MAX_AGE * 1000 * 60;
+
+const verifyEmailTokenMaxAge = config.VERIFY_EMAIL_TOKEN_MAX_AGE * 1000 * 60;
+
+export {
+  config,
+  knexConfig,
+  cookieConfig,
+  resetPasswordTokenMaxAge,
+  verifyEmailTokenMaxAge,
+};

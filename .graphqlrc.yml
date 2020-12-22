@@ -7,7 +7,7 @@ extensions:
         config:
           mappers:
             User: src/database/models/User#User
-          # mapperTypeSuffix: Model
+          mapperTypeSuffix: Model
           contextType: src/context#Context
         plugins:
           - add:
