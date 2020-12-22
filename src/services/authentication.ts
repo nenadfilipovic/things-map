@@ -6,21 +6,18 @@ import { PAYLOAD_COOKIE, SIGNATURE_COOKIE } from 'src/helpers/constants';
 interface Payload {
   id: string;
   isAdmin: boolean;
+  isVerified: boolean;
 }
 
 /**
  *
- * @param ctx Koa context.
- * @param payload Payload to store in token.
+ * @param ctx
+ * @param payload
  *
- * Simplify creating tokens and storing them in cookies.
- * This way we implement two cookie authentication,
- * this way of handling authentication helps with frontend because
- * payload part of token will always be in non http-only cookie so javascript
- * can access it while signature will be secure under http-only cookie.
+ * Build authentication token with key user props.
  */
 
-const buildToken = (ctx: Context, payload: Payload): void => {
+const buildAuthenticationToken = (ctx: Context, payload: Payload): void => {
   const token = jwt.sign(payload, config.JWT_KEY, {
     expiresIn: `${config.JWT_COOKIE_MAX_AGE}m`,
   });
@@ -37,15 +34,16 @@ const buildToken = (ctx: Context, payload: Payload): void => {
 
 /**
  *
- * @param ctx Koa context.
- * @param next Koa middleware next function.
+ * @param ctx
+ * @param next
  *
- * Gather cookies and check their existence,
- * merge their content into authentication token and validate
- * it, if token is valid store it on ctx.state.user key.
+ * Validate authentication token.
  */
 
-const validateToken = async (ctx: Context, next: Next): Promise<Middleware> => {
+const validateAuthenticationToken = async (
+  ctx: Context,
+  next: Next,
+): Promise<Middleware> => {
   const tokenPayloadCookie = ctx.cookies.get(PAYLOAD_COOKIE);
   const tokenSignatureCookie = ctx.cookies.get(SIGNATURE_COOKIE);
 
@@ -71,18 +69,18 @@ const validateToken = async (ctx: Context, next: Next): Promise<Middleware> => {
 
 /**
  *
- * @param ctx Koa context.
+ * @param ctx
  *
- * Cookies are invalidated by passing empty
- * string as their value.
- * Token parts inside cookies will continue to be
- * valid even after we destroy cookies but token
- * short life should protect us.
+ * Clears authentication token.
  */
 
-const clearToken = (ctx: Context): void => {
+const clearAuthenticationToken = (ctx: Context): void => {
   ctx.cookies.set(PAYLOAD_COOKIE, '', {});
   ctx.cookies.set(SIGNATURE_COOKIE, '', {});
 };
 
-export { buildToken, validateToken, clearToken };
+export {
+  clearAuthenticationToken,
+  validateAuthenticationToken,
+  buildAuthenticationToken,
+};

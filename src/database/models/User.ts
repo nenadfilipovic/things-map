@@ -1,36 +1,76 @@
-import { Model, RelationMappings } from 'objection';
 import { Base } from './Base';
 import { Country } from './Country';
+import { Model, RelationMappings } from 'objection';
 
 export class User extends Base {
+  /**
+   * General information.
+   */
+
   id!: string;
-  firstName!: string;
+  bio!: string;
+  image!: string;
+  email!: string;
+  website!: string;
   lastName!: string;
   username!: string;
-  email!: string;
   password!: string;
-  bio!: string;
-  website!: string;
+  firstName!: string;
+  countryCode!: string;
+
+  /**
+   * Flags.
+   */
+
+  isAdmin!: boolean;
   isPublic!: boolean;
   isBanned!: boolean;
-  isAdmin!: boolean;
   isVerified!: boolean;
-  countryCode!: string;
-  image!: string;
-  timeZone!: string;
+
+  /**
+   * Reset password.
+   */
+
   resetPasswordToken!: string;
-  resetPasswordTokenGeneratedDate!: Date;
-  lastSignInIpAddress!: string;
-  currentSignInIpAddress!: string;
-  failedPasswordAttempts!: number;
-  firstFailedPasswordAttemp!: Date;
-  failedResetPasswordAttempts!: number;
-  firstFailedResetPasswordAttempt!: Date;
-  deleteAccountToken!: string;
-  deleteAccountTokenGeneratedDate!: Date;
+  lastPasswordChangedDate!: Date;
+  resetPasswordTokenExpires!: Date;
+
+  /**
+   * Verify email.
+   */
+
+  emailVerifiedDate!: Date;
+  verifyEmailToken!: string;
+  verifyEmailTokenExpires!: Date;
+
+  /**
+   * Update email.
+   */
+
+  updateEmailToken!: string;
+  updateEmailTokenExpires!: Date;
+
+  /**
+   * Sign in.
+   */
+
   signInCount!: number;
   lastSignInDate!: Date;
-  surrentSignInDate!: Date;
+  currentSignInIpAddress!: string;
+
+  /**
+   * Failed sign in.
+   */
+
+  failedSignIn!: number;
+  firstFailedSignIn!: Date;
+
+  /**
+   * Delete account.
+   */
+
+  deleteAccountToken!: string;
+  deleteAccountTokenExpires!: Date;
 
   static get tableName(): string {
     return 'user';

@@ -1,76 +1,115 @@
-import { buildToken } from 'src/authentication/jwt';
+import { mail } from 'src/services/mail';
+import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
-import { hashPassword } from 'src/authentication/password';
-import { Resolvers, SignUpUserResult } from 'src/generated/resolverTypes';
+import { hashPassword } from 'src/services/password';
+import { config, verifyEmailTokenMaxAge } from 'src/config';
+import { generateRandomToken } from 'src/services/generator';
+import { Resolvers, SignUpResult } from 'src/generated/resolverTypes';
+import { buildAuthenticationToken } from 'src/services/authentication';
 
 const resolvers: Resolvers = {
   Mutation: {
-    signUpUser: async (
-      root,
-      args,
-      { ctx },
-      info,
-    ): Promise<SignUpUserResult> => {
+    /**
+     *
+     * @param root
+     * @param args
+     * @param context
+     *
+     * Sign up user and send verification email.
+     */
+
+    signUp: async (_, { input }, { ctx }): Promise<SignUpResult> => {
       /**
-       * Register user.
-       * 1. Check if email or username is taken.
-       * 2. Create user with provided data.
-       * 3. Create authentication token.
-       * 4. Split and send tokens.
-       * 5. Return user.
-       * 6. Send verification email.
+       * Prepare data.
        */
 
       const {
-        countryCode,
         email,
-        firstName,
         lastName,
         password,
         username,
-      } = args.input;
+        firstName,
+        countryCode,
+      } = input;
 
-      const emailTaken = await User.query().where({ email });
+      /**
+       * Check email.
+       */
 
-      if (emailTaken[0]) {
+      const emailTaken = await User.query().findOne({ email });
+
+      if (emailTaken) {
         return {
-          errors: [
-            {
-              __typename: 'EmailTaken',
-              path: 'email',
-              message: 'Email is already taken!',
-            },
-          ],
+          message: 'Email address already in use',
         };
       }
 
-      const usernameTaken = await User.query().where({ username });
+      /**
+       * Check username.
+       */
 
-      if (usernameTaken[0]) {
+      const usernameTaken = await User.query().findOne({ username });
+
+      if (usernameTaken) {
         return {
-          errors: [
-            {
-              __typename: 'UserNameTaken',
-              path: 'username',
-              message: 'Username is already taken!',
-            },
-          ],
+          message: 'Username already in use',
         };
       }
+
+      /**
+       * Generate token to verify email address.
+       */
+
+      const verifyEmailToken = generateRandomToken();
+      const verifyEmailTokenExpires = formatDate(
+        Date.now() + verifyEmailTokenMaxAge,
+      );
+
+      /**
+       * Save user data.
+       */
 
       const user = await User.query().insert({
-        countryCode,
-        username,
-        password: await hashPassword(password),
-        firstName,
-        lastName,
         email,
+        username,
+        lastName,
+        firstName,
+        countryCode,
+        verifyEmailToken,
+        verifyEmailTokenExpires,
+        password: await hashPassword(password),
       });
 
-      buildToken(ctx, { id: user.id, isAdmin: user.isAdmin });
+      /**
+       * Build authentication token and put them in cookies.
+       */
+
+      const payload = {
+        id: user.id,
+        isAdmin: user.isAdmin,
+        isVerified: user.isVerified,
+      };
+
+      buildAuthenticationToken(ctx, payload);
+
+      /**
+       * Send verification email to provided email address.
+       */
+
+      mail.sendMail({
+        from: config.EMAIL_USERNAME,
+        to: email,
+        subject: `Verify email address`,
+        text: `Hello!
+          \n Please use provided code below to verify your email address.
+          \n Verification code: ${user.verifyEmailToken}
+          \n Token is valid until: ${user.verifyEmailTokenExpires}
+          \n Have a nice day.`,
+      });
 
       return {
-        user,
+        message:
+          'Please check your provided email address for further instructions to activate your account',
       };
     },
   },

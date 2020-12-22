@@ -1,0 +1,16 @@
+"Provided data for verify email."
+input VerifyEmailInput {
+  "User's verify email token."
+  verifyEmailToken: String!
+}
+
+"Verify email result."
+type VerifyEmailResult {
+  "Response message."
+  message: String!
+}
+
+extend type Mutation {
+  "Verify email."
+  verifyEmail("Input data." input: VerifyEmailInput!): VerifyEmailResult
+}

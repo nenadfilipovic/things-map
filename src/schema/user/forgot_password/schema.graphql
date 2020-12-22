@@ -1,0 +1,19 @@
+"Provided data for forgot password."
+input ForgotPasswordInput {
+  "User's email."
+  email: String!
+}
+
+"Forgot password result."
+type ForgotPasswordResult {
+  "Response message."
+  message: String!
+}
+
+extend type Mutation {
+  "Forgot password."
+  forgotPassword(
+    "Input data."
+    input: ForgotPasswordInput!
+  ): ForgotPasswordResult!
+}

@@ -1,0 +1,21 @@
+"Provided data for sign in by username."
+input SignInByUsernameInput {
+  "User's password."
+  password: String!
+  "User's username."
+  username: String!
+}
+
+"Sign in by username result."
+type SignInByUsernameResult {
+  "Response message."
+  message: String!
+}
+
+extend type Mutation {
+  "Sign in by username."
+  signInByUsername(
+    "Input data."
+    input: SignInByUsernameInput!
+  ): SignInByUsernameResult!
+}
