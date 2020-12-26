@@ -37,8 +37,6 @@ const resolvers: Resolvers = {
         .where('tokens.updateEmailToken', verifyUpdateEmailToken)
         .andWhere('tokens.updateEmailTokenExpires', '>', new Date());
 
-      console.log(user);
-
       if (user) {
         /**
          * Prepare data.

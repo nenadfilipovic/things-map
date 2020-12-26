@@ -8,14 +8,16 @@ input UpdatePasswordInput {
 
 "Update password result."
 type UpdatePasswordResult {
+  "Errors."
+  errors: [Error]
   "Response message."
-  message: String!
+  message: String
 }
 
 extend type Mutation {
   "Update password."
   updatePassword(
-    "Input data"
+    "Input data."
     input: UpdatePasswordInput!
   ): UpdatePasswordResult!
 }

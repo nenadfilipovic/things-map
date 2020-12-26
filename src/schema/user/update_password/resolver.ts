@@ -1,9 +1,10 @@
 import { config } from 'src/config';
 import { mail } from 'src/services/mail';
 import { User } from 'src/database/models/User';
+import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
+import { Resolvers, UpdatePasswordResult } from 'src/generated';
 import { clearAuthenticationToken } from 'src/services/authentication';
 import { hashPassword, validatePassword } from 'src/services/password';
-import { Resolvers, UpdatePasswordResult } from 'src/generated/resolverTypes';
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -13,7 +14,7 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * Updates users password.
+     * Updates user's password.
      */
 
     updatePassword: async (
@@ -27,71 +28,122 @@ const resolvers: Resolvers = {
 
       const { newPassword, currentPassword } = input;
 
+      if (newPassword === currentPassword) {
+        return {
+          errors: [
+            {
+              __typename: 'Error',
+              message: 'Provided passwords must be different',
+            },
+          ],
+        };
+      }
+
       /**
-       * Check context for logged in user.
+       * Check if user is logged in.
        */
 
       const id = ctx.state.user?.id;
 
       if (!id) {
         return {
-          message: 'User must be logged in to update password',
+          errors: [
+            {
+              __typename: 'Error',
+              message: NOT_LOGGED_IN,
+            },
+          ],
         };
       }
 
-      const user = await User.query().findById(id);
+      const [user] = await User.query()
+        .allowGraph('metadata')
+        .withGraphJoined('metadata')
+        .where('metadata.isVerified', true)
+        .andWhere('id', id);
 
-      if (!user) {
-        return {
-          message: `Error something went wrong`,
-        };
+      /**
+       * Prepare data.
+       */
+
+      if (user) {
+        /**
+         * Prepare data.
+         */
+
+        const { password, email } = user.metadata;
+
+        /**
+         * Validate provided password and update it with new one.
+         */
+
+        const validPassword = await validatePassword(password, currentPassword);
+
+        if (!validPassword) {
+          return {
+            errors: [
+              {
+                __typename: 'Error',
+                message: 'Password you provided does not match stored password',
+              },
+            ],
+          };
+        }
+
+        /**
+         * Update user data.
+         */
+
+        try {
+          const transaction = await User.transaction(async (trx) => {
+            return await user.$relatedQuery('metadata', trx).patch({
+              lastPasswordChangedDate: new Date(),
+              password: await hashPassword(newPassword),
+            });
+          });
+
+          if (transaction) {
+            /**
+             * Send email to user that password change was successful.
+             */
+
+            mail.sendMail({
+              from: config.EMAIL_USERNAME,
+              to: email,
+              subject: `Change password confirmation`,
+              text: `You have successfully updated your password.
+                \n Please sign in.`,
+            });
+
+            /**
+             * Deauthenticate user.
+             */
+
+            clearAuthenticationToken(ctx);
+
+            return {
+              message: `You have successfully updated your password`,
+            };
+          }
+        } catch {
+          return {
+            errors: [
+              {
+                __typename: 'Error',
+                message: GENERIC_ERROR,
+              },
+            ],
+          };
+        }
       }
-
-      const { password, email } = user;
-
-      /**
-       * Validate provided password and update it with new one.
-       */
-
-      const validPassword = await validatePassword(password, currentPassword);
-
-      if (!validPassword) {
-        return {
-          message: 'Invalid password',
-        };
-      }
-
-      /**
-       * Update user data.
-       */
-
-      await User.query()
-        .patch({
-          lastPasswordChangedDate: new Date(),
-          password: await hashPassword(newPassword),
-        })
-        .findById(id);
-
-      /**
-       * Send email to user that password change was successful.
-       */
-
-      mail.sendMail({
-        from: config.EMAIL_USERNAME,
-        to: email,
-        subject: `Change password confirmation`,
-        text: `You have successfully updated your password.
-        \n Please sign in.`,
-      });
-
-      /**
-       * Deauthenticate user.
-       */
-
-      clearAuthenticationToken(ctx);
 
       return {
-        message: `You have successfully updated your password`,
+        errors: [
+          {
+            __typename: 'Error',
+            message: GENERIC_ERROR,
+          },
+        ],
       };
     },
   },
