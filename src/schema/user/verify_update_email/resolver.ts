@@ -1,7 +1,7 @@
 import { raw } from 'objection';
 import { GENERIC_ERROR } from 'src/constants';
 import { User } from 'src/database/models/User';
-import { Resolvers, VerifyEmailResult } from 'src/generated';
+import { Resolvers, VerifyUpdateEmailResult } from 'src/generated';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
 const resolvers: Resolvers = {
@@ -12,15 +12,19 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * Verify user's email address.
+     * Verify user's update email address.
      */
 
-    verifyEmail: async (_, { input }, { ctx }): Promise<VerifyEmailResult> => {
+    verifyUpdateEmail: async (
+      _,
+      { input },
+      { ctx },
+    ): Promise<VerifyUpdateEmailResult> => {
       /**
        * Prepare data.
        */
 
-      const { verifyEmailToken } = input;
+      const { verifyUpdateEmailToken } = input;
 
       /**
        * Find user by provided token and check token
@@ -30,26 +34,17 @@ const resolvers: Resolvers = {
       const [user] = await User.query()
         .allowGraph('[metadata,tokens]')
         .withGraphJoined('[metadata,tokens]')
-        .where('tokens.verifyEmailToken', verifyEmailToken)
-        .andWhere('tokens.verifyEmailTokenExpires', '>', new Date());
+        .where('tokens.updateEmailToken', verifyUpdateEmailToken)
+        .andWhere('tokens.updateEmailTokenExpires', '>', new Date());
+
+      console.log(user);
 
       if (user) {
         /**
          * Prepare data.
          */
 
-        const { isVerified } = user.metadata;
-
-        if (isVerified) {
-          return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: 'Email already verified',
-              },
-            ],
-          };
-        }
+        const { updateEmailTokenTarget } = user.tokens;
 
         /**
          * Update user data.
@@ -57,15 +52,14 @@ const resolvers: Resolvers = {
 
         try {
           const transaction = await User.transaction(async (trx) => {
-            await user.$relatedQuery('metadata', trx).patch({
-              isVerified: true,
-              emailVerifiedDate: new Date(),
-            });
+            await user
+              .$relatedQuery('metadata', trx)
+              .patch({ email: updateEmailTokenTarget });
 
             await user.$relatedQuery('tokens', trx).patch({
-              verifyEmailToken: raw('NULL'),
-              verifyEmailTokenTarget: raw('NULL'),
-              verifyEmailTokenExpires: raw('NULL'),
+              updateEmailToken: raw('NULL'),
+              updateEmailTokenTarget: raw('NULL'),
+              updateEmailTokenExpires: raw('NULL'),
             });
 
             return true;
@@ -75,7 +69,7 @@ const resolvers: Resolvers = {
 
           return {
             message:
-              'You have successfully verified your email address, please sign in',
+              'You have successfully updated your email address, please sign in',
           };
         } catch {
           return {
