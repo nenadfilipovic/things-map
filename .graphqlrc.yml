@@ -3,10 +3,11 @@ extensions:
   codegen:
     overwrite: true
     generates:
-      src/generated/resolverTypes.ts:
+      src/types/index.ts:
         config:
           mappers:
             User: src/database/models/User#User
+            Metadata: src/database/models/UserMetadata#UserMetadata
           mapperTypeSuffix: Model
           contextType: src/context#Context
         plugins:

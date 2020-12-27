@@ -1,36 +1,39 @@
-"Globally unique id."
-interface Node {
-  "ID of the object."
-  id: ID!
-}
-
-"Root query type."
-type Query {
-  "Needed for apollo server."
-  empty: String
-  "Allow refetching."
-  node("Input for node." id: ID!): Node
-  "Every connection must have page info field."
-  pageInfo: PageInfo
-}
-
-"Root mutation type."
-type Mutation {
-  "Needed for apollo server."
-  empty: String
-}
-
-"Required for relay spec."
+"Relay specification."
 type PageInfo {
-  "Required for relay spec."
+  "End cursor."
   endCursor: String
-  "Define if query has next page."
+  "Has next page."
   hasNextPage: Boolean!
-  "Define if query has previous page."
+  "Has previous page."
   hasPreviousPage: Boolean!
-  "Required for relay spec."
+  "Start cursor."
   startCursor: String
 }
 
-"Custom scalar for timestamps."
-scalar DateTime
+"Root query."
+type Query {
+  "Node."
+  node("Input data." id: ID!): Node
+  "Page info."
+  pageInfo: PageInfo
+}
+
+"Root mutation."
+type Mutation {
+  "Empty."
+  empty: String
+}
+
+"Global node."
+interface Node {
+  "Id."
+  id: ID!
+}
+
+"Error type."
+type Error {
+  "Message."
+  message: String!
+  "Path."
+  path: String
+}

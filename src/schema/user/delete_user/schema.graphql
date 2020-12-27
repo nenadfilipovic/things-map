@@ -1,0 +1,18 @@
+"Provided data for delete user."
+input DeleteUserInput {
+  "User's password."
+  password: String!
+}
+
+"Delete user result."
+type DeleteUserResult {
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
+}
+
+extend type Mutation {
+  "Delete user."
+  deleteUser("Input data." input: DeleteUserInput!): DeleteUserResult!
+}
