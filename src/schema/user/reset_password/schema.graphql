@@ -6,8 +6,10 @@ input ResetPasswordInput {
 
 "Reset password result."
 type ResetPasswordResult {
-  "Response message."
-  message: String!
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
 }
 
 extend type Mutation {

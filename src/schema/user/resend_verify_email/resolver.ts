@@ -1,9 +1,10 @@
 import { mail } from 'src/services/mail';
+import { GENERIC_ERROR } from 'src/constants';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
-import { Resolvers } from 'src/generated/resolverTypes';
 import { config, verifyEmailTokenMaxAge } from 'src/config';
 import { generateRandomToken } from 'src/services/generator';
+import { ResendVerifyEmailResult, Resolvers } from 'src/types';
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -16,7 +17,10 @@ const resolvers: Resolvers = {
      * Resend verification email.
      */
 
-    resendVerifyEmail: async (_, { input }) => {
+    resendVerifyEmail: async (
+      _,
+      { input },
+    ): Promise<ResendVerifyEmailResult> => {
       /**
        * Prepare data.
        */
@@ -27,7 +31,11 @@ const resolvers: Resolvers = {
        * Check if provided email exist and if it is verified.
        */
 
-      const user = await User.query().findOne({ email });
+      const [user] = await User.query()
+        .allowGraph('[metadata,tokens]')
+        .withGraphJoined('[metadata,tokens]')
+        .where('metadata.email', email)
+        .andWhere('metadata.isVerified', false);
 
       /**
        * If email is verified return message.
@@ -39,27 +47,18 @@ const resolvers: Resolvers = {
          */
 
         const {
-          id,
-          email,
-          isVerified,
-          verifyEmailToken,
-          verifyEmailTokenExpires,
+          tokens,
+          metadata: { email },
         } = user;
 
-        if (isVerified) {
-          return {
-            message: 'Email address already verified',
-          };
-        }
-
-        let token = verifyEmailToken;
-        let tokenExpires = verifyEmailTokenExpires;
+        let token = tokens.verifyEmailToken;
+        let tokenExpires = tokens.verifyEmailTokenExpires;
 
         /**
          * Don't create new token if existing one is valid.
          */
 
-        if (token === null || tokenExpires < new Date()) {
+        if (token === undefined || tokenExpires < new Date()) {
           /**
            * Generate token to verify email address.
            */
@@ -71,12 +70,23 @@ const resolvers: Resolvers = {
            * Update user data.
            */
 
-          await User.query()
-            .patch({
-              verifyEmailToken,
-              verifyEmailTokenExpires,
-            })
-            .findById(id);
+          try {
+            const transaction = await User.transaction(async (trx) => {
+              return await user.$relatedQuery('tokens', trx).patch({
+                verifyEmailToken: token,
+                verifyEmailTokenExpires: tokenExpires,
+              });
+            });
+          } catch {
+            return {
+              errors: [
+                {
+                  __typename: 'Error',
+                  message: GENERIC_ERROR,
+                },
+              ],
+            };
+          }
         }
 
         /**
@@ -88,8 +98,8 @@ const resolvers: Resolvers = {
           to: email,
           subject: `Verify email address`,
           text: `Hello!
-          \n Please use provided code below to verify your email address.
-          \n Verification code: ${token}
+          \n Please use provided token below to verify your email address.
+          \n Verification token: ${token}
           \n Token is valid until: ${tokenExpires}
           \n Have a nice day.`,
         });
@@ -101,7 +111,12 @@ const resolvers: Resolvers = {
       }
 
       return {
-        message: `Error something went wrong`,
+        errors: [
+          {
+            __typename: 'Error',
+            message: GENERIC_ERROR,
+          },
+        ],
       };
     },
   },

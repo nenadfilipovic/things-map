@@ -6,8 +6,10 @@ input ResendVerifyEmailInput {
 
 "Resend verify email result."
 type ResendVerifyEmailResult {
-  "Response message."
-  message: String!
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
 }
 
 extend type Mutation {

@@ -1,9 +1,10 @@
 import { mail } from 'src/services/mail';
+import { GENERIC_ERROR } from 'src/constants';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
+import { ForgotPasswordResult, Resolvers } from 'src/types';
 import { generateRandomToken } from 'src/services/generator';
 import { config, resetPasswordTokenMaxAge } from 'src/config';
-import { ForgotPasswordResult, Resolvers } from 'src/generated/resolverTypes';
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -23,7 +24,15 @@ const resolvers: Resolvers = {
 
       const { email } = input;
 
-      const user = await User.query().findOne({ email, isVerified: true });
+      /**
+       * Find user for provided email address.
+       */
+
+      const [user] = await User.query()
+        .allowGraph('[metadata,tokens]')
+        .withGraphJoined('[metadata,tokens]')
+        .where('metadata.email', email)
+        .andWhere('metadata.isVerified', false);
 
       /**
        * Send same response even if user doesn't exist.
@@ -35,20 +44,18 @@ const resolvers: Resolvers = {
          */
 
         const {
-          id,
-          email,
-          resetPasswordToken,
-          resetPasswordTokenExpires,
+          tokens,
+          metadata: { email },
         } = user;
 
-        let token = resetPasswordToken;
-        let tokenExpires = resetPasswordTokenExpires;
+        let token = tokens.resetPasswordToken;
+        let tokenExpires = tokens.resetPasswordTokenExpires;
 
         /**
          * Don't create new token if existing one is valid.
          */
 
-        if (token === null || tokenExpires < new Date()) {
+        if (token === undefined || tokenExpires < new Date()) {
           /**
            * Generate new token and set its life to 30 minutes.
            */
@@ -60,12 +67,23 @@ const resolvers: Resolvers = {
            * Update user data.
            */
 
-          await User.query()
-            .patch({
-              resetPasswordToken: token,
-              resetPasswordTokenExpires: tokenExpires,
-            })
-            .findById(id);
+          try {
+            const transaction = await User.transaction(async (trx) => {
+              return await user.$relatedQuery('tokens', trx).patch({
+                resetPasswordToken: token,
+                resetPasswordTokenExpires: tokenExpires,
+              });
+            });
+          } catch {
+            return {
+              errors: [
+                {
+                  __typename: 'Error',
+                  message: GENERIC_ERROR,
+                },
+              ],
+            };
+          }
         }
 
         /**
@@ -77,7 +95,7 @@ const resolvers: Resolvers = {
           to: email,
           subject: `Forgot password request`,
           text: `You have requested a new password for account ${email}. No changes have been made to your account yet. 
-          \n Please use this code to reset your password: ${token} \n Code is valid until: ${tokenExpires} 
+          \n Please use this token to reset your password: ${token} \n Token is valid until: ${tokenExpires} 
           \n If you did not request a new password, please let us know immediately by replying to this email.`,
         });
       }

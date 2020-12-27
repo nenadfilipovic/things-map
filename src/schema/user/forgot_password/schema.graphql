@@ -6,8 +6,10 @@ input ForgotPasswordInput {
 
 "Forgot password result."
 type ForgotPasswordResult {
-  "Response message."
-  message: String!
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
 }
 
 extend type Mutation {

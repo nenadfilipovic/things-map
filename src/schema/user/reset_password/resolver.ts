@@ -1,11 +1,12 @@
 import { raw } from 'objection';
 import { config } from 'src/config';
 import { mail } from 'src/services/mail';
+import { GENERIC_ERROR } from 'src/constants';
 import { User } from 'src/database/models/User';
 import { hashPassword } from 'src/services/password';
+import { ResetPasswordResult, Resolvers } from 'src/types';
 import { generateRandomToken } from 'src/services/generator';
 import { clearAuthenticationToken } from 'src/services/authentication';
-import { ResetPasswordResult, Resolvers } from 'src/generated/resolverTypes';
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -15,7 +16,7 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * Initiate reset password process.
+     * Reset user's password.
      */
 
     resetPassword: async (
@@ -29,60 +30,90 @@ const resolvers: Resolvers = {
 
       const { resetPasswordToken } = input;
 
-      const user = await User.query().findOne({ resetPasswordToken });
+      /**
+       * Find user by provided token and check token
+       * expiration date.
+       */
+
+      const [user] = await User.query()
+        .allowGraph('[metadata,tokens]')
+        .withGraphJoined('[metadata,tokens]')
+        .where('tokens.resetPasswordToken', resetPasswordToken)
+        .andWhere('tokens.resetPasswordTokenExpires', '>', new Date());
 
       /**
        * If token doesn't exist or is invalid return message.
        */
 
-      if (user?.resetPasswordTokenExpires > new Date()) {
+      if (user) {
         /**
          * Prepare data.
          */
 
-        const { id, email } = user;
+        const { email } = user.metadata;
 
         /**
          * Reset helper variables, create new password and update user data.
          */
 
-        const password = generateRandomToken(24);
+        const password = generateRandomToken();
 
-        await User.query()
-          .patch({
-            resetPasswordToken: raw('NULL'),
-            lastPasswordChangedDate: new Date(),
-            resetPasswordTokenExpires: raw('NULL'),
-            password: await hashPassword(password),
-          })
-          .findById(id);
+        try {
+          const transaction = await User.transaction(async (trx) => {
+            await user.$relatedQuery('metadata', trx).patch({
+              lastPasswordChangedDate: new Date(),
+              password: await hashPassword(password),
+            });
 
-        /**
-         * Send new password to user.
-         */
+            await user.$relatedQuery('tokens', trx).patch({
+              resetPasswordToken: raw('NULL'),
+              resetPasswordTokenExpires: raw('NULL'),
+            });
 
-        mail.sendMail({
-          from: config.EMAIL_USERNAME,
-          to: email,
-          subject: `Password reset`,
-          text: `Your password has been reset successfully.
-          \n Here is your new password: ${password}`,
-        });
+            return true;
+          });
 
-        /**
-         * Deauthenticate user.
-         */
+          /**
+           * Send new password to user.
+           */
 
-        clearAuthenticationToken(ctx);
+          mail.sendMail({
+            from: config.EMAIL_USERNAME,
+            to: email,
+            subject: `Password reset`,
+            text: `Your password has been reset successfully.
+            \n Here is your new password: ${password}`,
+          });
 
-        return {
-          message: 'Please check your email address for your new password',
-        };
+          /**
+           * Deauthenticate user.
+           */
+
+          clearAuthenticationToken(ctx);
+
+          return {
+            message: 'Please check your email address for your new password',
+          };
+        } catch {
+          return {
+            errors: [
+              {
+                __typename: 'Error',
+                message: GENERIC_ERROR,
+              },
+            ],
+          };
+        }
       }
 
       return {
-        message:
-          'Your password reset token is invalid or expired, please generate new one',
+        errors: [
+          {
+            __typename: 'Error',
+            message:
+              'Your password reset token is invalid or expired, please generate new one',
+          },
+        ],
       };
     },
   },
