@@ -1,7 +1,7 @@
 import { raw } from 'objection';
 import { GENERIC_ERROR } from 'src/constants';
 import { User } from 'src/database/models/User';
-import { Resolvers, VerifyEmailResult } from 'src/generated';
+import { Resolvers, VerifyEmailResult } from 'src/types';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
 const resolvers: Resolvers = {

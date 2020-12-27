@@ -8,8 +8,10 @@ input SignInByUsernameInput {
 
 "Sign in by username result."
 type SignInByUsernameResult {
-  "Response message."
-  message: String!
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
 }
 
 extend type Mutation {

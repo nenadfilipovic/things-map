@@ -1,4 +1,4 @@
-import { Resolvers, SignOutResult } from 'src/generated/resolverTypes';
+import { Resolvers, SignOutResult } from 'src/types';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
 const resolvers: Resolvers = {

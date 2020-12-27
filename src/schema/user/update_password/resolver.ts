@@ -1,8 +1,8 @@
 import { config } from 'src/config';
 import { mail } from 'src/services/mail';
 import { User } from 'src/database/models/User';
+import { Resolvers, UpdatePasswordResult } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
-import { Resolvers, UpdatePasswordResult } from 'src/generated';
 import { clearAuthenticationToken } from 'src/services/authentication';
 import { hashPassword, validatePassword } from 'src/services/password';
 

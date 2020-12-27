@@ -1,10 +1,10 @@
 import { mail } from 'src/services/mail';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
+import { Resolvers, UpdateEmailResult } from 'src/types';
 import { EMAIL_TAKEN, GENERIC_ERROR } from 'src/constants';
 import { config, verifyEmailTokenMaxAge } from 'src/config';
 import { generateRandomToken } from 'src/services/generator';
-import { Resolvers, UpdateEmailResult } from 'src/generated';
 
 const resolvers: Resolvers = {
   Mutation: {

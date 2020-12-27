@@ -4,8 +4,9 @@ import { User } from 'src/database/models/User';
 import { hashPassword } from 'src/services/password';
 import { config, verifyEmailTokenMaxAge } from 'src/config';
 import { generateRandomToken } from 'src/services/generator';
-import { Resolvers, SignUpResult } from 'src/generated/resolverTypes';
+import { Error, Maybe, Resolvers, SignUpResult } from 'src/types';
 import { buildAuthenticationToken } from 'src/services/authentication';
+import { EMAIL_TAKEN, GENERIC_ERROR, USERNAME_TAKEN } from 'src/constants';
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -23,36 +24,84 @@ const resolvers: Resolvers = {
        * Prepare data.
        */
 
-      const {
-        email,
-        lastName,
-        password,
-        username,
-        firstName,
-        countryCode,
-      } = input;
+      const errors: Maybe<Error>[] = [];
+      const { email, lastName, password, username, firstName } = input;
 
       /**
-       * Check email.
+       * Check:
+       * - User with provided email already exist and its verified
+       * - User with valid verify token for this email already exist
+       * - User with valid update email token for this email already exist
        */
 
-      const emailTaken = await User.query().findOne({ email });
+      const [emailTaken] = await User.query()
+        .allowGraph('[metadata,tokens]')
+        .withGraphJoined('[metadata,tokens]')
+        .where(function () {
+          this.where('metadata.email', email).andWhere(
+            'metadata.isVerified',
+            true,
+          );
+        })
+        .orWhere(function () {
+          this.where('tokens.verifyEmailTokenTarget', email).andWhere(
+            'tokens.verifyEmailTokenExpires',
+            '>',
+            new Date(),
+          );
+        })
+        .orWhere(function () {
+          this.where('tokens.updateEmailTokenTarget', email).andWhere(
+            'tokens.updateEmailTokenExpires',
+            '>',
+            new Date(),
+          );
+        });
 
       if (emailTaken) {
-        return {
-          message: 'Email address already in use',
-        };
+        errors.push({
+          __typename: 'Error',
+          message: EMAIL_TAKEN,
+          path: 'email',
+        });
       }
 
       /**
-       * Check username.
+       * Check:
+       * - There is user with provided username and it is verified
+       * - There is user with provided username and still has valid verify token
        */
 
-      const usernameTaken = await User.query().findOne({ username });
+      const [usernameTaken] = await User.query()
+        .allowGraph('[metadata,tokens]')
+        .withGraphJoined('[metadata,tokens]')
+        .where(function () {
+          this.where('username', username).andWhere(
+            'metadata.isVerified',
+            true,
+          );
+        })
+        .orWhere(function () {
+          this.where('username', username).andWhere(
+            'tokens.verifyEmailTokenExpires',
+            '>',
+            new Date(),
+          );
+        });
+
+      console.log(usernameTaken);
 
       if (usernameTaken) {
+        errors.push({
+          __typename: 'Error',
+          message: USERNAME_TAKEN,
+          path: 'username',
+        });
+      }
+
+      if (errors.length > 0) {
         return {
-          message: 'Username already in use',
+          errors,
         };
       }
 
@@ -69,43 +118,77 @@ const resolvers: Resolvers = {
        * Save user data.
        */
 
-      const user = await User.query().insert({
-        email,
-        username,
-        lastName,
-        firstName,
-        countryCode,
-        verifyEmailToken,
-        verifyEmailTokenExpires,
-        password: await hashPassword(password),
-      });
+      try {
+        const transaction = await User.transaction(async (trx) => {
+          await User.query().where('username', username).delete();
+          await User.relatedQuery('metadata').where('email', email).delete();
 
-      /**
-       * Build authentication token and put them in cookies.
-       */
+          return await User.query(trx)
+            .allowGraph('[metadata,tokens]')
+            .withGraphJoined('[metadata,tokens]')
+            .insertGraph({
+              firstName,
+              lastName,
+              username,
+              metadata: { email, password: await hashPassword(password) },
+              tokens: {
+                verifyEmailToken,
+                verifyEmailTokenTarget: email,
+                verifyEmailTokenExpires,
+              },
+            });
+        });
 
-      const payload = {
-        id: user.id,
-        isAdmin: user.isAdmin,
-        isVerified: user.isVerified,
-      };
+        /**
+         * If transaction was successful we can proceed, if there was
+         * error database will restore previous state.
+         */
 
-      buildAuthenticationToken(ctx, payload);
+        if (transaction) {
+          /**
+           * Prepare data.
+           */
 
-      /**
-       * Send verification email to provided email address.
-       */
+          const {
+            id,
+            metadata: { isVerified, email },
+            tokens: { verifyEmailToken, verifyEmailTokenExpires },
+          } = transaction;
 
-      mail.sendMail({
-        from: config.EMAIL_USERNAME,
-        to: email,
-        subject: `Verify email address`,
-        text: `Hello!
-          \n Please use provided code below to verify your email address.
-          \n Verification code: ${user.verifyEmailToken}
-          \n Token is valid until: ${user.verifyEmailTokenExpires}
-          \n Have a nice day.`,
-      });
+          /**
+           * Build authentication token and put them in cookies.
+           */
+
+          buildAuthenticationToken(ctx, {
+            id,
+            isVerified,
+          });
+
+          /**
+           * Send verification email to provided email address.
+           */
+
+          mail.sendMail({
+            from: config.EMAIL_USERNAME,
+            to: email,
+            subject: `Verify email address`,
+            text: `Hello!
+            \n Please use provided token below to verify your email address.
+            \n Verification token: ${verifyEmailToken}
+            \n Token is valid until: ${verifyEmailTokenExpires}
+            \n Have a nice day.`,
+          });
+        }
+      } catch {
+        return {
+          errors: [
+            {
+              __typename: 'Error',
+              message: GENERIC_ERROR,
+            },
+          ],
+        };
+      }
 
       return {
         message:
