@@ -10,6 +10,8 @@ type User implements Node {
   firstName: String
   "User's id."
   id: ID!
+  "User's public flag."
+  isPublic: Boolean
   "User's last name."
   lastName: String
   "User's latitude."
