@@ -10,7 +10,9 @@ extensions:
             DateTime: Date
           mappers:
             User: src/database/models/User#User
-            Metadata: src/database/models/UserMetadata#UserMetadata
+            UserMetadata: src/database/models/UserMetadata#UserMetadata
+            Device: src/database/models/Device#Device
+            DeviceMetadata: src/database/models/DeviceMetadata#DeviceMetadata
           mapperTypeSuffix: Model
           contextType: src/context#Context
         plugins:

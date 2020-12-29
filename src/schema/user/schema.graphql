@@ -19,7 +19,7 @@ type User implements Node {
   "User's longitude."
   longitude: Float
   "User's metadata"
-  metadata: Metadata
+  metadata: UserMetadata
   "User's modify date."
   modifyDate: DateTime
   "User's username."

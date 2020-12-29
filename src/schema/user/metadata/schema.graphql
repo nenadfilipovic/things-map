@@ -1,5 +1,5 @@
 "User metadata type"
-type Metadata {
+type UserMetadata {
   "User's last password changed date."
   lastPasswordChangedDate: DateTime
   "User's last sign in date."
