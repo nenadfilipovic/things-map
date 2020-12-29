@@ -1,4 +1,4 @@
-"Provided data for sign in by email."
+"Provided data for sign in email."
 input SignInByEmailInput {
   "User's email."
   email: String!
@@ -8,8 +8,10 @@ input SignInByEmailInput {
 
 "Sign in by email result."
 type SignInByEmailResult {
-  "Response message."
-  message: String!
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
 }
 
 extend type Mutation {

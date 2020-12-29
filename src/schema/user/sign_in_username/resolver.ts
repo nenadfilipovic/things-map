@@ -1,7 +1,8 @@
+import { Resolvers } from 'src/types';
 import { User } from 'src/database/models/User';
 import { validatePassword } from 'src/services/password';
+import { BAD_CREDENTIALS, GENERIC_ERROR } from 'src/constants';
 import { buildAuthenticationToken } from 'src/services/authentication';
-import { SignInByUsernameResult, Resolvers } from 'src/generated/resolverTypes';
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -14,11 +15,7 @@ const resolvers: Resolvers = {
      * Sign in user by username.
      */
 
-    signInByUsername: async (
-      _,
-      { input },
-      { ctx },
-    ): Promise<SignInByUsernameResult> => {
+    signInByUsername: async (_, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -29,50 +26,79 @@ const resolvers: Resolvers = {
        * Check if user exist.
        */
 
-      const user = await User.query().findOne({ username });
+      const [user] = await User.query()
+        .allowGraph('metadata')
+        .withGraphJoined('metadata')
+        .where('metadata.isVerified', true)
+        .andWhere('username', username);
 
       if (user) {
-        const { id, isAdmin, isVerified, signInCount } = user;
+        /**
+         * Prepare data.
+         */
+
+        const { id, metadata } = user;
 
         /**
          * Validate password.
          */
 
-        const validPassword = validatePassword(user.password, password);
+        const validPassword = await validatePassword(
+          metadata.password,
+          password,
+        );
 
         if (!validPassword) {
           return {
-            message: 'Bad username or password, please check your credentials',
+            errors: [
+              {
+                __typename: 'Error',
+                message: BAD_CREDENTIALS,
+              },
+            ],
           };
         }
 
-        /**
-         * Create authentication token for user.
-         */
+        try {
+          await User.transaction(async (trx) => {
+            return await user.$relatedQuery('metadata', trx).patch({
+              lastSignInDate: new Date(),
+              signInCount: metadata.signInCount + 1,
+              lastSignInIpAddress: ctx.req.connection.remoteAddress,
+            });
+          });
 
-        const payload = {
-          id,
-          isAdmin,
-          isVerified,
-        };
+          /**
+           * Create authentication token for user.
+           */
 
-        await User.query()
-          .patch({
-            lastSignInDate: new Date(),
-            signInCount: signInCount + 1,
-            currentSignInIpAddress: ctx.req.connection.remoteAddress,
-          })
-          .findById(id);
+          buildAuthenticationToken(ctx, {
+            id,
+            isVerified: metadata.isVerified,
+          });
 
-        buildAuthenticationToken(ctx, payload);
-
-        return {
-          message: 'Successfully signed in',
-        };
+          return {
+            message: 'Successfully signed in',
+          };
+        } catch {
+          return {
+            errors: [
+              {
+                __typename: 'Error',
+                message: GENERIC_ERROR,
+              },
+            ],
+          };
+        }
       }
 
       return {
-        message: 'Bad username or password, please check your credentials',
+        errors: [
+          {
+            __typename: 'Error',
+            message: BAD_CREDENTIALS,
+          },
+        ],
       };
     },
   },

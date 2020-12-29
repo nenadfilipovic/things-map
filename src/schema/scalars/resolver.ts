@@ -1,5 +1,5 @@
+import { Resolvers } from 'src/types';
 import { GraphQLDateTime } from 'graphql-iso-date';
-import { Resolvers } from 'src/generated/resolverTypes';
 
 const resolvers: Resolvers = {
   DateTime: GraphQLDateTime,

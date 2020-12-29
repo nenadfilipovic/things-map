@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { Context, Next, Middleware } from 'koa';
 import { config, cookieConfig } from '../config';
-import { PAYLOAD_COOKIE, SIGNATURE_COOKIE } from 'src/helpers/constants';
+import { PAYLOAD_COOKIE, SIGNATURE_COOKIE } from 'src/constants';
 
 interface Payload {
   id: string;
-  isAdmin: boolean;
   isVerified: boolean;
 }
 

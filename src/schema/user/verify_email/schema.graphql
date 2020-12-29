@@ -6,11 +6,13 @@ input VerifyEmailInput {
 
 "Verify email result."
 type VerifyEmailResult {
+  "Errors."
+  errors: [Error]
   "Response message."
-  message: String!
+  message: String
 }
 
 extend type Mutation {
   "Verify email."
-  verifyEmail("Input data." input: VerifyEmailInput!): VerifyEmailResult
+  verifyEmail("Input data." input: VerifyEmailInput!): VerifyEmailResult!
 }

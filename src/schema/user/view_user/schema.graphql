@@ -1,0 +1,12 @@
+"View user result."
+type ViewUserResult {
+  "Errors."
+  errors: [Error]
+  "User."
+  user: User
+}
+
+extend type Query {
+  "Current user."
+  viewUser: ViewUserResult!
+}

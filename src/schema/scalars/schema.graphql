@@ -1,0 +1,2 @@
+"Custom scalar for timestamps."
+scalar DateTime

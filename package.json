@@ -2,7 +2,7 @@
   "name": "things-map-server",
   "version": "0.0.1",
   "author": "Nenad Filipovic",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "description": "Backend for things-map application",
   "main": "src/index.js",
   "scripts": {

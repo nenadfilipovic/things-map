@@ -1,7 +1,5 @@
 "Provided data for sign up."
 input SignUpInput {
-  "User's country code."
-  countryCode: String!
   "User's email."
   email: String!
   "User's first name."
@@ -16,8 +14,10 @@ input SignUpInput {
 
 "Sign up result."
 type SignUpResult {
-  "Response message."
-  message: String!
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
 }
 
 extend type Mutation {

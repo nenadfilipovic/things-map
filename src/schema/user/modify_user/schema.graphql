@@ -1,15 +1,11 @@
-"User type."
-type User implements Node {
+"Provided data for modify user."
+input ModifyUserInput {
   "User's bio."
   bio: String
   "User's country."
   country: String
-  "User's created date."
-  createdDate: DateTime
   "User's first name."
   firstName: String
-  "User's id."
-  id: ID!
   "User's public flag."
   isPublic: Boolean
   "User's last name."
@@ -18,12 +14,23 @@ type User implements Node {
   latitude: Float
   "User's longitude."
   longitude: Float
-  "User's metadata"
-  metadata: Metadata
-  "User's modify date."
-  modifyDate: DateTime
   "User's username."
   username: String
   "User's website."
   website: String
+}
+
+"Modify user result."
+type ModifyUserResult {
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
+  "User."
+  user: User
+}
+
+extend type Mutation {
+  "Modify user."
+  modifyUser("Input data." input: ModifyUserInput!): ModifyUserResult!
 }

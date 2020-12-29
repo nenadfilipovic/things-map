@@ -6,7 +6,7 @@ import crypto from 'crypto';
  *
  * Generate random tokens.
  */
-const generateRandomToken = (size = 16): string => {
+const generateRandomToken = (size = 40): string => {
   return crypto.randomBytes(size).toString('hex');
 };
 

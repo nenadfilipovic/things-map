@@ -1,0 +1,21 @@
+"Provided data for verify update email."
+input VerifyUpdateEmailInput {
+  "User's verify update email token."
+  verifyUpdateEmailToken: String!
+}
+
+"Verify update email result."
+type VerifyUpdateEmailResult {
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
+}
+
+extend type Mutation {
+  "Verify update email."
+  verifyUpdateEmail(
+    "Input data."
+    input: VerifyUpdateEmailInput!
+  ): VerifyUpdateEmailResult!
+}
