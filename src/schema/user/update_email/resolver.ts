@@ -1,7 +1,7 @@
+import { Resolvers } from 'src/types';
 import { mail } from 'src/services/mail';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
-import { Resolvers, UpdateEmailResult } from 'src/types';
 import { EMAIL_TAKEN, GENERIC_ERROR } from 'src/constants';
 import { config, verifyEmailTokenMaxAge } from 'src/config';
 import { generateRandomToken } from 'src/services/generator';
@@ -17,7 +17,7 @@ const resolvers: Resolvers = {
      * Update user's email.
      */
 
-    updateEmail: async (_, { input }, { ctx }): Promise<UpdateEmailResult> => {
+    updateEmail: async (_, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -90,7 +90,7 @@ const resolvers: Resolvers = {
         const tokenExpires = formatDate(Date.now() + verifyEmailTokenMaxAge);
 
         try {
-          const transaction = await User.transaction(async (trx) => {
+          await User.transaction(async (trx) => {
             return await user.$relatedQuery('tokens', trx).patch({
               updateEmailToken: token,
               updateEmailTokenTarget: email,

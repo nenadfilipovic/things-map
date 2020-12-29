@@ -1,0 +1,36 @@
+"Provided data for modify user."
+input ModifyUserInput {
+  "User's bio."
+  bio: String
+  "User's country."
+  country: String
+  "User's first name."
+  firstName: String
+  "User's public flag."
+  isPublic: Boolean
+  "User's last name."
+  lastName: String
+  "User's latitude."
+  latitude: Float
+  "User's longitude."
+  longitude: Float
+  "User's username."
+  username: String
+  "User's website."
+  website: String
+}
+
+"Modify user result."
+type ModifyUserResult {
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
+  "User."
+  user: User
+}
+
+extend type Mutation {
+  "Modify user."
+  modifyUser("Input data." input: ModifyUserInput!): ModifyUserResult!
+}

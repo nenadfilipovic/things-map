@@ -1,10 +1,10 @@
 import { mail } from 'src/services/mail';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
+import { Error, Maybe, Resolvers } from 'src/types';
 import { hashPassword } from 'src/services/password';
 import { config, verifyEmailTokenMaxAge } from 'src/config';
 import { generateRandomToken } from 'src/services/generator';
-import { Error, Maybe, Resolvers, SignUpResult } from 'src/types';
 import { buildAuthenticationToken } from 'src/services/authentication';
 import { EMAIL_TAKEN, GENERIC_ERROR, USERNAME_TAKEN } from 'src/constants';
 
@@ -19,7 +19,7 @@ const resolvers: Resolvers = {
      * Sign up user and send verification email.
      */
 
-    signUp: async (_, { input }, { ctx }): Promise<SignUpResult> => {
+    signUp: async (_, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -88,8 +88,6 @@ const resolvers: Resolvers = {
             new Date(),
           );
         });
-
-      console.log(usernameTaken);
 
       if (usernameTaken) {
         errors.push({

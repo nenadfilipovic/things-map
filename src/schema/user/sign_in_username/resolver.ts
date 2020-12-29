@@ -1,6 +1,6 @@
+import { Resolvers } from 'src/types';
 import { User } from 'src/database/models/User';
 import { validatePassword } from 'src/services/password';
-import { SignInByUsernameResult, Resolvers } from 'src/types';
 import { BAD_CREDENTIALS, GENERIC_ERROR } from 'src/constants';
 import { buildAuthenticationToken } from 'src/services/authentication';
 
@@ -15,11 +15,7 @@ const resolvers: Resolvers = {
      * Sign in user by username.
      */
 
-    signInByUsername: async (
-      _,
-      { input },
-      { ctx },
-    ): Promise<SignInByUsernameResult> => {
+    signInByUsername: async (_, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -64,7 +60,7 @@ const resolvers: Resolvers = {
         }
 
         try {
-          const transaction = await User.transaction(async (trx) => {
+          await User.transaction(async (trx) => {
             return await user.$relatedQuery('metadata', trx).patch({
               lastSignInDate: new Date(),
               signInCount: metadata.signInCount + 1,

@@ -1,10 +1,10 @@
 import { raw } from 'objection';
 import { config } from 'src/config';
+import { Resolvers } from 'src/types';
 import { mail } from 'src/services/mail';
 import { GENERIC_ERROR } from 'src/constants';
 import { User } from 'src/database/models/User';
 import { hashPassword } from 'src/services/password';
-import { ResetPasswordResult, Resolvers } from 'src/types';
 import { generateRandomToken } from 'src/services/generator';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
@@ -19,11 +19,7 @@ const resolvers: Resolvers = {
      * Reset user's password.
      */
 
-    resetPassword: async (
-      _,
-      { input },
-      { ctx },
-    ): Promise<ResetPasswordResult> => {
+    resetPassword: async (_, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -59,7 +55,7 @@ const resolvers: Resolvers = {
         const password = generateRandomToken();
 
         try {
-          const transaction = await User.transaction(async (trx) => {
+          await User.transaction(async (trx) => {
             await user.$relatedQuery('metadata', trx).patch({
               lastPasswordChangedDate: new Date(),
               password: await hashPassword(password),

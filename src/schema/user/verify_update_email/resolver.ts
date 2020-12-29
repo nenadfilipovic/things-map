@@ -1,7 +1,7 @@
 import { raw } from 'objection';
+import { Resolvers } from 'src/types';
 import { GENERIC_ERROR } from 'src/constants';
 import { User } from 'src/database/models/User';
-import { Resolvers, VerifyUpdateEmailResult } from 'src/types';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
 const resolvers: Resolvers = {
@@ -15,11 +15,7 @@ const resolvers: Resolvers = {
      * Verify user's update email address.
      */
 
-    verifyUpdateEmail: async (
-      _,
-      { input },
-      { ctx },
-    ): Promise<VerifyUpdateEmailResult> => {
+    verifyUpdateEmail: async (_, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -49,7 +45,7 @@ const resolvers: Resolvers = {
          */
 
         try {
-          const transaction = await User.transaction(async (trx) => {
+          await User.transaction(async (trx) => {
             await user
               .$relatedQuery('metadata', trx)
               .patch({ email: updateEmailTokenTarget });

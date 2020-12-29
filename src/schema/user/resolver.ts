@@ -1,9 +1,8 @@
 import { Resolvers } from 'src/types';
-import { UserMetadata } from 'src/database/models/UserMetadata';
 
 const resolvers: Resolvers = {
   User: {
-    metadata: async ({ metadata }, args): Promise<UserMetadata> => {
+    metadata: async ({ metadata }) => {
       return metadata;
     },
   },

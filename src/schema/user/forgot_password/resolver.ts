@@ -1,8 +1,8 @@
+import { Resolvers } from 'src/types';
 import { mail } from 'src/services/mail';
 import { GENERIC_ERROR } from 'src/constants';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
-import { ForgotPasswordResult, Resolvers } from 'src/types';
 import { generateRandomToken } from 'src/services/generator';
 import { config, resetPasswordTokenMaxAge } from 'src/config';
 
@@ -17,7 +17,7 @@ const resolvers: Resolvers = {
      * Initiate forgot password process.
      */
 
-    forgotPassword: async (_, { input }): Promise<ForgotPasswordResult> => {
+    forgotPassword: async (_, { input }) => {
       /**
        * Prepare data.
        */
@@ -32,7 +32,7 @@ const resolvers: Resolvers = {
         .allowGraph('[metadata,tokens]')
         .withGraphJoined('[metadata,tokens]')
         .where('metadata.email', email)
-        .andWhere('metadata.isVerified', false);
+        .andWhere('metadata.isVerified', true);
 
       /**
        * Send same response even if user doesn't exist.
@@ -68,7 +68,7 @@ const resolvers: Resolvers = {
            */
 
           try {
-            const transaction = await User.transaction(async (trx) => {
+            await User.transaction(async (trx) => {
               return await user.$relatedQuery('tokens', trx).patch({
                 resetPasswordToken: token,
                 resetPasswordTokenExpires: tokenExpires,

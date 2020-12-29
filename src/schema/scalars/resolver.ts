@@ -1,4 +1,4 @@
-import { Resolvers } from 'src/generated';
+import { Resolvers } from 'src/types';
 import { GraphQLDateTime } from 'graphql-iso-date';
 
 const resolvers: Resolvers = {
