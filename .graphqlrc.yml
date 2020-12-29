@@ -5,6 +5,9 @@ extensions:
     generates:
       src/types/index.ts:
         config:
+          maybeValue: T | undefined
+          scalars:
+            DateTime: Date
           mappers:
             User: src/database/models/User#User
             Metadata: src/database/models/UserMetadata#UserMetadata

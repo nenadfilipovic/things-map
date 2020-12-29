@@ -1,9 +1,13 @@
 import { Model } from 'objection';
 
-class FailedLogin extends Model {
-  static get tableName(): string {
-    return 'failedLogin';
-  }
-}
+export class FailedLogin extends Model {
+  static tableName = 'failedLogin';
 
-export { FailedLogin };
+  id!: number;
+  username!: string;
+  email!: string;
+  password!: string;
+  ipAddress!: string;
+  userAgent!: string;
+  createdDate!: Date;
+}
