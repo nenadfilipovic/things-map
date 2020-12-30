@@ -7,6 +7,6 @@ type ViewUserResult {
 }
 
 extend type Query {
-  "Current user."
+  "View user."
   viewUser: ViewUserResult!
 }

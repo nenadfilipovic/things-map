@@ -1,0 +1,18 @@
+"Provided data for delete device."
+input DeleteDeviceInput {
+  "Device id."
+  id: ID!
+}
+
+"Delete device result."
+type DeleteDeviceResult {
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
+}
+
+extend type Mutation {
+  "Delete device."
+  deleteDevice("Input data." input: DeleteDeviceInput!): DeleteDeviceResult!
+}

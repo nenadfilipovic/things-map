@@ -1,0 +1,39 @@
+"Device type."
+type Device implements Node {
+  "Created date."
+  createdDate: DateTime
+  "Device description."
+  description: String
+  "Device elevation."
+  elevation: Int
+  "Device field."
+  field1: String
+  "Device field."
+  field2: String
+  "Device field."
+  field3: String
+  "Device field."
+  field4: String
+  "Device field."
+  field5: String
+  "Device id."
+  id: ID!
+  "Device public flag."
+  isPublic: Boolean
+  "Device latitude."
+  latitude: Float
+  "Device longitude."
+  longitude: Float
+  "Device metadata."
+  metadata: DeviceMetadata
+  "Modify date."
+  modifyDate: DateTime
+  "Device name."
+  name: String
+  "Device url."
+  url: String
+  "Device owner."
+  user: User
+  "Device owner id."
+  userId: ID!
+}

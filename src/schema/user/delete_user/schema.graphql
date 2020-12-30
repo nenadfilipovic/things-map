@@ -1,6 +1,6 @@
 "Provided data for delete user."
 input DeleteUserInput {
-  "User's password."
+  "Password."
   password: String!
 }
 

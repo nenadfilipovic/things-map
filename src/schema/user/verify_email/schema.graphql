@@ -1,6 +1,6 @@
 "Provided data for verify email."
 input VerifyEmailInput {
-  "User's verify email token."
+  "Verify email token."
   verifyEmailToken: String!
 }
 

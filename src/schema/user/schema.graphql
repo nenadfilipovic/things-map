@@ -1,29 +1,31 @@
 "User type."
 type User implements Node {
-  "User's bio."
+  "User bio."
   bio: String
-  "User's country."
+  "User country."
   country: String
-  "User's created date."
+  "User created date."
   createdDate: DateTime
-  "User's first name."
+  "User devices."
+  devices: [Device]
+  "User first name."
   firstName: String
-  "User's id."
+  "User id."
   id: ID!
-  "User's public flag."
+  "User public flag."
   isPublic: Boolean
-  "User's last name."
+  "User last name."
   lastName: String
-  "User's latitude."
+  "User latitude."
   latitude: Float
-  "User's longitude."
+  "User longitude."
   longitude: Float
-  "User's metadata"
-  metadata: Metadata
-  "User's modify date."
+  "User metadata"
+  metadata: UserMetadata
+  "User modify date."
   modifyDate: DateTime
-  "User's username."
+  "User username."
   username: String
-  "User's website."
+  "User website."
   website: String
 }

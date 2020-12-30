@@ -1,10 +1,10 @@
 import { raw } from 'objection';
 import { config } from 'src/config';
-import { Resolvers } from 'src/types';
 import { mail } from 'src/services/mail';
 import { GENERIC_ERROR } from 'src/constants';
 import { User } from 'src/database/models/User';
 import { hashPassword } from 'src/services/password';
+import { ResetPasswordResult, Resolvers } from 'src/types';
 import { generateRandomToken } from 'src/services/generator';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
@@ -16,10 +16,14 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * Reset user's password.
+     * Reset password.
      */
 
-    resetPassword: async (_, { input }, { ctx }) => {
+    resetPassword: async (
+      _,
+      { input },
+      { ctx },
+    ): Promise<ResetPasswordResult> => {
       /**
        * Prepare data.
        */
@@ -32,10 +36,10 @@ const resolvers: Resolvers = {
        */
 
       const [user] = await User.query()
-        .allowGraph('[metadata,tokens]')
-        .withGraphJoined('[metadata,tokens]')
-        .where('tokens.resetPasswordToken', resetPasswordToken)
-        .andWhere('tokens.resetPasswordTokenExpires', '>', new Date());
+        .allowGraph('[metadata,token]')
+        .withGraphJoined('[metadata,token]')
+        .where('token.resetPasswordToken', resetPasswordToken)
+        .andWhere('token.resetPasswordTokenExpires', '>', new Date());
 
       /**
        * If token doesn't exist or is invalid return message.
@@ -61,7 +65,7 @@ const resolvers: Resolvers = {
               password: await hashPassword(password),
             });
 
-            await user.$relatedQuery('tokens', trx).patch({
+            await user.$relatedQuery('token', trx).patch({
               resetPasswordToken: raw('NULL'),
               resetPasswordTokenExpires: raw('NULL'),
             });

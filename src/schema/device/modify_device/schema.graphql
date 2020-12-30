@@ -1,0 +1,44 @@
+"Provided data for modify device."
+input ModifyDeviceInput {
+  "Device description."
+  description: String
+  "Device elevation."
+  elevation: Int
+  "Device field."
+  field1: String
+  "Device field."
+  field2: String
+  "Device field."
+  field3: String
+  "Device field."
+  field4: String
+  "Device field."
+  field5: String
+  "Device id."
+  id: ID!
+  "Device public flag."
+  isPublic: Boolean
+  "Device latitude."
+  latitude: Float
+  "Device longitude."
+  longitude: Float
+  "Device name."
+  name: String
+  "Device url."
+  url: String
+}
+
+"Modify device result."
+type ModifyDeviceResult {
+  "Device."
+  device: Device
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
+}
+
+extend type Mutation {
+  "Modify device."
+  modifyDevice("Input data." input: ModifyDeviceInput!): ModifyDeviceResult!
+}

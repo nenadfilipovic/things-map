@@ -1,8 +1,8 @@
 "Provided data for sign in by username."
 input SignInByUsernameInput {
-  "User's password."
+  "Password."
   password: String!
-  "User's username."
+  "Username."
   username: String!
 }
 

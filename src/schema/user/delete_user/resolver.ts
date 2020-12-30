@@ -1,6 +1,6 @@
-import { Resolvers } from 'src/types';
 import { GENERIC_ERROR } from 'src/constants';
 import { User } from 'src/database/models/User';
+import { DeleteUserResult, Resolvers } from 'src/types';
 import { validatePassword } from 'src/services/password';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
@@ -15,7 +15,7 @@ const resolvers: Resolvers = {
      * Delete user.
      */
 
-    deleteUser: async (_, { input }, { ctx }) => {
+    deleteUser: async (_, { input }, { ctx }): Promise<DeleteUserResult> => {
       /**
        * Prepare data.
        */
@@ -29,8 +29,8 @@ const resolvers: Resolvers = {
 
       if (id) {
         const user = await User.query()
-          .allowGraph('[metadata,tokens]')
-          .withGraphJoined('[metadata,tokens]')
+          .allowGraph('[metadata,token]')
+          .withGraphJoined('[metadata,token]')
           .findById(id);
 
         if (user) {

@@ -1,5 +1,5 @@
-import { Resolvers } from 'src/types';
 import { User } from 'src/database/models/User';
+import { ModifyUserResult, Resolvers } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
 
 const resolvers: Resolvers = {
@@ -13,7 +13,7 @@ const resolvers: Resolvers = {
      * Modifies user data.
      */
 
-    modifyUser: async (root, { input }, { ctx }) => {
+    modifyUser: async (root, { input }, { ctx }): Promise<ModifyUserResult> => {
       /**
        * Prepare data.
        */
@@ -51,7 +51,7 @@ const resolvers: Resolvers = {
        * Check if user exist.
        */
 
-      const user = await User.query().withGraphJoined('metadata').findById(id);
+      const user = await User.query().findById(id);
 
       if (user) {
         /**

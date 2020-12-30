@@ -1,10 +1,18 @@
-import { Resolvers } from 'src/types';
 import { NOT_LOGGED_IN } from 'src/constants';
 import { User } from 'src/database/models/User';
+import { Resolvers, ViewUserResult } from 'src/types';
 
 const resolvers: Resolvers = {
   Query: {
-    viewUser: async (parent, args, { ctx }) => {
+    /**
+     *
+     * @param parent
+     * @param args
+     * @param context
+     *
+     * View user.
+     */
+    viewUser: async (_, __, { ctx }): Promise<ViewUserResult> => {
       /**
        * Prepare data.
        */
@@ -22,8 +30,10 @@ const resolvers: Resolvers = {
         };
       }
 
+      const user = await User.query().findById(id);
+
       return {
-        user: await User.query().withGraphJoined('metadata').findById(id),
+        user,
       };
     },
   },
