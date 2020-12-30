@@ -1,6 +1,6 @@
 "Provided data for resend verify email."
 input ResendVerifyEmailInput {
-  "User's email."
+  "Email."
   email: String!
 }
 

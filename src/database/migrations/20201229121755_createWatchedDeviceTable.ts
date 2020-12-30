@@ -2,14 +2,14 @@ import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('watched_device', (table) => {
-    // User's id.
+    // User id.
     table
       .integer('user_id')
       .references('user.id')
       .onDelete('CASCADE')
       .notNullable();
 
-    // Device's id.
+    // Device id.
     table
       .integer('device_id')
       .references('device.id')

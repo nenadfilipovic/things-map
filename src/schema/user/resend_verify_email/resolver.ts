@@ -1,10 +1,10 @@
-import { Resolvers } from 'src/types';
 import { mail } from 'src/services/mail';
 import { GENERIC_ERROR } from 'src/constants';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
 import { config, verifyEmailTokenMaxAge } from 'src/config';
 import { generateRandomToken } from 'src/services/generator';
+import { ResendVerifyEmailResult, Resolvers } from 'src/types';
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -17,7 +17,10 @@ const resolvers: Resolvers = {
      * Resend verification email.
      */
 
-    resendVerifyEmail: async (_, { input }) => {
+    resendVerifyEmail: async (
+      _,
+      { input },
+    ): Promise<ResendVerifyEmailResult> => {
       /**
        * Prepare data.
        */
@@ -29,8 +32,8 @@ const resolvers: Resolvers = {
        */
 
       const [user] = await User.query()
-        .allowGraph('[metadata,tokens]')
-        .withGraphJoined('[metadata,tokens]')
+        .allowGraph('[metadata,token]')
+        .withGraphJoined('[metadata,token]')
         .where('metadata.email', email)
         .andWhere('metadata.isVerified', false);
 
@@ -44,12 +47,11 @@ const resolvers: Resolvers = {
          */
 
         const {
-          tokens,
           metadata: { email },
         } = user;
 
-        let token = tokens.verifyEmailToken;
-        let tokenExpires = tokens.verifyEmailTokenExpires;
+        let token = user.token.verifyEmailToken;
+        let tokenExpires = user.token.verifyEmailTokenExpires;
 
         /**
          * Don't create new token if existing one is valid.
@@ -69,7 +71,7 @@ const resolvers: Resolvers = {
 
           try {
             await User.transaction(async (trx) => {
-              return await user.$relatedQuery('tokens', trx).patch({
+              return await user.$relatedQuery('token', trx).patch({
                 verifyEmailToken: token,
                 verifyEmailTokenExpires: tokenExpires,
               });

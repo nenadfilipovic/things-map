@@ -1,24 +1,26 @@
-import { Model } from 'objection';
+import { Device } from './Device';
 import { UserToken } from './UserToken';
 import { UserMetadata } from './UserMetadata';
+import { Model, NonFunctionPropertyNames } from 'objection';
 
 export class User extends Model {
   static tableName = 'user';
 
   id!: string;
-  firstName!: string;
-  lastName!: string;
-  bio!: string;
-  website!: string;
-  username!: string;
-  isPublic!: boolean;
-  latitude!: number;
-  longitude!: number;
-  country!: string;
-  modifyDate!: Date;
-  createdDate!: Date;
+  firstName?: string;
+  lastName?: string;
+  bio?: string;
+  website?: string;
+  username?: string;
+  isPublic?: boolean;
+  latitude?: number;
+  longitude?: number;
+  country?: string;
+  modifyDate?: Date;
+  createdDate?: Date;
 
-  tokens!: UserToken;
+  token!: UserToken;
+  devices!: Device[];
   metadata!: UserMetadata;
 
   static relationMappings = {
@@ -30,7 +32,7 @@ export class User extends Model {
         to: 'userMetadata.userId',
       },
     },
-    tokens: {
+    token: {
       relation: Model.HasOneRelation,
       modelClass: UserToken,
       join: {
@@ -38,5 +40,23 @@ export class User extends Model {
         to: 'userToken.userId',
       },
     },
+    devices: {
+      relation: Model.HasManyRelation,
+      modelClass: Device,
+      join: {
+        from: 'user.id',
+        to: 'device.userId',
+      },
+    },
   };
 }
+
+type CreateModelObject<T extends Model> = Pick<
+  T,
+  Exclude<NonFunctionPropertyNames<T>, 'QueryBuilderType'>
+>;
+
+export type UserModel = Omit<
+  CreateModelObject<User>,
+  'token' | 'metadata' | 'devices'
+>;

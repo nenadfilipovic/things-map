@@ -1,4 +1,4 @@
-import { Resolvers } from 'src/types';
+import { Resolvers, SignOutResult } from 'src/types';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
 const resolvers: Resolvers = {
@@ -12,7 +12,7 @@ const resolvers: Resolvers = {
      * Sign out user.
      */
 
-    signOut: async (_, __, { ctx }) => {
+    signOut: async (_, __, { ctx }): Promise<SignOutResult> => {
       /**
        * Call clear function and return message.
        */

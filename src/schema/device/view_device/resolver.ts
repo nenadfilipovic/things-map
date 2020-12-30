@@ -1,6 +1,6 @@
 import { NOT_LOGGED_IN } from 'src/constants';
-import { User } from 'src/database/models/User';
-import { Resolvers, ViewUserResult } from 'src/types';
+import { Device } from 'src/database/models/Device';
+import { Resolvers, ViewDeviceResult } from 'src/types';
 
 const resolvers: Resolvers = {
   Query: {
@@ -10,16 +10,21 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * View user.
+     * View device.
      */
-    viewUser: async (_, __, { ctx }): Promise<ViewUserResult> => {
+    viewDevice: async (
+      parent,
+      { input },
+      { ctx },
+    ): Promise<ViewDeviceResult> => {
       /**
        * Prepare data.
        */
 
-      const id = ctx.state.user?.id;
+      const { id } = input;
+      const userId = ctx.state.user?.id;
 
-      if (!id) {
+      if (!userId) {
         return {
           errors: [
             {
@@ -30,10 +35,12 @@ const resolvers: Resolvers = {
         };
       }
 
-      const user = await User.query().findById(id);
+      const device = await Device.query()
+        .where('userId', userId)
+        .findOne('id', id);
 
       return {
-        user,
+        device,
       };
     },
   },

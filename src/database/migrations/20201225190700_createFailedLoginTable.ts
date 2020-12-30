@@ -5,19 +5,19 @@ export async function up(knex: Knex): Promise<void> {
     // Failed login entry id.
     table.increments('id');
 
-    // User's username.
+    // User username.
     table.string('username');
 
-    // User's email.
+    // User email.
     table.string('email');
 
-    // User's password.
+    // User password.
     table.string('password');
 
-    // User's ip address.
+    // User ip address.
     table.string('ip_address');
 
-    // User's user agent.
+    // User user agent.
     table.string('user_agent');
 
     // Failed login entry created date.

@@ -1,7 +1,5 @@
-"Device type."
-type Device implements Node {
-  "Created date."
-  createdDate: DateTime
+"Provided data for modify device."
+input ModifyDeviceInput {
   "Device description."
   description: String
   "Device elevation."
@@ -24,16 +22,23 @@ type Device implements Node {
   latitude: Float
   "Device longitude."
   longitude: Float
-  "Device metadata."
-  metadata: DeviceMetadata
-  "Modify date."
-  modifyDate: DateTime
   "Device name."
   name: String
   "Device url."
   url: String
-  "Device owner."
-  user: User
-  "Device owner id."
-  userId: ID!
+}
+
+"Modify device result."
+type ModifyDeviceResult {
+  "Device."
+  device: Device
+  "Errors."
+  errors: [Error]
+  "Message."
+  message: String
+}
+
+extend type Mutation {
+  "Modify device."
+  modifyDevice("Input data." input: ModifyDeviceInput!): ModifyDeviceResult!
 }

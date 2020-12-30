@@ -1,6 +1,6 @@
 "Provided data for forgot password."
 input ForgotPasswordInput {
-  "User's email."
+  "Email."
   email: String!
 }
 

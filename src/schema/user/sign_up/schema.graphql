@@ -1,14 +1,14 @@
 "Provided data for sign up."
 input SignUpInput {
-  "User's email."
+  "User email."
   email: String!
-  "User's first name."
+  "User first name."
   firstName: String!
-  "User's last name."
+  "User last name."
   lastName: String!
-  "User's password."
+  "User password."
   password: String!
-  "User's username."
+  "User username."
   username: String!
 }
 

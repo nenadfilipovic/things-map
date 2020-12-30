@@ -1,10 +1,10 @@
 import Knex from 'knex';
 import { Model } from 'objection';
-import { ApolloServer } from 'apollo-server-koa';
-import { config, knexConfig } from './config';
-import { application } from './application';
-import { typeDefs, resolvers } from './schema';
 import { createContext } from './context';
+import { application } from './application';
+import { config, knexConfig } from './config';
+import { typeDefs, resolvers } from './schema';
+import { ApolloServer } from 'apollo-server-koa';
 
 Model.knex(Knex(knexConfig));
 

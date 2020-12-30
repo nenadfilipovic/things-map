@@ -1,11 +1,11 @@
 "User metadata type"
 type UserMetadata {
-  "User's last password changed date."
+  "User last password changed date."
   lastPasswordChangedDate: DateTime
-  "User's last sign in date."
+  "User last sign in date."
   lastSignInDate: DateTime
-  "User's last sign in ip address."
+  "User last sign in ip address."
   lastSignInIpAddress: String
-  "User's sign in count."
+  "User sign in count."
   signInCount: Int
 }

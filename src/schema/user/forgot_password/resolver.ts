@@ -1,8 +1,8 @@
-import { Resolvers } from 'src/types';
 import { mail } from 'src/services/mail';
 import { GENERIC_ERROR } from 'src/constants';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
+import { ForgotPasswordResult, Resolvers } from 'src/types';
 import { generateRandomToken } from 'src/services/generator';
 import { config, resetPasswordTokenMaxAge } from 'src/config';
 
@@ -17,7 +17,7 @@ const resolvers: Resolvers = {
      * Initiate forgot password process.
      */
 
-    forgotPassword: async (_, { input }) => {
+    forgotPassword: async (_, { input }): Promise<ForgotPasswordResult> => {
       /**
        * Prepare data.
        */
@@ -29,8 +29,8 @@ const resolvers: Resolvers = {
        */
 
       const [user] = await User.query()
-        .allowGraph('[metadata,tokens]')
-        .withGraphJoined('[metadata,tokens]')
+        .allowGraph('[metadata,token]')
+        .withGraphJoined('[metadata,token]')
         .where('metadata.email', email)
         .andWhere('metadata.isVerified', true);
 
@@ -44,12 +44,11 @@ const resolvers: Resolvers = {
          */
 
         const {
-          tokens,
           metadata: { email },
         } = user;
 
-        let token = tokens.resetPasswordToken;
-        let tokenExpires = tokens.resetPasswordTokenExpires;
+        let token = user.token.resetPasswordToken;
+        let tokenExpires = user.token.resetPasswordTokenExpires;
 
         /**
          * Don't create new token if existing one is valid.
@@ -69,7 +68,7 @@ const resolvers: Resolvers = {
 
           try {
             await User.transaction(async (trx) => {
-              return await user.$relatedQuery('tokens', trx).patch({
+              return await user.$relatedQuery('token', trx).patch({
                 resetPasswordToken: token,
                 resetPasswordTokenExpires: tokenExpires,
               });

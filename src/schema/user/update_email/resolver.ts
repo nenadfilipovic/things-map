@@ -1,7 +1,7 @@
-import { Resolvers } from 'src/types';
 import { mail } from 'src/services/mail';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
+import { Resolvers, UpdateEmailResult } from 'src/types';
 import { EMAIL_TAKEN, GENERIC_ERROR } from 'src/constants';
 import { config, verifyEmailTokenMaxAge } from 'src/config';
 import { generateRandomToken } from 'src/services/generator';
@@ -14,10 +14,10 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * Update user's email.
+     * Update email.
      */
 
-    updateEmail: async (_, { input }, { ctx }) => {
+    updateEmail: async (_, { input }, { ctx }): Promise<UpdateEmailResult> => {
       /**
        * Prepare data.
        */
@@ -30,8 +30,8 @@ const resolvers: Resolvers = {
        */
 
       const [emailTaken] = await User.query()
-        .allowGraph('[metadata,tokens]')
-        .withGraphJoined('[metadata,tokens]')
+        .allowGraph('[metadata,token]')
+        .withGraphJoined('[metadata,token]')
         .where(function () {
           this.where('metadata.email', email).andWhere(
             'metadata.isVerified',
@@ -39,15 +39,15 @@ const resolvers: Resolvers = {
           );
         })
         .orWhere(function () {
-          this.where('tokens.updateEmailTokenTarget', email).andWhere(
-            'tokens.updateEmailTokenExpires',
+          this.where('token.updateEmailTokenTarget', email).andWhere(
+            'token.updateEmailTokenExpires',
             '>',
             new Date(),
           );
         })
         .orWhere(function () {
-          this.where('tokens.verifyEmailTokenTarget', email).andWhere(
-            'tokens.verifyEmailTokenExpires',
+          this.where('token.verifyEmailTokenTarget', email).andWhere(
+            'token.verifyEmailTokenExpires',
             '>',
             new Date(),
           );
@@ -70,8 +70,8 @@ const resolvers: Resolvers = {
          */
 
         const user = await User.query()
-          .allowGraph('[metadata,tokens]')
-          .withGraphJoined('[metadata,tokens]')
+          .allowGraph('[metadata,token]')
+          .withGraphJoined('[metadata,token]')
           .where('metadata.isVerified', true)
           .findById(id);
 
@@ -91,7 +91,7 @@ const resolvers: Resolvers = {
 
         try {
           await User.transaction(async (trx) => {
-            return await user.$relatedQuery('tokens', trx).patch({
+            return await user.$relatedQuery('token', trx).patch({
               updateEmailToken: token,
               updateEmailTokenTarget: email,
               updateEmailTokenExpires: tokenExpires,

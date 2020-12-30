@@ -1,6 +1,6 @@
 "Provided data for update email."
 input UpdateEmailInput {
-  "User's new email."
+  "Email."
   email: String!
 }
 

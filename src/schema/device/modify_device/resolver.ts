@@ -1,5 +1,5 @@
 import { User } from 'src/database/models/User';
-import { ModifyUserResult, Resolvers } from 'src/types';
+import { ModifyDeviceResult, Resolvers } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
 
 const resolvers: Resolvers = {
@@ -10,33 +10,40 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * Modifies user data.
+     * Modifies device data.
      */
 
-    modifyUser: async (root, { input }, { ctx }): Promise<ModifyUserResult> => {
+    modifyDevice: async (
+      root,
+      { input },
+      { ctx },
+    ): Promise<ModifyDeviceResult> => {
       /**
        * Prepare data.
        */
 
+      const userId = ctx.state.user?.id;
       const {
-        bio,
-        country,
-        firstName,
-        lastName,
-        username,
-        website,
+        id,
+        description,
+        elevation,
+        field1,
+        field2,
+        field3,
+        field4,
+        field5,
+        isPublic,
         latitude,
         longitude,
-        isPublic,
+        name,
+        url,
       } = input;
 
       /**
        * Check if user is logged in.
        */
 
-      const { id } = ctx.state.user;
-
-      if (!id) {
+      if (!userId) {
         return {
           errors: [
             {
@@ -46,36 +53,44 @@ const resolvers: Resolvers = {
           ],
         };
       }
-
       /**
        * Check if user exist.
        */
 
-      const user = await User.query().findById(id);
+      const user = await User.query()
+        .withGraphJoined('devices')
+        .findById(userId);
 
       if (user) {
         /**
-         * Update user data.
+         * Update device.
          */
 
         try {
-          await User.transaction(async (trx) => {
-            return await user.$query(trx).patchAndFetch({
-              bio,
-              firstName,
-              lastName,
-              username,
-              website,
-              latitude,
-              longitude,
-              isPublic,
-              country,
-              modifyDate: new Date(),
-            });
+          const [transaction] = await User.transaction(async (trx) => {
+            return await user
+              .$relatedQuery('devices', trx)
+              .patch({
+                description,
+                elevation,
+                field1,
+                field2,
+                field3,
+                field4,
+                field5,
+                isPublic,
+                latitude,
+                longitude,
+                name,
+                url,
+                modifyDate: new Date(),
+              })
+              .where('id', id)
+              .returning('*');
           });
 
           return {
-            user,
+            device: transaction,
             message: 'Successfully updated',
           };
         } catch {

@@ -1,7 +1,7 @@
 import { raw } from 'objection';
-import { Resolvers } from 'src/types';
 import { GENERIC_ERROR } from 'src/constants';
 import { User } from 'src/database/models/User';
+import { Resolvers, VerifyUpdateEmailResult } from 'src/types';
 import { clearAuthenticationToken } from 'src/services/authentication';
 
 const resolvers: Resolvers = {
@@ -12,10 +12,14 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * Verify user's update email address.
+     * Verify update email.
      */
 
-    verifyUpdateEmail: async (_, { input }, { ctx }) => {
+    verifyUpdateEmail: async (
+      _,
+      { input },
+      { ctx },
+    ): Promise<VerifyUpdateEmailResult> => {
       /**
        * Prepare data.
        */
@@ -28,17 +32,17 @@ const resolvers: Resolvers = {
        */
 
       const [user] = await User.query()
-        .allowGraph('[metadata,tokens]')
-        .withGraphJoined('[metadata,tokens]')
-        .where('tokens.updateEmailToken', verifyUpdateEmailToken)
-        .andWhere('tokens.updateEmailTokenExpires', '>', new Date());
+        .allowGraph('[metadata,token]')
+        .withGraphJoined('[metadata,token]')
+        .where('token.updateEmailToken', verifyUpdateEmailToken)
+        .andWhere('token.updateEmailTokenExpires', '>', new Date());
 
       if (user) {
         /**
          * Prepare data.
          */
 
-        const { updateEmailTokenTarget } = user.tokens;
+        const { updateEmailTokenTarget } = user.token;
 
         /**
          * Update user data.
@@ -50,7 +54,7 @@ const resolvers: Resolvers = {
               .$relatedQuery('metadata', trx)
               .patch({ email: updateEmailTokenTarget });
 
-            await user.$relatedQuery('tokens', trx).patch({
+            await user.$relatedQuery('token', trx).patch({
               updateEmailToken: raw('NULL'),
               updateEmailTokenTarget: raw('NULL'),
               updateEmailTokenExpires: raw('NULL'),

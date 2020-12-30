@@ -1,7 +1,7 @@
 import { config } from 'src/config';
-import { Resolvers } from 'src/types';
 import { mail } from 'src/services/mail';
 import { User } from 'src/database/models/User';
+import { Resolvers, UpdatePasswordResult } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
 import { clearAuthenticationToken } from 'src/services/authentication';
 import { hashPassword, validatePassword } from 'src/services/password';
@@ -14,10 +14,14 @@ const resolvers: Resolvers = {
      * @param args
      * @param context
      *
-     * Updates user's password.
+     * Update password.
      */
 
-    updatePassword: async (_, { input }, { ctx }) => {
+    updatePassword: async (
+      _,
+      { input },
+      { ctx },
+    ): Promise<UpdatePasswordResult> => {
       /**
        * Prepare data.
        */

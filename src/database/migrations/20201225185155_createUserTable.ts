@@ -2,40 +2,40 @@ import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('user', (table) => {
-    // User's id.
+    // User id.
     table.increments('id');
 
-    // User's first name.
+    // User first name.
     table.string('first_name').notNullable();
 
-    // User's last name.
+    // User last name.
     table.string('last_name').notNullable();
 
-    // User's bio.
+    // User bio.
     table.string('bio');
 
-    // User's website.
+    // User website.
     table.string('website');
 
-    // User's username.
+    // User username.
     table.string('username').unique().notNullable();
 
-    // User's public flag.
+    // User public flag.
     table.boolean('is_public').defaultTo(false);
 
-    // User's latitude.
+    // User latitude.
     table.decimal('latitude', 15, 10);
 
-    // User's longitude.
+    // User longitude.
     table.decimal('longitude', 15, 10);
 
-    // User's country.
+    // User country.
     table.string('country');
 
-    // User's last modify date.
+    // User last modify date.
     table.timestamp('modify_date').defaultTo(knex.fn.now());
 
-    // User's created date.
+    // User created date.
     table.timestamp('created_date').defaultTo(knex.fn.now());
   });
 }

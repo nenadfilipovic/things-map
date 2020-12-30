@@ -1,10 +1,10 @@
 import { mail } from 'src/services/mail';
 import { formatDate } from 'src/services/date';
 import { User } from 'src/database/models/User';
-import { Error, Maybe, Resolvers } from 'src/types';
 import { hashPassword } from 'src/services/password';
 import { config, verifyEmailTokenMaxAge } from 'src/config';
 import { generateRandomToken } from 'src/services/generator';
+import { Error, Maybe, Resolvers, SignUpResult } from 'src/types';
 import { buildAuthenticationToken } from 'src/services/authentication';
 import { EMAIL_TAKEN, GENERIC_ERROR, USERNAME_TAKEN } from 'src/constants';
 
@@ -19,7 +19,7 @@ const resolvers: Resolvers = {
      * Sign up user and send verification email.
      */
 
-    signUp: async (_, { input }, { ctx }) => {
+    signUp: async (_, { input }, { ctx }): Promise<SignUpResult> => {
       /**
        * Prepare data.
        */
@@ -35,8 +35,8 @@ const resolvers: Resolvers = {
        */
 
       const [emailTaken] = await User.query()
-        .allowGraph('[metadata,tokens]')
-        .withGraphJoined('[metadata,tokens]')
+        .allowGraph('[metadata,token]')
+        .withGraphJoined('[metadata,token]')
         .where(function () {
           this.where('metadata.email', email).andWhere(
             'metadata.isVerified',
@@ -44,15 +44,15 @@ const resolvers: Resolvers = {
           );
         })
         .orWhere(function () {
-          this.where('tokens.verifyEmailTokenTarget', email).andWhere(
-            'tokens.verifyEmailTokenExpires',
+          this.where('token.verifyEmailTokenTarget', email).andWhere(
+            'token.verifyEmailTokenExpires',
             '>',
             new Date(),
           );
         })
         .orWhere(function () {
-          this.where('tokens.updateEmailTokenTarget', email).andWhere(
-            'tokens.updateEmailTokenExpires',
+          this.where('token.updateEmailTokenTarget', email).andWhere(
+            'token.updateEmailTokenExpires',
             '>',
             new Date(),
           );
@@ -73,8 +73,8 @@ const resolvers: Resolvers = {
        */
 
       const [usernameTaken] = await User.query()
-        .allowGraph('[metadata,tokens]')
-        .withGraphJoined('[metadata,tokens]')
+        .allowGraph('[metadata,token]')
+        .withGraphJoined('[metadata,token]')
         .where(function () {
           this.where('username', username).andWhere(
             'metadata.isVerified',
@@ -83,7 +83,7 @@ const resolvers: Resolvers = {
         })
         .orWhere(function () {
           this.where('username', username).andWhere(
-            'tokens.verifyEmailTokenExpires',
+            'token.verifyEmailTokenExpires',
             '>',
             new Date(),
           );
@@ -122,14 +122,14 @@ const resolvers: Resolvers = {
           await User.relatedQuery('metadata').where('email', email).delete();
 
           return await User.query(trx)
-            .allowGraph('[metadata,tokens]')
-            .withGraphJoined('[metadata,tokens]')
+            .allowGraph('[metadata,token]')
+            .withGraphJoined('[metadata,token]')
             .insertGraph({
               firstName,
               lastName,
               username,
               metadata: { email, password: await hashPassword(password) },
-              tokens: {
+              token: {
                 verifyEmailToken,
                 verifyEmailTokenTarget: email,
                 verifyEmailTokenExpires,
@@ -150,7 +150,7 @@ const resolvers: Resolvers = {
           const {
             id,
             metadata: { isVerified, email },
-            tokens: { verifyEmailToken, verifyEmailTokenExpires },
+            token: { verifyEmailToken, verifyEmailTokenExpires },
           } = transaction;
 
           /**

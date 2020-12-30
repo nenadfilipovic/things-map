@@ -1,8 +1,8 @@
 "Provided data for sign in email."
 input SignInByEmailInput {
-  "User's email."
+  "Email."
   email: String!
-  "User's password."
+  "Password."
   password: String!
 }
 

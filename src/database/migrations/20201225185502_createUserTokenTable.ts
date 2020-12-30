@@ -2,7 +2,7 @@ import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('user_token', (table) => {
-    // User's id.
+    // User id.
     table
       .integer('user_id')
       .references('user.id')

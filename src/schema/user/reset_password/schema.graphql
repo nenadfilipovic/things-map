@@ -1,6 +1,6 @@
 "Provided data for reset password."
 input ResetPasswordInput {
-  "User's reset password token."
+  "Reset password token."
   resetPasswordToken: String!
 }
 

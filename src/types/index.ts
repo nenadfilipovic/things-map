@@ -4,10 +4,10 @@ import {
   GraphQLScalarType,
   GraphQLScalarTypeConfig,
 } from 'graphql';
-import { User as UserModel } from 'src/database/models/User';
-import { UserMetadata as UserMetadataModel } from 'src/database/models/UserMetadata';
-import { Device as DeviceModel } from 'src/database/models/Device';
-import { DeviceMetadata as DeviceMetadataModel } from 'src/database/models/DeviceMetadata';
+import { UserModel } from 'src/database/models/User';
+import { UserMetadataModel } from 'src/database/models/UserMetadata';
+import { DeviceModel } from 'src/database/models/Device';
+import { DeviceMetadataModel } from 'src/database/models/DeviceMetadata';
 import { Context } from 'src/context';
 export type Maybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -53,7 +53,11 @@ export type Query = {
   node?: Maybe<Node>;
   /** Page info. */
   pageInfo?: Maybe<PageInfo>;
-  /** Current user. */
+  /** View device. */
+  viewDevice: ViewDeviceResult;
+  /** View all devices. */
+  viewDevices: ViewDevicesResult;
+  /** View user. */
   viewUser: ViewUserResult;
 };
 
@@ -62,15 +66,31 @@ export type QueryNodeArgs = {
   id: Scalars['ID'];
 };
 
+/** Root query. */
+export type QueryViewDeviceArgs = {
+  input: ViewDeviceInput;
+};
+
+/** Root query. */
+export type QueryViewDevicesArgs = {
+  input: ViewDevicesInput;
+};
+
 /** Root mutation. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Create device. */
+  createDevice: CreateDeviceResult;
+  /** Delete device. */
+  deleteDevice: DeleteDeviceResult;
   /** Delete user. */
   deleteUser: DeleteUserResult;
   /** Empty. */
   empty?: Maybe<Scalars['String']>;
   /** Forgot password. */
   forgotPassword: ForgotPasswordResult;
+  /** Modify device. */
+  modifyDevice: ModifyDeviceResult;
   /** Modify user. */
   modifyUser: ModifyUserResult;
   /** Resend verify email. */
@@ -96,6 +116,16 @@ export type Mutation = {
 };
 
 /** Root mutation. */
+export type MutationCreateDeviceArgs = {
+  input: CreateDeviceInput;
+};
+
+/** Root mutation. */
+export type MutationDeleteDeviceArgs = {
+  input: DeleteDeviceInput;
+};
+
+/** Root mutation. */
 export type MutationDeleteUserArgs = {
   input: DeleteUserInput;
 };
@@ -103,6 +133,11 @@ export type MutationDeleteUserArgs = {
 /** Root mutation. */
 export type MutationForgotPasswordArgs = {
   input: ForgotPasswordInput;
+};
+
+/** Root mutation. */
+export type MutationModifyDeviceArgs = {
+  input: ModifyDeviceInput;
 };
 
 /** Root mutation. */
@@ -170,6 +205,54 @@ export type Error = {
   path?: Maybe<Scalars['String']>;
 };
 
+/** Provided data for create device. */
+export type CreateDeviceInput = {
+  /** Device description. */
+  description?: Maybe<Scalars['String']>;
+  /** Device field. */
+  field1: Scalars['String'];
+  /** Device field. */
+  field2?: Maybe<Scalars['String']>;
+  /** Device field. */
+  field3?: Maybe<Scalars['String']>;
+  /** Device field. */
+  field4?: Maybe<Scalars['String']>;
+  /** Device field. */
+  field5?: Maybe<Scalars['String']>;
+  /** Device latitude. */
+  latitude: Scalars['Float'];
+  /** Device longitude. */
+  longitude: Scalars['Float'];
+  /** Device name. */
+  name: Scalars['String'];
+};
+
+/** Create device result. */
+export type CreateDeviceResult = {
+  __typename?: 'CreateDeviceResult';
+  /** Device. */
+  device?: Maybe<Device>;
+  /** Errors. */
+  errors?: Maybe<Array<Maybe<Error>>>;
+  /** Message. */
+  message?: Maybe<Scalars['String']>;
+};
+
+/** Provided data for delete device. */
+export type DeleteDeviceInput = {
+  /** Device id. */
+  id: Scalars['ID'];
+};
+
+/** Delete device result. */
+export type DeleteDeviceResult = {
+  __typename?: 'DeleteDeviceResult';
+  /** Errors. */
+  errors?: Maybe<Array<Maybe<Error>>>;
+  /** Message. */
+  message?: Maybe<Scalars['String']>;
+};
+
 /** Device metadata type. */
 export type DeviceMetadata = {
   __typename?: 'DeviceMetadata';
@@ -181,48 +264,121 @@ export type DeviceMetadata = {
   writeKey?: Maybe<Scalars['String']>;
 };
 
+/** Provided data for modify device. */
+export type ModifyDeviceInput = {
+  /** Device description. */
+  description?: Maybe<Scalars['String']>;
+  /** Device elevation. */
+  elevation?: Maybe<Scalars['Int']>;
+  /** Device field. */
+  field1?: Maybe<Scalars['String']>;
+  /** Device field. */
+  field2?: Maybe<Scalars['String']>;
+  /** Device field. */
+  field3?: Maybe<Scalars['String']>;
+  /** Device field. */
+  field4?: Maybe<Scalars['String']>;
+  /** Device field. */
+  field5?: Maybe<Scalars['String']>;
+  /** Device id. */
+  id: Scalars['ID'];
+  /** Device public flag. */
+  isPublic?: Maybe<Scalars['Boolean']>;
+  /** Device latitude. */
+  latitude?: Maybe<Scalars['Float']>;
+  /** Device longitude. */
+  longitude?: Maybe<Scalars['Float']>;
+  /** Device name. */
+  name?: Maybe<Scalars['String']>;
+  /** Device url. */
+  url?: Maybe<Scalars['String']>;
+};
+
+/** Modify device result. */
+export type ModifyDeviceResult = {
+  __typename?: 'ModifyDeviceResult';
+  /** Device. */
+  device?: Maybe<Device>;
+  /** Errors. */
+  errors?: Maybe<Array<Maybe<Error>>>;
+  /** Message. */
+  message?: Maybe<Scalars['String']>;
+};
+
 /** Device type. */
 export type Device = Node & {
   __typename?: 'Device';
   /** Created date. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** Device's description. */
+  /** Device description. */
   description?: Maybe<Scalars['String']>;
-  /** Device's elevation. */
+  /** Device elevation. */
   elevation?: Maybe<Scalars['Int']>;
-  /** Device's field. */
+  /** Device field. */
   field1?: Maybe<Scalars['String']>;
-  /** Device's field. */
+  /** Device field. */
   field2?: Maybe<Scalars['String']>;
-  /** Device's field. */
+  /** Device field. */
   field3?: Maybe<Scalars['String']>;
-  /** Device's field. */
+  /** Device field. */
   field4?: Maybe<Scalars['String']>;
-  /** Device's field. */
+  /** Device field. */
   field5?: Maybe<Scalars['String']>;
-  /** Device's id. */
+  /** Device id. */
   id: Scalars['ID'];
-  /** Device's public flag. */
+  /** Device public flag. */
   isPublic?: Maybe<Scalars['Boolean']>;
-  /** Device's latitude. */
-  latitude?: Maybe<Scalars['String']>;
-  /** Device's longitude. */
-  longitude?: Maybe<Scalars['String']>;
-  /** Device's metadata. */
+  /** Device latitude. */
+  latitude?: Maybe<Scalars['Float']>;
+  /** Device longitude. */
+  longitude?: Maybe<Scalars['Float']>;
+  /** Device metadata. */
   metadata?: Maybe<DeviceMetadata>;
   /** Modify date. */
   modifyDate?: Maybe<Scalars['DateTime']>;
-  /** Device's name. */
+  /** Device name. */
   name?: Maybe<Scalars['String']>;
-  /** Device's owner. */
-  owner?: Maybe<User>;
-  /** Device's url. */
+  /** Device url. */
   url?: Maybe<Scalars['String']>;
+  /** Device owner. */
+  user?: Maybe<User>;
+  /** Device owner id. */
+  userId: Scalars['ID'];
+};
+
+/** Provided data for view device. */
+export type ViewDeviceInput = {
+  /** Device id. */
+  id: Scalars['ID'];
+};
+
+/** Provided data for view devices. */
+export type ViewDevicesInput = {
+  /** test */
+  test?: Maybe<Scalars['String']>;
+};
+
+/** View devices result. */
+export type ViewDevicesResult = {
+  __typename?: 'ViewDevicesResult';
+  /** Devices. */
+  devices?: Maybe<Array<Maybe<Device>>>;
+  /** Errors. */
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
+/** View device result. */
+export type ViewDeviceResult = {
+  __typename?: 'ViewDeviceResult';
+  /** Device. */
+  device?: Maybe<Device>;
+  /** Errors. */
+  errors?: Maybe<Array<Maybe<Error>>>;
 };
 
 /** Provided data for delete user. */
 export type DeleteUserInput = {
-  /** User's password. */
+  /** Password. */
   password: Scalars['String'];
 };
 
@@ -237,7 +393,7 @@ export type DeleteUserResult = {
 
 /** Provided data for forgot password. */
 export type ForgotPasswordInput = {
-  /** User's email. */
+  /** Email. */
   email: Scalars['String'];
 };
 
@@ -253,35 +409,35 @@ export type ForgotPasswordResult = {
 /** User metadata type */
 export type UserMetadata = {
   __typename?: 'UserMetadata';
-  /** User's last password changed date. */
+  /** User last password changed date. */
   lastPasswordChangedDate?: Maybe<Scalars['DateTime']>;
-  /** User's last sign in date. */
+  /** User last sign in date. */
   lastSignInDate?: Maybe<Scalars['DateTime']>;
-  /** User's last sign in ip address. */
+  /** User last sign in ip address. */
   lastSignInIpAddress?: Maybe<Scalars['String']>;
-  /** User's sign in count. */
+  /** User sign in count. */
   signInCount?: Maybe<Scalars['Int']>;
 };
 
 /** Provided data for modify user. */
 export type ModifyUserInput = {
-  /** User's bio. */
+  /** User bio. */
   bio?: Maybe<Scalars['String']>;
-  /** User's country. */
+  /** User country. */
   country?: Maybe<Scalars['String']>;
-  /** User's first name. */
+  /** User first name. */
   firstName?: Maybe<Scalars['String']>;
-  /** User's public flag. */
+  /** User public flag. */
   isPublic?: Maybe<Scalars['Boolean']>;
-  /** User's last name. */
+  /** User last name. */
   lastName?: Maybe<Scalars['String']>;
-  /** User's latitude. */
+  /** User latitude. */
   latitude?: Maybe<Scalars['Float']>;
-  /** User's longitude. */
+  /** User longitude. */
   longitude?: Maybe<Scalars['Float']>;
-  /** User's username. */
+  /** User username. */
   username?: Maybe<Scalars['String']>;
-  /** User's website. */
+  /** User website. */
   website?: Maybe<Scalars['String']>;
 };
 
@@ -298,7 +454,7 @@ export type ModifyUserResult = {
 
 /** Provided data for resend verify email. */
 export type ResendVerifyEmailInput = {
-  /** User's email. */
+  /** Email. */
   email: Scalars['String'];
 };
 
@@ -313,7 +469,7 @@ export type ResendVerifyEmailResult = {
 
 /** Provided data for reset password. */
 export type ResetPasswordInput = {
-  /** User's reset password token. */
+  /** Reset password token. */
   resetPasswordToken: Scalars['String'];
 };
 
@@ -329,39 +485,41 @@ export type ResetPasswordResult = {
 /** User type. */
 export type User = Node & {
   __typename?: 'User';
-  /** User's bio. */
+  /** User bio. */
   bio?: Maybe<Scalars['String']>;
-  /** User's country. */
+  /** User country. */
   country?: Maybe<Scalars['String']>;
-  /** User's created date. */
+  /** User created date. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** User's first name. */
+  /** User devices. */
+  devices?: Maybe<Array<Maybe<Device>>>;
+  /** User first name. */
   firstName?: Maybe<Scalars['String']>;
-  /** User's id. */
+  /** User id. */
   id: Scalars['ID'];
-  /** User's public flag. */
+  /** User public flag. */
   isPublic?: Maybe<Scalars['Boolean']>;
-  /** User's last name. */
+  /** User last name. */
   lastName?: Maybe<Scalars['String']>;
-  /** User's latitude. */
+  /** User latitude. */
   latitude?: Maybe<Scalars['Float']>;
-  /** User's longitude. */
+  /** User longitude. */
   longitude?: Maybe<Scalars['Float']>;
-  /** User's metadata */
+  /** User metadata */
   metadata?: Maybe<UserMetadata>;
-  /** User's modify date. */
+  /** User modify date. */
   modifyDate?: Maybe<Scalars['DateTime']>;
-  /** User's username. */
+  /** User username. */
   username?: Maybe<Scalars['String']>;
-  /** User's website. */
+  /** User website. */
   website?: Maybe<Scalars['String']>;
 };
 
 /** Provided data for sign in email. */
 export type SignInByEmailInput = {
-  /** User's email. */
+  /** Email. */
   email: Scalars['String'];
-  /** User's password. */
+  /** Password. */
   password: Scalars['String'];
 };
 
@@ -376,9 +534,9 @@ export type SignInByEmailResult = {
 
 /** Provided data for sign in by username. */
 export type SignInByUsernameInput = {
-  /** User's password. */
+  /** Password. */
   password: Scalars['String'];
-  /** User's username. */
+  /** Username. */
   username: Scalars['String'];
 };
 
@@ -402,15 +560,15 @@ export type SignOutResult = {
 
 /** Provided data for sign up. */
 export type SignUpInput = {
-  /** User's email. */
+  /** User email. */
   email: Scalars['String'];
-  /** User's first name. */
+  /** User first name. */
   firstName: Scalars['String'];
-  /** User's last name. */
+  /** User last name. */
   lastName: Scalars['String'];
-  /** User's password. */
+  /** User password. */
   password: Scalars['String'];
-  /** User's username. */
+  /** User username. */
   username: Scalars['String'];
 };
 
@@ -425,7 +583,7 @@ export type SignUpResult = {
 
 /** Provided data for update email. */
 export type UpdateEmailInput = {
-  /** User's new email. */
+  /** Email. */
   email: Scalars['String'];
 };
 
@@ -440,9 +598,9 @@ export type UpdateEmailResult = {
 
 /** Provided data for update password. */
 export type UpdatePasswordInput = {
-  /** User's current password. */
+  /** Current password. */
   currentPassword: Scalars['String'];
-  /** User's new password. */
+  /** New password. */
   newPassword: Scalars['String'];
 };
 
@@ -457,7 +615,7 @@ export type UpdatePasswordResult = {
 
 /** Provided data for verify email. */
 export type VerifyEmailInput = {
-  /** User's verify email token. */
+  /** Verify email token. */
   verifyEmailToken: Scalars['String'];
 };
 
@@ -472,7 +630,7 @@ export type VerifyEmailResult = {
 
 /** Provided data for verify update email. */
 export type VerifyUpdateEmailInput = {
-  /** User's verify update email token. */
+  /** Verify update email token. */
   verifyUpdateEmailToken: Scalars['String'];
 };
 
@@ -618,9 +776,36 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   Node: ResolversTypes['Device'] | ResolversTypes['User'];
   Error: ResolverTypeWrapper<Error>;
+  CreateDeviceInput: CreateDeviceInput;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
+  CreateDeviceResult: ResolverTypeWrapper<
+    Omit<CreateDeviceResult, 'device'> & {
+      device?: Maybe<ResolversTypes['Device']>;
+    }
+  >;
+  DeleteDeviceInput: DeleteDeviceInput;
+  DeleteDeviceResult: ResolverTypeWrapper<DeleteDeviceResult>;
   DeviceMetadata: ResolverTypeWrapper<DeviceMetadataModel>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  ModifyDeviceInput: ModifyDeviceInput;
+  ModifyDeviceResult: ResolverTypeWrapper<
+    Omit<ModifyDeviceResult, 'device'> & {
+      device?: Maybe<ResolversTypes['Device']>;
+    }
+  >;
   Device: ResolverTypeWrapper<DeviceModel>;
+  ViewDeviceInput: ViewDeviceInput;
+  ViewDevicesInput: ViewDevicesInput;
+  ViewDevicesResult: ResolverTypeWrapper<
+    Omit<ViewDevicesResult, 'devices'> & {
+      devices?: Maybe<Array<Maybe<ResolversTypes['Device']>>>;
+    }
+  >;
+  ViewDeviceResult: ResolverTypeWrapper<
+    Omit<ViewDeviceResult, 'device'> & {
+      device?: Maybe<ResolversTypes['Device']>;
+    }
+  >;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DeleteUserInput: DeleteUserInput;
   DeleteUserResult: ResolverTypeWrapper<DeleteUserResult>;
@@ -628,7 +813,6 @@ export type ResolversTypes = {
   ForgotPasswordResult: ResolverTypeWrapper<ForgotPasswordResult>;
   UserMetadata: ResolverTypeWrapper<UserMetadataModel>;
   ModifyUserInput: ModifyUserInput;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
   ModifyUserResult: ResolverTypeWrapper<
     Omit<ModifyUserResult, 'user'> & { user?: Maybe<ResolversTypes['User']> }
   >;
@@ -667,9 +851,28 @@ export type ResolversParentTypes = {
   Mutation: {};
   Node: ResolversParentTypes['Device'] | ResolversParentTypes['User'];
   Error: Error;
+  CreateDeviceInput: CreateDeviceInput;
+  Float: Scalars['Float'];
+  CreateDeviceResult: Omit<CreateDeviceResult, 'device'> & {
+    device?: Maybe<ResolversParentTypes['Device']>;
+  };
+  DeleteDeviceInput: DeleteDeviceInput;
+  DeleteDeviceResult: DeleteDeviceResult;
   DeviceMetadata: DeviceMetadataModel;
   Int: Scalars['Int'];
+  ModifyDeviceInput: ModifyDeviceInput;
+  ModifyDeviceResult: Omit<ModifyDeviceResult, 'device'> & {
+    device?: Maybe<ResolversParentTypes['Device']>;
+  };
   Device: DeviceModel;
+  ViewDeviceInput: ViewDeviceInput;
+  ViewDevicesInput: ViewDevicesInput;
+  ViewDevicesResult: Omit<ViewDevicesResult, 'devices'> & {
+    devices?: Maybe<Array<Maybe<ResolversParentTypes['Device']>>>;
+  };
+  ViewDeviceResult: Omit<ViewDeviceResult, 'device'> & {
+    device?: Maybe<ResolversParentTypes['Device']>;
+  };
   DateTime: Scalars['DateTime'];
   DeleteUserInput: DeleteUserInput;
   DeleteUserResult: DeleteUserResult;
@@ -677,7 +880,6 @@ export type ResolversParentTypes = {
   ForgotPasswordResult: ForgotPasswordResult;
   UserMetadata: UserMetadataModel;
   ModifyUserInput: ModifyUserInput;
-  Float: Scalars['Float'];
   ModifyUserResult: Omit<ModifyUserResult, 'user'> & {
     user?: Maybe<ResolversParentTypes['User']>;
   };
@@ -744,6 +946,18 @@ export type QueryResolvers<
     ParentType,
     ContextType
   >;
+  viewDevice?: Resolver<
+    ResolversTypes['ViewDeviceResult'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryViewDeviceArgs, 'input'>
+  >;
+  viewDevices?: Resolver<
+    ResolversTypes['ViewDevicesResult'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryViewDevicesArgs, 'input'>
+  >;
   viewUser?: Resolver<
     ResolversTypes['ViewUserResult'],
     ParentType,
@@ -755,6 +969,18 @@ export type MutationResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = {
+  createDevice?: Resolver<
+    ResolversTypes['CreateDeviceResult'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateDeviceArgs, 'input'>
+  >;
+  deleteDevice?: Resolver<
+    ResolversTypes['DeleteDeviceResult'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteDeviceArgs, 'input'>
+  >;
   deleteUser?: Resolver<
     ResolversTypes['DeleteUserResult'],
     ParentType,
@@ -767,6 +993,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationForgotPasswordArgs, 'input'>
+  >;
+  modifyDevice?: Resolver<
+    ResolversTypes['ModifyDeviceResult'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationModifyDeviceArgs, 'input'>
   >;
   modifyUser?: Resolver<
     ResolversTypes['ModifyUserResult'],
@@ -848,6 +1080,33 @@ export type ErrorResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateDeviceResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['CreateDeviceResult'] = ResolversParentTypes['CreateDeviceResult']
+> = {
+  device?: Resolver<Maybe<ResolversTypes['Device']>, ParentType, ContextType>;
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteDeviceResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['DeleteDeviceResult'] = ResolversParentTypes['DeleteDeviceResult']
+> = {
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type DeviceMetadataResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['DeviceMetadata'] = ResolversParentTypes['DeviceMetadata']
@@ -859,6 +1118,20 @@ export type DeviceMetadataResolvers<
     ContextType
   >;
   writeKey?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ModifyDeviceResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ModifyDeviceResult'] = ResolversParentTypes['ModifyDeviceResult']
+> = {
+  device?: Resolver<Maybe<ResolversTypes['Device']>, ParentType, ContextType>;
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -888,12 +1161,8 @@ export type DeviceResolvers<
     ParentType,
     ContextType
   >;
-  latitude?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  longitude?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
+  latitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  longitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   metadata?: Resolver<
     Maybe<ResolversTypes['DeviceMetadata']>,
     ParentType,
@@ -905,8 +1174,39 @@ export type DeviceResolvers<
     ContextType
   >;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  owner?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ViewDevicesResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ViewDevicesResult'] = ResolversParentTypes['ViewDevicesResult']
+> = {
+  devices?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Device']>>>,
+    ParentType,
+    ContextType
+  >;
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ViewDeviceResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ViewDeviceResult'] = ResolversParentTypes['ViewDeviceResult']
+> = {
+  device?: Resolver<Maybe<ResolversTypes['Device']>, ParentType, ContextType>;
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1012,6 +1312,11 @@ export type UserResolvers<
   country?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdDate?: Resolver<
     Maybe<ResolversTypes['DateTime']>,
+    ParentType,
+    ContextType
+  >;
+  devices?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Device']>>>,
     ParentType,
     ContextType
   >;
@@ -1167,8 +1472,13 @@ export type Resolvers<ContextType = Context> = {
   Mutation?: MutationResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   Error?: ErrorResolvers<ContextType>;
+  CreateDeviceResult?: CreateDeviceResultResolvers<ContextType>;
+  DeleteDeviceResult?: DeleteDeviceResultResolvers<ContextType>;
   DeviceMetadata?: DeviceMetadataResolvers<ContextType>;
+  ModifyDeviceResult?: ModifyDeviceResultResolvers<ContextType>;
   Device?: DeviceResolvers<ContextType>;
+  ViewDevicesResult?: ViewDevicesResultResolvers<ContextType>;
+  ViewDeviceResult?: ViewDeviceResultResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DeleteUserResult?: DeleteUserResultResolvers<ContextType>;
   ForgotPasswordResult?: ForgotPasswordResultResolvers<ContextType>;

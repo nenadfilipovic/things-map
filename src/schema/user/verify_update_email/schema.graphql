@@ -1,6 +1,6 @@
 "Provided data for verify update email."
 input VerifyUpdateEmailInput {
-  "User's verify update email token."
+  "Verify update email token."
   verifyUpdateEmailToken: String!
 }
 

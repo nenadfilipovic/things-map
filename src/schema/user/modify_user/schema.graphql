@@ -1,22 +1,22 @@
 "Provided data for modify user."
 input ModifyUserInput {
-  "User's bio."
+  "User bio."
   bio: String
-  "User's country."
+  "User country."
   country: String
-  "User's first name."
+  "User first name."
   firstName: String
-  "User's public flag."
+  "User public flag."
   isPublic: Boolean
-  "User's last name."
+  "User last name."
   lastName: String
-  "User's latitude."
+  "User latitude."
   latitude: Float
-  "User's longitude."
+  "User longitude."
   longitude: Float
-  "User's username."
+  "User username."
   username: String
-  "User's website."
+  "User website."
   website: String
 }
 
