@@ -22,6 +22,8 @@ type Device implements Node {
   isPublic: Boolean
   "Device latitude."
   latitude: Float
+  "Device logs."
+  logs: [Log]
   "Device longitude."
   longitude: Float
   "Device metadata."

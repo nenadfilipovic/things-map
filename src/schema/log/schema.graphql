@@ -1,0 +1,17 @@
+"Log type."
+type Log {
+  "Log device id."
+  deviceId: String!
+  "Log field."
+  field1: String
+  "Log field."
+  field2: String
+  "Log field."
+  field3: String
+  "Log field."
+  field4: String
+  "Log field."
+  field5: String
+  "Log time."
+  time: DateTime!
+}

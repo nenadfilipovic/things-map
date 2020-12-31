@@ -1,5 +1,6 @@
 import { DeviceMetadata } from './DeviceMetadata';
 import { Model, NonFunctionPropertyNames } from 'objection';
+import { Log } from './Log';
 
 export class Device extends Model {
   static tableName = 'device';
@@ -22,6 +23,7 @@ export class Device extends Model {
   createdDate?: Date;
 
   metadata!: DeviceMetadata;
+  logs!: Log[];
 
   static relationMappings = {
     metadata: {
@@ -32,6 +34,14 @@ export class Device extends Model {
         to: 'deviceMetadata.deviceId',
       },
     },
+    logs: {
+      relation: Model.HasManyRelation,
+      modelClass: Log,
+      join: {
+        from: 'device.id',
+        to: 'log.deviceId',
+      },
+    },
   };
 }
 
@@ -40,4 +50,4 @@ type CreateModelObject<T extends Model> = Pick<
   Exclude<NonFunctionPropertyNames<T>, 'QueryBuilderType'>
 >;
 
-export type DeviceModel = Omit<CreateModelObject<Device>, 'metadata'>;
+export type DeviceModel = Omit<CreateModelObject<Device>, 'metadata' | 'logs'>;

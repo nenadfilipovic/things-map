@@ -57,6 +57,8 @@ export type Query = {
   viewDevice: ViewDeviceResult;
   /** View all devices. */
   viewDevices: ViewDevicesResult;
+  /** View logs. */
+  viewLogs: ViewLogsResult;
   /** View user. */
   viewUser: ViewUserResult;
 };
@@ -76,6 +78,11 @@ export type QueryViewDevicesArgs = {
   input: ViewDevicesInput;
 };
 
+/** Root query. */
+export type QueryViewLogsArgs = {
+  input: ViewLogsInput;
+};
+
 /** Root mutation. */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -83,6 +90,8 @@ export type Mutation = {
   createDevice: CreateDeviceResult;
   /** Delete device. */
   deleteDevice: DeleteDeviceResult;
+  /** Delete logs. */
+  deleteLogs: DeleteLogsResult;
   /** Delete user. */
   deleteUser: DeleteUserResult;
   /** Empty. */
@@ -123,6 +132,11 @@ export type MutationCreateDeviceArgs = {
 /** Root mutation. */
 export type MutationDeleteDeviceArgs = {
   input: DeleteDeviceInput;
+};
+
+/** Root mutation. */
+export type MutationDeleteLogsArgs = {
+  input: DeleteLogsInput;
 };
 
 /** Root mutation. */
@@ -344,6 +358,8 @@ export type Device = Node & {
   user?: Maybe<User>;
   /** Device owner id. */
   userId: Scalars['ID'];
+  /** Device logs. */
+  logs?: Maybe<Array<Maybe<Log>>>;
 };
 
 /** Provided data for view device. */
@@ -372,6 +388,59 @@ export type ViewDeviceResult = {
   __typename?: 'ViewDeviceResult';
   /** Device. */
   device?: Maybe<Device>;
+  /** Errors. */
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
+/** Provided data for delete logs. */
+export type DeleteLogsInput = {
+  /** Device id. */
+  id: Scalars['ID'];
+};
+
+/** Delete logs result. */
+export type DeleteLogsResult = {
+  __typename?: 'DeleteLogsResult';
+  /** Errors. */
+  errors?: Maybe<Array<Maybe<Error>>>;
+  /** Message. */
+  message?: Maybe<Scalars['String']>;
+};
+
+/** Log type. */
+export type Log = {
+  __typename?: 'Log';
+  /** Log time. */
+  time: Scalars['DateTime'];
+  /** Log device id. */
+  deviceId: Scalars['String'];
+  /** Log field. */
+  field1?: Maybe<Scalars['String']>;
+  /** Log field. */
+  field2?: Maybe<Scalars['String']>;
+  /** Log field. */
+  field3?: Maybe<Scalars['String']>;
+  /** Log field. */
+  field4?: Maybe<Scalars['String']>;
+  /** Log field. */
+  field5?: Maybe<Scalars['String']>;
+};
+
+/** Provided data for view log. */
+export type ViewLogsInput = {
+  /** Device id. */
+  id: Scalars['ID'];
+  /** Start date. */
+  start: Scalars['DateTime'];
+  /** End date. */
+  end: Scalars['DateTime'];
+};
+
+/** View logs result. */
+export type ViewLogsResult = {
+  __typename?: 'ViewLogsResult';
+  /** Logs. */
+  logs?: Maybe<Array<Maybe<Log>>>;
   /** Errors. */
   errors?: Maybe<Array<Maybe<Error>>>;
 };
@@ -806,6 +875,11 @@ export type ResolversTypes = {
       device?: Maybe<ResolversTypes['Device']>;
     }
   >;
+  DeleteLogsInput: DeleteLogsInput;
+  DeleteLogsResult: ResolverTypeWrapper<DeleteLogsResult>;
+  Log: ResolverTypeWrapper<Log>;
+  ViewLogsInput: ViewLogsInput;
+  ViewLogsResult: ResolverTypeWrapper<ViewLogsResult>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DeleteUserInput: DeleteUserInput;
   DeleteUserResult: ResolverTypeWrapper<DeleteUserResult>;
@@ -873,6 +947,11 @@ export type ResolversParentTypes = {
   ViewDeviceResult: Omit<ViewDeviceResult, 'device'> & {
     device?: Maybe<ResolversParentTypes['Device']>;
   };
+  DeleteLogsInput: DeleteLogsInput;
+  DeleteLogsResult: DeleteLogsResult;
+  Log: Log;
+  ViewLogsInput: ViewLogsInput;
+  ViewLogsResult: ViewLogsResult;
   DateTime: Scalars['DateTime'];
   DeleteUserInput: DeleteUserInput;
   DeleteUserResult: DeleteUserResult;
@@ -958,6 +1037,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryViewDevicesArgs, 'input'>
   >;
+  viewLogs?: Resolver<
+    ResolversTypes['ViewLogsResult'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryViewLogsArgs, 'input'>
+  >;
   viewUser?: Resolver<
     ResolversTypes['ViewUserResult'],
     ParentType,
@@ -980,6 +1065,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteDeviceArgs, 'input'>
+  >;
+  deleteLogs?: Resolver<
+    ResolversTypes['DeleteLogsResult'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteLogsArgs, 'input'>
   >;
   deleteUser?: Resolver<
     ResolversTypes['DeleteUserResult'],
@@ -1177,6 +1268,11 @@ export type DeviceResolvers<
   url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  logs?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Log']>>>,
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1202,6 +1298,50 @@ export type ViewDeviceResultResolvers<
   ParentType extends ResolversParentTypes['ViewDeviceResult'] = ResolversParentTypes['ViewDeviceResult']
 > = {
   device?: Resolver<Maybe<ResolversTypes['Device']>, ParentType, ContextType>;
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteLogsResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['DeleteLogsResult'] = ResolversParentTypes['DeleteLogsResult']
+> = {
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LogResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['Log'] = ResolversParentTypes['Log']
+> = {
+  time?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  deviceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  field1?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  field2?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  field3?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  field4?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  field5?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ViewLogsResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['ViewLogsResult'] = ResolversParentTypes['ViewLogsResult']
+> = {
+  logs?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Log']>>>,
+    ParentType,
+    ContextType
+  >;
   errors?: Resolver<
     Maybe<Array<Maybe<ResolversTypes['Error']>>>,
     ParentType,
@@ -1479,6 +1619,9 @@ export type Resolvers<ContextType = Context> = {
   Device?: DeviceResolvers<ContextType>;
   ViewDevicesResult?: ViewDevicesResultResolvers<ContextType>;
   ViewDeviceResult?: ViewDeviceResultResolvers<ContextType>;
+  DeleteLogsResult?: DeleteLogsResultResolvers<ContextType>;
+  Log?: LogResolvers<ContextType>;
+  ViewLogsResult?: ViewLogsResultResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DeleteUserResult?: DeleteUserResultResolvers<ContextType>;
   ForgotPasswordResult?: ForgotPasswordResultResolvers<ContextType>;

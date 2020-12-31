@@ -1,6 +1,7 @@
 import { Resolvers } from 'src/types';
-import { DeviceMetadata } from 'src/database/models/DeviceMetadata';
+import { Log } from 'src/database/models/Log';
 import { User } from 'src/database/models/User';
+import { DeviceMetadata } from 'src/database/models/DeviceMetadata';
 
 const resolvers: Resolvers = {
   Device: {
@@ -24,6 +25,17 @@ const resolvers: Resolvers = {
 
     user: async ({ userId }): Promise<User> => {
       return await User.query().findOne('id', userId);
+    },
+
+    /**
+     *
+     * @param parent
+     *
+     * Resolves device logs.
+     */
+
+    logs: async ({ id }): Promise<Log[]> => {
+      return await Log.query().where('deviceId', id);
     },
   },
 };
