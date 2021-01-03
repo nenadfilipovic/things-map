@@ -3,12 +3,15 @@ import * as Knex from 'knex';
 export async function up(knex: Knex): Promise<void> {
   return knex.schema
     .createTable('log', (table) => {
+      // Id.
+      table.uuid('id').defaultTo(knex.raw('uuid_generate_v4()')).notNullable();
+
       // Time key.
-      table.timestamp('time').primary();
+      table.timestamp('time');
 
       // Device id.
       table
-        .integer('device_id')
+        .uuid('device_id')
         .references('device.id')
         .onDelete('CASCADE')
         .notNullable();

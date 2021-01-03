@@ -1,36 +1,36 @@
-"Provided data for modify user."
+"Input type of ModifyUser."
 input ModifyUserInput {
-  "User bio."
+  "The user's profile bio."
   bio: String
-  "User country."
+  "Country of the user."
   country: String
-  "User first name."
+  "The first name of the user."
   firstName: String
-  "User public flag."
+  "Whether the user profile is public or not."
   isPublic: Boolean
-  "User last name."
+  "The last name of the user."
   lastName: String
-  "User latitude."
+  "Latitude of the user location."
   latitude: Float
-  "User longitude."
+  "Longitude of the user location."
   longitude: Float
-  "User username."
+  "The username of the user."
   username: String
-  "User website."
+  "The website of the user."
   website: String
 }
 
-"Modify user result."
+"Return type of ModifyUser."
 type ModifyUserResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Message."
+  "Message returned if mutation was successful."
   message: String
-  "User."
+  "Returns modified node."
   user: User
 }
 
 extend type Mutation {
-  "Modify user."
-  modifyUser("Input data." input: ModifyUserInput!): ModifyUserResult!
+  "Modifies user data."
+  modifyUser("User information." input: ModifyUserInput!): ModifyUserResult
 }

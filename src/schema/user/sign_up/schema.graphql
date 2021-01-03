@@ -1,26 +1,26 @@
-"Provided data for sign up."
+"Input type of SignUp."
 input SignUpInput {
-  "User email."
+  "Email address of the user."
   email: String!
-  "User first name."
+  "The first name of the user."
   firstName: String!
-  "User last name."
+  "The last name of the user."
   lastName: String!
-  "User password."
+  "The password of the user."
   password: String!
-  "User username."
+  "The username of the user."
   username: String!
 }
 
-"Sign up result."
+"Return type of SignUp."
 type SignUpResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Message."
+  "Message returned if mutation was successful."
   message: String
 }
 
 extend type Mutation {
-  "Sign up."
-  signUp("Input data." input: SignUpInput!): SignUpResult!
+  "Signs up user."
+  signUp("User information." input: SignUpInput!): SignUpResult
 }

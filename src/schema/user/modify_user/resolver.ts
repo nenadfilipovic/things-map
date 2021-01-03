@@ -1,5 +1,5 @@
+import { Resolvers } from 'src/types';
 import { User } from 'src/database/models/User';
-import { ModifyUserResult, Resolvers } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
 
 const resolvers: Resolvers = {
@@ -13,7 +13,7 @@ const resolvers: Resolvers = {
      * Modifies user data.
      */
 
-    modifyUser: async (root, { input }, { ctx }): Promise<ModifyUserResult> => {
+    modifyUser: async (root, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -38,12 +38,7 @@ const resolvers: Resolvers = {
 
       if (!id) {
         return {
-          errors: [
-            {
-              __typename: 'Error',
-              message: NOT_LOGGED_IN,
-            },
-          ],
+          errors: [{ __typename: 'Error', message: NOT_LOGGED_IN }],
         };
       }
 
@@ -80,23 +75,13 @@ const resolvers: Resolvers = {
           };
         } catch {
           return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: GENERIC_ERROR,
-              },
-            ],
+            errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
           };
         }
       }
 
       return {
-        errors: [
-          {
-            __typename: 'Error',
-            message: GENERIC_ERROR,
-          },
-        ],
+        errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
       };
     },
   },

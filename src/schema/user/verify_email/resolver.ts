@@ -43,10 +43,7 @@ const resolvers: Resolvers = {
         if (isVerified) {
           return {
             errors: [
-              {
-                __typename: 'Error',
-                message: 'Email already verified',
-              },
+              { __typename: 'Error', message: 'Email already verified' },
             ],
           };
         }
@@ -79,12 +76,7 @@ const resolvers: Resolvers = {
           };
         } catch {
           return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: GENERIC_ERROR,
-              },
-            ],
+            errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
           };
         }
       }

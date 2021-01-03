@@ -2,10 +2,10 @@ import { Model } from 'objection';
 
 export class Log extends Model {
   static tableName = 'log';
-  static idColumn = 'time';
 
+  id!: string;
   time!: Date;
-  deviceId!: string;
+  deviceId?: string;
   field1?: string;
   field2?: string;
   field3?: string;

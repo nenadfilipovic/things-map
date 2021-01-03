@@ -5,9 +5,7 @@ import {
   GraphQLScalarTypeConfig,
 } from 'graphql';
 import { UserModel } from 'src/database/models/User';
-import { UserMetadataModel } from 'src/database/models/UserMetadata';
 import { DeviceModel } from 'src/database/models/Device';
-import { DeviceMetadataModel } from 'src/database/models/DeviceMetadata';
 import { Context } from 'src/context';
 export type Maybe<T> = T | undefined;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -29,449 +27,495 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** Custom scalar for timestamps. */
+  /** Custom scalar adding timestamp type. */
   DateTime: Date;
 };
 
-/** Relay specification. */
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  /** End cursor. */
-  endCursor?: Maybe<Scalars['String']>;
-  /** Has next page. */
-  hasNextPage: Scalars['Boolean'];
-  /** Has previous page. */
-  hasPreviousPage: Scalars['Boolean'];
-  /** Start cursor. */
-  startCursor?: Maybe<Scalars['String']>;
-};
-
-/** Root query. */
+/** The query root of things-map GraphQL interface. */
 export type Query = {
   __typename?: 'Query';
-  /** Node. */
+  /** Display device. */
+  device?: Maybe<Device>;
+  /** Display device activity as calendar. */
+  deviceActivity?: Maybe<Array<Maybe<Log>>>;
+  /** Display device log chart. */
+  deviceChart?: Maybe<Array<Maybe<Log>>>;
+  /** Display all devices. */
+  devices?: Maybe<DeviceConnection>;
+  /** Display devices by location. */
+  devicesByLocation?: Maybe<Array<Maybe<Device>>>;
+  /** Display currently logged in user. */
+  me?: Maybe<User>;
+  /** Fetches an object given its ID. */
   node?: Maybe<Node>;
-  /** Page info. */
-  pageInfo?: Maybe<PageInfo>;
-  /** View device. */
-  viewDevice: ViewDeviceResult;
-  /** View all devices. */
-  viewDevices: ViewDevicesResult;
-  /** View logs. */
-  viewLogs: ViewLogsResult;
-  /** View user. */
-  viewUser: ViewUserResult;
+  /** Display public user. */
+  user?: Maybe<User>;
+  /** Display all public users. */
+  users?: Maybe<UserConnection>;
+  /** Display user watched devices. */
+  watchedDevices?: Maybe<Array<Maybe<WatchedDevice>>>;
 };
 
-/** Root query. */
+/** The query root of things-map GraphQL interface. */
+export type QueryDeviceArgs = {
+  id: Scalars['ID'];
+};
+
+/** The query root of things-map GraphQL interface. */
+export type QueryDeviceActivityArgs = {
+  id: Scalars['ID'];
+};
+
+/** The query root of things-map GraphQL interface. */
+export type QueryDeviceChartArgs = {
+  id: Scalars['ID'];
+  startDate: Scalars['DateTime'];
+  endDate: Scalars['DateTime'];
+};
+
+/** The query root of things-map GraphQL interface. */
+export type QueryDevicesArgs = {
+  after?: Maybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
+/** The query root of things-map GraphQL interface. */
+export type QueryDevicesByLocationArgs = {
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
+/** The query root of things-map GraphQL interface. */
 export type QueryNodeArgs = {
   id: Scalars['ID'];
 };
 
-/** Root query. */
-export type QueryViewDeviceArgs = {
-  input: ViewDeviceInput;
+/** The query root of things-map GraphQL interface. */
+export type QueryUserArgs = {
+  id: Scalars['ID'];
 };
 
-/** Root query. */
-export type QueryViewDevicesArgs = {
-  input: ViewDevicesInput;
+/** The query root of things-map GraphQL interface. */
+export type QueryUsersArgs = {
+  after?: Maybe<Scalars['String']>;
+  first: Scalars['Int'];
 };
 
-/** Root query. */
-export type QueryViewLogsArgs = {
-  input: ViewLogsInput;
-};
-
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Create device. */
-  createDevice: CreateDeviceResult;
-  /** Delete device. */
-  deleteDevice: DeleteDeviceResult;
-  /** Delete logs. */
-  deleteLogs: DeleteLogsResult;
-  /** Delete user. */
-  deleteUser: DeleteUserResult;
-  /** Empty. */
+  /** Creates new watched device object. */
+  addWatchedDevice?: Maybe<AddWatchedDeviceResult>;
+  /** Deletes selected device. */
+  deleteDevice?: Maybe<DeleteDeviceResult>;
+  /** Deletes user. */
+  deleteUser?: Maybe<DeleteUserResult>;
+  /** Empty mutation that allow extending it in other files. */
   empty?: Maybe<Scalars['String']>;
-  /** Forgot password. */
-  forgotPassword: ForgotPasswordResult;
-  /** Modify device. */
-  modifyDevice: ModifyDeviceResult;
-  /** Modify user. */
-  modifyUser: ModifyUserResult;
-  /** Resend verify email. */
-  resendVerifyEmail: ResendVerifyEmailResult;
-  /** Reset password. */
-  resetPassword: ResetPasswordResult;
-  /** Sign in by email. */
-  signInByEmail: SignInByEmailResult;
-  /** Sign in by username. */
-  signInByUsername: SignInByUsernameResult;
-  /** Sign out. */
-  signOut: SignOutResult;
-  /** Sign up. */
-  signUp: SignUpResult;
-  /** Update email. */
-  updateEmail: UpdateEmailResult;
-  /** Update password. */
-  updatePassword: UpdatePasswordResult;
-  /** Verify email. */
-  verifyEmail: VerifyEmailResult;
-  /** Verify update email. */
-  verifyUpdateEmail: VerifyUpdateEmailResult;
+  /** Flushes logs of the device. */
+  flushLog?: Maybe<FlushLogResult>;
+  /** Gives reset password token to user. */
+  forgotPassword?: Maybe<ForgotPasswordResult>;
+  /** Modifies selected device information. */
+  modifyDevice?: Maybe<ModifyDeviceResult>;
+  /** Modifies user data. */
+  modifyUser?: Maybe<ModifyUserResult>;
+  /** Creates new device for user. */
+  newDevice?: Maybe<NewDeviceResult>;
+  /** Removes watched device object. */
+  removeWatchedDevice?: Maybe<RemoveWatchedDeviceResult>;
+  /** Resends verification email. */
+  resendVerifyEmail?: Maybe<ResendVerifyEmailResult>;
+  /** Resets user password. */
+  resetPassword?: Maybe<ResetPasswordResult>;
+  /** Signs user in by email. */
+  signInByEmail?: Maybe<SignInByEmailResult>;
+  /** Signs user in by username. */
+  signInByUsername?: Maybe<SignInByUsernameResult>;
+  /** Sings out user. */
+  signOut?: Maybe<SignOutResult>;
+  /** Signs up user. */
+  signUp?: Maybe<SignUpResult>;
+  /** Updates email of the user. */
+  updateEmail?: Maybe<UpdateEmailResult>;
+  /** Updates password of the user. */
+  updatePassword?: Maybe<UpdatePasswordResult>;
+  /** Verifies email of the user. */
+  verifyEmail?: Maybe<VerifyEmailResult>;
+  /** Verifies update email of the user. */
+  verifyUpdateEmail?: Maybe<VerifyUpdateEmailResult>;
 };
 
-/** Root mutation. */
-export type MutationCreateDeviceArgs = {
-  input: CreateDeviceInput;
+/** The root query for implementing GraphQL mutations. */
+export type MutationAddWatchedDeviceArgs = {
+  input: AddWatchedDeviceInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationDeleteDeviceArgs = {
   input: DeleteDeviceInput;
 };
 
-/** Root mutation. */
-export type MutationDeleteLogsArgs = {
-  input: DeleteLogsInput;
-};
-
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationDeleteUserArgs = {
   input: DeleteUserInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
+export type MutationFlushLogArgs = {
+  input: FlushLogInput;
+};
+
+/** The root query for implementing GraphQL mutations. */
 export type MutationForgotPasswordArgs = {
   input: ForgotPasswordInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationModifyDeviceArgs = {
   input: ModifyDeviceInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationModifyUserArgs = {
   input: ModifyUserInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
+export type MutationNewDeviceArgs = {
+  input: NewDeviceInput;
+};
+
+/** The root query for implementing GraphQL mutations. */
+export type MutationRemoveWatchedDeviceArgs = {
+  input: RemoveWatchedDeviceInput;
+};
+
+/** The root query for implementing GraphQL mutations. */
 export type MutationResendVerifyEmailArgs = {
   input: ResendVerifyEmailInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationResetPasswordArgs = {
   input: ResetPasswordInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationSignInByEmailArgs = {
   input: SignInByEmailInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationSignInByUsernameArgs = {
   input: SignInByUsernameInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationSignUpArgs = {
   input: SignUpInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationUpdateEmailArgs = {
   input: UpdateEmailInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationUpdatePasswordArgs = {
   input: UpdatePasswordInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationVerifyEmailArgs = {
   input: VerifyEmailInput;
 };
 
-/** Root mutation. */
+/** The root query for implementing GraphQL mutations. */
 export type MutationVerifyUpdateEmailArgs = {
   input: VerifyUpdateEmailInput;
 };
 
-/** Global node. */
-export type Node = {
-  /** Id. */
-  id: Scalars['ID'];
-};
-
-/** Error type. */
+/** Type representing a error. */
 export type Error = {
   __typename?: 'Error';
-  /** Message. */
+  /** Message containing error. */
   message: Scalars['String'];
-  /** Path. */
+  /** Path of the error. */
   path?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for create device. */
-export type CreateDeviceInput = {
-  /** Device description. */
-  description?: Maybe<Scalars['String']>;
-  /** Device field. */
-  field1: Scalars['String'];
-  /** Device field. */
-  field2?: Maybe<Scalars['String']>;
-  /** Device field. */
-  field3?: Maybe<Scalars['String']>;
-  /** Device field. */
-  field4?: Maybe<Scalars['String']>;
-  /** Device field. */
-  field5?: Maybe<Scalars['String']>;
-  /** Device latitude. */
-  latitude: Scalars['Float'];
-  /** Device longitude. */
-  longitude: Scalars['Float'];
-  /** Device name. */
-  name: Scalars['String'];
-};
-
-/** Create device result. */
-export type CreateDeviceResult = {
-  __typename?: 'CreateDeviceResult';
-  /** Device. */
-  device?: Maybe<Device>;
-  /** Errors. */
-  errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
-  message?: Maybe<Scalars['String']>;
-};
-
-/** Provided data for delete device. */
+/** Input type of DeleteDevice. */
 export type DeleteDeviceInput = {
-  /** Device id. */
+  /** A unique identifier for the device. */
   id: Scalars['ID'];
 };
 
-/** Delete device result. */
+/** Return type of DeleteDevice. */
 export type DeleteDeviceResult = {
   __typename?: 'DeleteDeviceResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
 /** Device metadata type. */
 export type DeviceMetadata = {
   __typename?: 'DeviceMetadata';
-  /** Device's last entry id. */
+  /** Device last entry id. */
   lastEntryId?: Maybe<Scalars['Int']>;
-  /** Device's last write date. */
+  /** Device last write date. */
   lastWriteDate?: Maybe<Scalars['DateTime']>;
-  /** Device's write key. */
+  /** Device write key. */
   writeKey?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for modify device. */
+/** Input type of ModifyDevice. */
 export type ModifyDeviceInput = {
-  /** Device description. */
+  /** The description of device. */
   description?: Maybe<Scalars['String']>;
-  /** Device elevation. */
+  /** Elevation of the device. */
   elevation?: Maybe<Scalars['Int']>;
-  /** Device field. */
+  /** Field 1 of the device. */
   field1?: Maybe<Scalars['String']>;
-  /** Device field. */
+  /** Field 2 of the device. */
   field2?: Maybe<Scalars['String']>;
-  /** Device field. */
+  /** Field 3 of the device. */
   field3?: Maybe<Scalars['String']>;
-  /** Device field. */
+  /** Field 4 of the device. */
   field4?: Maybe<Scalars['String']>;
-  /** Device field. */
+  /** Field 5 of the device. */
   field5?: Maybe<Scalars['String']>;
-  /** Device id. */
+  /** A unique identifier for the device. */
   id: Scalars['ID'];
-  /** Device public flag. */
+  /** Whether the device is public or not. */
   isPublic?: Maybe<Scalars['Boolean']>;
-  /** Device latitude. */
+  /** Latitude of the device. */
   latitude?: Maybe<Scalars['Float']>;
-  /** Device longitude. */
+  /** Latitude of the device. */
   longitude?: Maybe<Scalars['Float']>;
-  /** Device name. */
+  /** The name of the device. */
   name?: Maybe<Scalars['String']>;
-  /** Device url. */
+  /** The url of the device. */
   url?: Maybe<Scalars['String']>;
 };
 
-/** Modify device result. */
+/** Return type of ModifyDevice. */
 export type ModifyDeviceResult = {
   __typename?: 'ModifyDeviceResult';
-  /** Device. */
+  /** Returns modified node. */
   device?: Maybe<Device>;
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Device type. */
+/** Input type of NewDevice. */
+export type NewDeviceInput = {
+  /** The description of device. */
+  description?: Maybe<Scalars['String']>;
+  /** Field 1 of the device. */
+  field1: Scalars['String'];
+  /** Field 2 of the device. */
+  field2?: Maybe<Scalars['String']>;
+  /** Field 3 of the device. */
+  field3?: Maybe<Scalars['String']>;
+  /** Field 4 of the device. */
+  field4?: Maybe<Scalars['String']>;
+  /** Field 5 of the device. */
+  field5?: Maybe<Scalars['String']>;
+  /** Latitude of the device. */
+  latitude: Scalars['Float'];
+  /** Logs that belongs to the device. */
+  longitude: Scalars['Float'];
+  /** The name of the device. */
+  name: Scalars['String'];
+};
+
+/** Return type of NewDevice. */
+export type NewDeviceResult = {
+  __typename?: 'NewDeviceResult';
+  /** Returns created node. */
+  device?: Maybe<Device>;
+  /** Errors array returned if there was error. */
+  errors?: Maybe<Array<Maybe<Error>>>;
+  /** Message returned if mutation was successful. */
+  message?: Maybe<Scalars['String']>;
+};
+
+/** Represents device that belongs to user. */
 export type Device = Node & {
   __typename?: 'Device';
-  /** Created date. */
+  /** Identifies the date and time when the object was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** Device description. */
+  /** The description of device. */
   description?: Maybe<Scalars['String']>;
-  /** Device elevation. */
+  /** Elevation of the device. */
   elevation?: Maybe<Scalars['Int']>;
-  /** Device field. */
+  /** Field 1 of the device. */
   field1?: Maybe<Scalars['String']>;
-  /** Device field. */
+  /** Field 2 of the device. */
   field2?: Maybe<Scalars['String']>;
-  /** Device field. */
+  /** Field 3 of the device. */
   field3?: Maybe<Scalars['String']>;
-  /** Device field. */
+  /** Field 4 of the device. */
   field4?: Maybe<Scalars['String']>;
-  /** Device field. */
+  /** Field 5 of the device. */
   field5?: Maybe<Scalars['String']>;
-  /** Device id. */
+  /** A unique identifier for the device. */
   id: Scalars['ID'];
-  /** Device public flag. */
+  /** Whether the device is public or not. */
   isPublic?: Maybe<Scalars['Boolean']>;
-  /** Device latitude. */
+  /** Latitude of the device. */
   latitude?: Maybe<Scalars['Float']>;
-  /** Device longitude. */
+  /** Logs that belongs to the device. */
+  logs?: Maybe<LogConnection>;
+  /** Longitude of the device. */
   longitude?: Maybe<Scalars['Float']>;
-  /** Device metadata. */
+  /** Metadata for the device. */
   metadata?: Maybe<DeviceMetadata>;
-  /** Modify date. */
+  /** Identifies the date and time when the object was modified. */
   modifyDate?: Maybe<Scalars['DateTime']>;
-  /** Device name. */
+  /** The name of the device. */
   name?: Maybe<Scalars['String']>;
-  /** Device url. */
+  /** Owner device is belonging to. */
+  owner?: Maybe<User>;
+  /** The url of the device. */
   url?: Maybe<Scalars['String']>;
-  /** Device owner. */
-  user?: Maybe<User>;
-  /** Device owner id. */
+  /** A unique identifier for the device owner. */
   userId: Scalars['ID'];
-  /** Device logs. */
-  logs?: Maybe<Array<Maybe<Log>>>;
 };
 
-/** Provided data for view device. */
-export type ViewDeviceInput = {
-  /** Device id. */
+/** Represents device that belongs to user. */
+export type DeviceLogsArgs = {
+  after?: Maybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
+/** The connection type for Device. */
+export type DeviceConnection = {
+  __typename?: 'DeviceConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<DeviceEdge>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+/** An edge in a connection. */
+export type DeviceEdge = {
+  __typename?: 'DeviceEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<Device>;
+};
+
+/** Input type of FlushLog. */
+export type FlushLogInput = {
+  /** ID of the device. */
   id: Scalars['ID'];
 };
 
-/** Provided data for view devices. */
-export type ViewDevicesInput = {
-  /** test */
-  test?: Maybe<Scalars['String']>;
-};
-
-/** View devices result. */
-export type ViewDevicesResult = {
-  __typename?: 'ViewDevicesResult';
-  /** Devices. */
-  devices?: Maybe<Array<Maybe<Device>>>;
-  /** Errors. */
+/** Return type of FlushLog. */
+export type FlushLogResult = {
+  __typename?: 'FlushLogResult';
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-};
-
-/** View device result. */
-export type ViewDeviceResult = {
-  __typename?: 'ViewDeviceResult';
-  /** Device. */
-  device?: Maybe<Device>;
-  /** Errors. */
-  errors?: Maybe<Array<Maybe<Error>>>;
-};
-
-/** Provided data for delete logs. */
-export type DeleteLogsInput = {
-  /** Device id. */
-  id: Scalars['ID'];
-};
-
-/** Delete logs result. */
-export type DeleteLogsResult = {
-  __typename?: 'DeleteLogsResult';
-  /** Errors. */
-  errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Log type. */
-export type Log = {
+/** Type representing log that belongs to device. */
+export type Log = Node & {
   __typename?: 'Log';
-  /** Log time. */
-  time: Scalars['DateTime'];
-  /** Log device id. */
-  deviceId: Scalars['String'];
-  /** Log field. */
+  /** A unique identifier for the device that logs belong to. */
+  deviceId?: Maybe<Scalars['String']>;
+  /** Field 1 of the log. */
   field1?: Maybe<Scalars['String']>;
-  /** Log field. */
+  /** Field 2 of the log. */
   field2?: Maybe<Scalars['String']>;
-  /** Log field. */
+  /** Field 3 of the log. */
   field3?: Maybe<Scalars['String']>;
-  /** Log field. */
+  /** Field 4 of the log. */
   field4?: Maybe<Scalars['String']>;
-  /** Log field. */
+  /** Field 5 of the log. */
   field5?: Maybe<Scalars['String']>;
-};
-
-/** Provided data for view log. */
-export type ViewLogsInput = {
-  /** Device id. */
+  /** A unique identifier for the log. */
   id: Scalars['ID'];
-  /** Start date. */
-  start: Scalars['DateTime'];
-  /** End date. */
-  end: Scalars['DateTime'];
+  /** The time field of the log. */
+  time?: Maybe<Scalars['DateTime']>;
 };
 
-/** View logs result. */
-export type ViewLogsResult = {
-  __typename?: 'ViewLogsResult';
-  /** Logs. */
-  logs?: Maybe<Array<Maybe<Log>>>;
-  /** Errors. */
-  errors?: Maybe<Array<Maybe<Error>>>;
+/** The connection type for Log. */
+export type LogConnection = {
+  __typename?: 'LogConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<LogEdge>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
-/** Provided data for delete user. */
+/** An edge in a connection. */
+export type LogEdge = {
+  __typename?: 'LogEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<Log>;
+};
+
+/** An object with an ID. */
+export type Node = {
+  /** ID of the object. */
+  id: Scalars['ID'];
+};
+
+/** Information about pagination in a connection. */
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['String']>;
+  /** When paginating forwards, are there more items? */
+  hasNextPage: Scalars['Boolean'];
+  /** When paginating backwards, are there more items? */
+  hasPreviousPage: Scalars['Boolean'];
+  /** When paginating backwards, the cursor to continue. */
+  startCursor?: Maybe<Scalars['String']>;
+};
+
+/** Input type of DeleteUser. */
 export type DeleteUserInput = {
-  /** Password. */
+  /** The users password. */
   password: Scalars['String'];
 };
 
-/** Delete user result. */
+/** Return type of DeleteUser. */
 export type DeleteUserResult = {
   __typename?: 'DeleteUserResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for forgot password. */
+/** Input type of ForgotPassword. */
 export type ForgotPasswordInput = {
-  /** Email. */
+  /** The users email address. */
   email: Scalars['String'];
 };
 
-/** Forgot password result. */
+/** Return type of ForgotPassword. */
 export type ForgotPasswordResult = {
   __typename?: 'ForgotPasswordResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
@@ -488,237 +532,331 @@ export type UserMetadata = {
   signInCount?: Maybe<Scalars['Int']>;
 };
 
-/** Provided data for modify user. */
+/** Input type of ModifyUser. */
 export type ModifyUserInput = {
-  /** User bio. */
+  /** The user's profile bio. */
   bio?: Maybe<Scalars['String']>;
-  /** User country. */
+  /** Country of the user. */
   country?: Maybe<Scalars['String']>;
-  /** User first name. */
+  /** The first name of the user. */
   firstName?: Maybe<Scalars['String']>;
-  /** User public flag. */
+  /** Whether the user profile is public or not. */
   isPublic?: Maybe<Scalars['Boolean']>;
-  /** User last name. */
+  /** The last name of the user. */
   lastName?: Maybe<Scalars['String']>;
-  /** User latitude. */
+  /** Latitude of the user location. */
   latitude?: Maybe<Scalars['Float']>;
-  /** User longitude. */
+  /** Longitude of the user location. */
   longitude?: Maybe<Scalars['Float']>;
-  /** User username. */
+  /** The username of the user. */
   username?: Maybe<Scalars['String']>;
-  /** User website. */
+  /** The website of the user. */
   website?: Maybe<Scalars['String']>;
 };
 
-/** Modify user result. */
+/** Return type of ModifyUser. */
 export type ModifyUserResult = {
   __typename?: 'ModifyUserResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
-  /** User. */
+  /** Returns modified node. */
   user?: Maybe<User>;
 };
 
-/** Provided data for resend verify email. */
+/** Input type of ResendVerifyEmail. */
 export type ResendVerifyEmailInput = {
-  /** Email. */
+  /** The users email address. */
   email: Scalars['String'];
 };
 
-/** Resend verify email result. */
+/** Return type of ResendVerifyEmail. */
 export type ResendVerifyEmailResult = {
   __typename?: 'ResendVerifyEmailResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for reset password. */
+/** Input type of ResetPassword */
 export type ResetPasswordInput = {
-  /** Reset password token. */
+  /** Token used to reset password. */
   resetPasswordToken: Scalars['String'];
 };
 
-/** Reset password result. */
+/** Return type of ResetPassword. */
 export type ResetPasswordResult = {
   __typename?: 'ResetPasswordResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** User type. */
+/** Type representing user. */
 export type User = Node & {
   __typename?: 'User';
-  /** User bio. */
+  /** The user's profile bio. */
   bio?: Maybe<Scalars['String']>;
-  /** User country. */
+  /** Country of the user. */
   country?: Maybe<Scalars['String']>;
-  /** User created date. */
+  /** Identifies the date and time when the object was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** User devices. */
-  devices?: Maybe<Array<Maybe<Device>>>;
-  /** User first name. */
+  /** Devices that belongs to user. */
+  devices?: Maybe<DeviceConnection>;
+  /** The first name of the user. */
   firstName?: Maybe<Scalars['String']>;
-  /** User id. */
+  /** A unique identifier for the user. */
   id: Scalars['ID'];
-  /** User public flag. */
+  /** Whether the user profile is public or not. */
   isPublic?: Maybe<Scalars['Boolean']>;
-  /** User last name. */
+  /** The last name of the user. */
   lastName?: Maybe<Scalars['String']>;
-  /** User latitude. */
+  /** Latitude of the user location. */
   latitude?: Maybe<Scalars['Float']>;
-  /** User longitude. */
+  /** Longitude of the user location. */
   longitude?: Maybe<Scalars['Float']>;
-  /** User metadata */
+  /** Metadata of the user. */
   metadata?: Maybe<UserMetadata>;
-  /** User modify date. */
+  /** Identifies the date and time when the object was modified. */
   modifyDate?: Maybe<Scalars['DateTime']>;
-  /** User username. */
+  /** The username of the user. */
   username?: Maybe<Scalars['String']>;
-  /** User website. */
+  /** Devices that user have in watch list. */
+  watchedDevices?: Maybe<WatchedDeviceConnection>;
+  /** The website of the user. */
   website?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for sign in email. */
+/** Type representing user. */
+export type UserDevicesArgs = {
+  after?: Maybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
+/** Type representing user. */
+export type UserWatchedDevicesArgs = {
+  after?: Maybe<Scalars['String']>;
+  first: Scalars['Int'];
+};
+
+/** The connection type for User. */
+export type UserConnection = {
+  __typename?: 'UserConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<UserEdge>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+/** An edge in a connection. */
+export type UserEdge = {
+  __typename?: 'UserEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<User>;
+};
+
+/** Input type of SignInByEmail */
 export type SignInByEmailInput = {
-  /** Email. */
+  /** The email address of the user. */
   email: Scalars['String'];
-  /** Password. */
+  /** The password of the user. */
   password: Scalars['String'];
 };
 
-/** Sign in by email result. */
+/** Return type of SignInByEmail. */
 export type SignInByEmailResult = {
   __typename?: 'SignInByEmailResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
+  /** Returns node instance. */
+  user?: Maybe<User>;
 };
 
-/** Provided data for sign in by username. */
+/** Input type of SignInByUsername. */
 export type SignInByUsernameInput = {
-  /** Password. */
+  /** The password of the user. */
   password: Scalars['String'];
-  /** Username. */
+  /** The username of the user. */
   username: Scalars['String'];
 };
 
-/** Sign in by username result. */
+/** Return type of SignInByUsername. */
 export type SignInByUsernameResult = {
   __typename?: 'SignInByUsernameResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
+  /** Returns node instance. */
+  user?: Maybe<User>;
 };
 
-/** Sign out result. */
+/** Return type of SignOut. */
 export type SignOutResult = {
   __typename?: 'SignOutResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for sign up. */
+/** Input type of SignUp. */
 export type SignUpInput = {
-  /** User email. */
+  /** Email address of the user. */
   email: Scalars['String'];
-  /** User first name. */
+  /** The first name of the user. */
   firstName: Scalars['String'];
-  /** User last name. */
+  /** The last name of the user. */
   lastName: Scalars['String'];
-  /** User password. */
+  /** The password of the user. */
   password: Scalars['String'];
-  /** User username. */
+  /** The username of the user. */
   username: Scalars['String'];
 };
 
-/** Sign up result. */
+/** Return type of SignUp. */
 export type SignUpResult = {
   __typename?: 'SignUpResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for update email. */
+/** Input type of UpdateEmail. */
 export type UpdateEmailInput = {
-  /** Email. */
+  /** Provided as new email. */
   email: Scalars['String'];
 };
 
-/** Update email result. */
+/** Return type of UpdateEmail. */
 export type UpdateEmailResult = {
   __typename?: 'UpdateEmailResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for update password. */
+/** Input type of UpdatePassword. */
 export type UpdatePasswordInput = {
-  /** Current password. */
+  /** Current user password. */
   currentPassword: Scalars['String'];
   /** New password. */
   newPassword: Scalars['String'];
 };
 
-/** Update password result. */
+/** Return type of UpdatePassword. */
 export type UpdatePasswordResult = {
   __typename?: 'UpdatePasswordResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Response message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for verify email. */
+/** Input type of VerifyEmail. */
 export type VerifyEmailInput = {
   /** Verify email token. */
   verifyEmailToken: Scalars['String'];
 };
 
-/** Verify email result. */
+/** Return type of VerifyEmail. */
 export type VerifyEmailResult = {
   __typename?: 'VerifyEmailResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Response message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** Provided data for verify update email. */
+/** Input type of VerifyUpdateEmail. */
 export type VerifyUpdateEmailInput = {
-  /** Verify update email token. */
+  /** Token used to verify update email. */
   verifyUpdateEmailToken: Scalars['String'];
 };
 
-/** Verify update email result. */
+/** Return type of VerifyUpdateEmail. */
 export type VerifyUpdateEmailResult = {
   __typename?: 'VerifyUpdateEmailResult';
-  /** Errors. */
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** Message. */
+  /** Message returned if mutation was successful. */
   message?: Maybe<Scalars['String']>;
 };
 
-/** View user result. */
-export type ViewUserResult = {
-  __typename?: 'ViewUserResult';
-  /** Errors. */
+/** Input type of AddWatchedDevice. */
+export type AddWatchedDeviceInput = {
+  /** A unique identifier for the device. */
+  deviceId: Scalars['ID'];
+};
+
+/** Return type of AddWatchedDevice. */
+export type AddWatchedDeviceResult = {
+  __typename?: 'AddWatchedDeviceResult';
+  /** Errors array returned if there was error. */
   errors?: Maybe<Array<Maybe<Error>>>;
-  /** User. */
-  user?: Maybe<User>;
+  /** Message returned if mutation was successful. */
+  message?: Maybe<Scalars['String']>;
+  /** Returns created node. */
+  watchedDevice?: Maybe<WatchedDevice>;
+};
+
+/** Input type of RemoveWatchedDevice. */
+export type RemoveWatchedDeviceInput = {
+  /** A unique identifier for object. */
+  id: Scalars['ID'];
+};
+
+/** Return type of RemoveWatchedDevice. */
+export type RemoveWatchedDeviceResult = {
+  __typename?: 'RemoveWatchedDeviceResult';
+  /** Errors array returned if there was error. */
+  errors?: Maybe<Array<Maybe<Error>>>;
+  /** Message returned if mutation was successful. */
+  message?: Maybe<Scalars['String']>;
+};
+
+/** Type representing watched device. */
+export type WatchedDevice = Node & {
+  __typename?: 'WatchedDevice';
+  /** Identifies the date and time when the object was created. */
+  createdDate?: Maybe<Scalars['DateTime']>;
+  /** A unique identifier for the device beign watched. */
+  deviceId?: Maybe<Scalars['String']>;
+  /** A unique identifier for the watched device object. */
+  id: Scalars['ID'];
+  /** A unique identifier for the user watching device. */
+  userId?: Maybe<Scalars['String']>;
+};
+
+/** The connection type for WatchedDevice. */
+export type WatchedDeviceConnection = {
+  __typename?: 'WatchedDeviceConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<WatchedDeviceEdge>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+/** An edge in a connection. */
+export type WatchedDeviceEdge = {
+  __typename?: 'WatchedDeviceEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<WatchedDevice>;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -837,55 +975,55 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  PageInfo: ResolverTypeWrapper<PageInfo>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Query: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  Mutation: ResolverTypeWrapper<{}>;
-  Node: ResolversTypes['Device'] | ResolversTypes['User'];
-  Error: ResolverTypeWrapper<Error>;
-  CreateDeviceInput: CreateDeviceInput;
+  String: ResolverTypeWrapper<Scalars['String']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
-  CreateDeviceResult: ResolverTypeWrapper<
-    Omit<CreateDeviceResult, 'device'> & {
-      device?: Maybe<ResolversTypes['Device']>;
-    }
-  >;
+  Mutation: ResolverTypeWrapper<{}>;
+  Error: ResolverTypeWrapper<Error>;
   DeleteDeviceInput: DeleteDeviceInput;
   DeleteDeviceResult: ResolverTypeWrapper<DeleteDeviceResult>;
-  DeviceMetadata: ResolverTypeWrapper<DeviceMetadataModel>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
+  DeviceMetadata: ResolverTypeWrapper<DeviceMetadata>;
   ModifyDeviceInput: ModifyDeviceInput;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ModifyDeviceResult: ResolverTypeWrapper<
     Omit<ModifyDeviceResult, 'device'> & {
       device?: Maybe<ResolversTypes['Device']>;
     }
   >;
-  Device: ResolverTypeWrapper<DeviceModel>;
-  ViewDeviceInput: ViewDeviceInput;
-  ViewDevicesInput: ViewDevicesInput;
-  ViewDevicesResult: ResolverTypeWrapper<
-    Omit<ViewDevicesResult, 'devices'> & {
-      devices?: Maybe<Array<Maybe<ResolversTypes['Device']>>>;
-    }
-  >;
-  ViewDeviceResult: ResolverTypeWrapper<
-    Omit<ViewDeviceResult, 'device'> & {
+  NewDeviceInput: NewDeviceInput;
+  NewDeviceResult: ResolverTypeWrapper<
+    Omit<NewDeviceResult, 'device'> & {
       device?: Maybe<ResolversTypes['Device']>;
     }
   >;
-  DeleteLogsInput: DeleteLogsInput;
-  DeleteLogsResult: ResolverTypeWrapper<DeleteLogsResult>;
+  Device: ResolverTypeWrapper<DeviceModel>;
+  DeviceConnection: ResolverTypeWrapper<
+    Omit<DeviceConnection, 'edges'> & {
+      edges?: Maybe<Array<Maybe<ResolversTypes['DeviceEdge']>>>;
+    }
+  >;
+  DeviceEdge: ResolverTypeWrapper<
+    Omit<DeviceEdge, 'node'> & { node?: Maybe<ResolversTypes['Device']> }
+  >;
+  FlushLogInput: FlushLogInput;
+  FlushLogResult: ResolverTypeWrapper<FlushLogResult>;
   Log: ResolverTypeWrapper<Log>;
-  ViewLogsInput: ViewLogsInput;
-  ViewLogsResult: ResolverTypeWrapper<ViewLogsResult>;
+  LogConnection: ResolverTypeWrapper<LogConnection>;
+  LogEdge: ResolverTypeWrapper<LogEdge>;
+  Node:
+    | ResolversTypes['Device']
+    | ResolversTypes['Log']
+    | ResolversTypes['User']
+    | ResolversTypes['WatchedDevice'];
+  PageInfo: ResolverTypeWrapper<PageInfo>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DeleteUserInput: DeleteUserInput;
   DeleteUserResult: ResolverTypeWrapper<DeleteUserResult>;
   ForgotPasswordInput: ForgotPasswordInput;
   ForgotPasswordResult: ResolverTypeWrapper<ForgotPasswordResult>;
-  UserMetadata: ResolverTypeWrapper<UserMetadataModel>;
+  UserMetadata: ResolverTypeWrapper<UserMetadata>;
   ModifyUserInput: ModifyUserInput;
   ModifyUserResult: ResolverTypeWrapper<
     Omit<ModifyUserResult, 'user'> & { user?: Maybe<ResolversTypes['User']> }
@@ -895,10 +1033,24 @@ export type ResolversTypes = {
   ResetPasswordInput: ResetPasswordInput;
   ResetPasswordResult: ResolverTypeWrapper<ResetPasswordResult>;
   User: ResolverTypeWrapper<UserModel>;
+  UserConnection: ResolverTypeWrapper<
+    Omit<UserConnection, 'edges'> & {
+      edges?: Maybe<Array<Maybe<ResolversTypes['UserEdge']>>>;
+    }
+  >;
+  UserEdge: ResolverTypeWrapper<
+    Omit<UserEdge, 'node'> & { node?: Maybe<ResolversTypes['User']> }
+  >;
   SignInByEmailInput: SignInByEmailInput;
-  SignInByEmailResult: ResolverTypeWrapper<SignInByEmailResult>;
+  SignInByEmailResult: ResolverTypeWrapper<
+    Omit<SignInByEmailResult, 'user'> & { user?: Maybe<ResolversTypes['User']> }
+  >;
   SignInByUsernameInput: SignInByUsernameInput;
-  SignInByUsernameResult: ResolverTypeWrapper<SignInByUsernameResult>;
+  SignInByUsernameResult: ResolverTypeWrapper<
+    Omit<SignInByUsernameResult, 'user'> & {
+      user?: Maybe<ResolversTypes['User']>;
+    }
+  >;
   SignOutResult: ResolverTypeWrapper<SignOutResult>;
   SignUpInput: SignUpInput;
   SignUpResult: ResolverTypeWrapper<SignUpResult>;
@@ -910,54 +1062,60 @@ export type ResolversTypes = {
   VerifyEmailResult: ResolverTypeWrapper<VerifyEmailResult>;
   VerifyUpdateEmailInput: VerifyUpdateEmailInput;
   VerifyUpdateEmailResult: ResolverTypeWrapper<VerifyUpdateEmailResult>;
-  ViewUserResult: ResolverTypeWrapper<
-    Omit<ViewUserResult, 'user'> & { user?: Maybe<ResolversTypes['User']> }
-  >;
+  AddWatchedDeviceInput: AddWatchedDeviceInput;
+  AddWatchedDeviceResult: ResolverTypeWrapper<AddWatchedDeviceResult>;
+  RemoveWatchedDeviceInput: RemoveWatchedDeviceInput;
+  RemoveWatchedDeviceResult: ResolverTypeWrapper<RemoveWatchedDeviceResult>;
+  WatchedDevice: ResolverTypeWrapper<WatchedDevice>;
+  WatchedDeviceConnection: ResolverTypeWrapper<WatchedDeviceConnection>;
+  WatchedDeviceEdge: ResolverTypeWrapper<WatchedDeviceEdge>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  PageInfo: PageInfo;
-  String: Scalars['String'];
-  Boolean: Scalars['Boolean'];
   Query: {};
   ID: Scalars['ID'];
-  Mutation: {};
-  Node: ResolversParentTypes['Device'] | ResolversParentTypes['User'];
-  Error: Error;
-  CreateDeviceInput: CreateDeviceInput;
+  String: Scalars['String'];
+  Int: Scalars['Int'];
   Float: Scalars['Float'];
-  CreateDeviceResult: Omit<CreateDeviceResult, 'device'> & {
-    device?: Maybe<ResolversParentTypes['Device']>;
-  };
+  Mutation: {};
+  Error: Error;
   DeleteDeviceInput: DeleteDeviceInput;
   DeleteDeviceResult: DeleteDeviceResult;
-  DeviceMetadata: DeviceMetadataModel;
-  Int: Scalars['Int'];
+  DeviceMetadata: DeviceMetadata;
   ModifyDeviceInput: ModifyDeviceInput;
+  Boolean: Scalars['Boolean'];
   ModifyDeviceResult: Omit<ModifyDeviceResult, 'device'> & {
     device?: Maybe<ResolversParentTypes['Device']>;
   };
-  Device: DeviceModel;
-  ViewDeviceInput: ViewDeviceInput;
-  ViewDevicesInput: ViewDevicesInput;
-  ViewDevicesResult: Omit<ViewDevicesResult, 'devices'> & {
-    devices?: Maybe<Array<Maybe<ResolversParentTypes['Device']>>>;
-  };
-  ViewDeviceResult: Omit<ViewDeviceResult, 'device'> & {
+  NewDeviceInput: NewDeviceInput;
+  NewDeviceResult: Omit<NewDeviceResult, 'device'> & {
     device?: Maybe<ResolversParentTypes['Device']>;
   };
-  DeleteLogsInput: DeleteLogsInput;
-  DeleteLogsResult: DeleteLogsResult;
+  Device: DeviceModel;
+  DeviceConnection: Omit<DeviceConnection, 'edges'> & {
+    edges?: Maybe<Array<Maybe<ResolversParentTypes['DeviceEdge']>>>;
+  };
+  DeviceEdge: Omit<DeviceEdge, 'node'> & {
+    node?: Maybe<ResolversParentTypes['Device']>;
+  };
+  FlushLogInput: FlushLogInput;
+  FlushLogResult: FlushLogResult;
   Log: Log;
-  ViewLogsInput: ViewLogsInput;
-  ViewLogsResult: ViewLogsResult;
+  LogConnection: LogConnection;
+  LogEdge: LogEdge;
+  Node:
+    | ResolversParentTypes['Device']
+    | ResolversParentTypes['Log']
+    | ResolversParentTypes['User']
+    | ResolversParentTypes['WatchedDevice'];
+  PageInfo: PageInfo;
   DateTime: Scalars['DateTime'];
   DeleteUserInput: DeleteUserInput;
   DeleteUserResult: DeleteUserResult;
   ForgotPasswordInput: ForgotPasswordInput;
   ForgotPasswordResult: ForgotPasswordResult;
-  UserMetadata: UserMetadataModel;
+  UserMetadata: UserMetadata;
   ModifyUserInput: ModifyUserInput;
   ModifyUserResult: Omit<ModifyUserResult, 'user'> & {
     user?: Maybe<ResolversParentTypes['User']>;
@@ -967,10 +1125,20 @@ export type ResolversParentTypes = {
   ResetPasswordInput: ResetPasswordInput;
   ResetPasswordResult: ResetPasswordResult;
   User: UserModel;
+  UserConnection: Omit<UserConnection, 'edges'> & {
+    edges?: Maybe<Array<Maybe<ResolversParentTypes['UserEdge']>>>;
+  };
+  UserEdge: Omit<UserEdge, 'node'> & {
+    node?: Maybe<ResolversParentTypes['User']>;
+  };
   SignInByEmailInput: SignInByEmailInput;
-  SignInByEmailResult: SignInByEmailResult;
+  SignInByEmailResult: Omit<SignInByEmailResult, 'user'> & {
+    user?: Maybe<ResolversParentTypes['User']>;
+  };
   SignInByUsernameInput: SignInByUsernameInput;
-  SignInByUsernameResult: SignInByUsernameResult;
+  SignInByUsernameResult: Omit<SignInByUsernameResult, 'user'> & {
+    user?: Maybe<ResolversParentTypes['User']>;
+  };
   SignOutResult: SignOutResult;
   SignUpInput: SignUpInput;
   SignUpResult: SignUpResult;
@@ -982,69 +1150,70 @@ export type ResolversParentTypes = {
   VerifyEmailResult: VerifyEmailResult;
   VerifyUpdateEmailInput: VerifyUpdateEmailInput;
   VerifyUpdateEmailResult: VerifyUpdateEmailResult;
-  ViewUserResult: Omit<ViewUserResult, 'user'> & {
-    user?: Maybe<ResolversParentTypes['User']>;
-  };
-};
-
-export type PageInfoResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']
-> = {
-  endCursor?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  hasPreviousPage?: Resolver<
-    ResolversTypes['Boolean'],
-    ParentType,
-    ContextType
-  >;
-  startCursor?: Resolver<
-    Maybe<ResolversTypes['String']>,
-    ParentType,
-    ContextType
-  >;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  AddWatchedDeviceInput: AddWatchedDeviceInput;
+  AddWatchedDeviceResult: AddWatchedDeviceResult;
+  RemoveWatchedDeviceInput: RemoveWatchedDeviceInput;
+  RemoveWatchedDeviceResult: RemoveWatchedDeviceResult;
+  WatchedDevice: WatchedDevice;
+  WatchedDeviceConnection: WatchedDeviceConnection;
+  WatchedDeviceEdge: WatchedDeviceEdge;
 };
 
 export type QueryResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
+  device?: Resolver<
+    Maybe<ResolversTypes['Device']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryDeviceArgs, 'id'>
+  >;
+  deviceActivity?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Log']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryDeviceActivityArgs, 'id'>
+  >;
+  deviceChart?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Log']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryDeviceChartArgs, 'id' | 'startDate' | 'endDate'>
+  >;
+  devices?: Resolver<
+    Maybe<ResolversTypes['DeviceConnection']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryDevicesArgs, 'first'>
+  >;
+  devicesByLocation?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Device']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryDevicesByLocationArgs, 'latitude' | 'longitude'>
+  >;
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   node?: Resolver<
     Maybe<ResolversTypes['Node']>,
     ParentType,
     ContextType,
     RequireFields<QueryNodeArgs, 'id'>
   >;
-  pageInfo?: Resolver<
-    Maybe<ResolversTypes['PageInfo']>,
-    ParentType,
-    ContextType
-  >;
-  viewDevice?: Resolver<
-    ResolversTypes['ViewDeviceResult'],
+  user?: Resolver<
+    Maybe<ResolversTypes['User']>,
     ParentType,
     ContextType,
-    RequireFields<QueryViewDeviceArgs, 'input'>
+    RequireFields<QueryUserArgs, 'id'>
   >;
-  viewDevices?: Resolver<
-    ResolversTypes['ViewDevicesResult'],
+  users?: Resolver<
+    Maybe<ResolversTypes['UserConnection']>,
     ParentType,
     ContextType,
-    RequireFields<QueryViewDevicesArgs, 'input'>
+    RequireFields<QueryUsersArgs, 'first'>
   >;
-  viewLogs?: Resolver<
-    ResolversTypes['ViewLogsResult'],
-    ParentType,
-    ContextType,
-    RequireFields<QueryViewLogsArgs, 'input'>
-  >;
-  viewUser?: Resolver<
-    ResolversTypes['ViewUserResult'],
+  watchedDevices?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['WatchedDevice']>>>,
     ParentType,
     ContextType
   >;
@@ -1054,112 +1223,120 @@ export type MutationResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = {
-  createDevice?: Resolver<
-    ResolversTypes['CreateDeviceResult'],
+  addWatchedDevice?: Resolver<
+    Maybe<ResolversTypes['AddWatchedDeviceResult']>,
     ParentType,
     ContextType,
-    RequireFields<MutationCreateDeviceArgs, 'input'>
+    RequireFields<MutationAddWatchedDeviceArgs, 'input'>
   >;
   deleteDevice?: Resolver<
-    ResolversTypes['DeleteDeviceResult'],
+    Maybe<ResolversTypes['DeleteDeviceResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationDeleteDeviceArgs, 'input'>
   >;
-  deleteLogs?: Resolver<
-    ResolversTypes['DeleteLogsResult'],
-    ParentType,
-    ContextType,
-    RequireFields<MutationDeleteLogsArgs, 'input'>
-  >;
   deleteUser?: Resolver<
-    ResolversTypes['DeleteUserResult'],
+    Maybe<ResolversTypes['DeleteUserResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationDeleteUserArgs, 'input'>
   >;
   empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  flushLog?: Resolver<
+    Maybe<ResolversTypes['FlushLogResult']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationFlushLogArgs, 'input'>
+  >;
   forgotPassword?: Resolver<
-    ResolversTypes['ForgotPasswordResult'],
+    Maybe<ResolversTypes['ForgotPasswordResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationForgotPasswordArgs, 'input'>
   >;
   modifyDevice?: Resolver<
-    ResolversTypes['ModifyDeviceResult'],
+    Maybe<ResolversTypes['ModifyDeviceResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationModifyDeviceArgs, 'input'>
   >;
   modifyUser?: Resolver<
-    ResolversTypes['ModifyUserResult'],
+    Maybe<ResolversTypes['ModifyUserResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationModifyUserArgs, 'input'>
   >;
+  newDevice?: Resolver<
+    Maybe<ResolversTypes['NewDeviceResult']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationNewDeviceArgs, 'input'>
+  >;
+  removeWatchedDevice?: Resolver<
+    Maybe<ResolversTypes['RemoveWatchedDeviceResult']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationRemoveWatchedDeviceArgs, 'input'>
+  >;
   resendVerifyEmail?: Resolver<
-    ResolversTypes['ResendVerifyEmailResult'],
+    Maybe<ResolversTypes['ResendVerifyEmailResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationResendVerifyEmailArgs, 'input'>
   >;
   resetPassword?: Resolver<
-    ResolversTypes['ResetPasswordResult'],
+    Maybe<ResolversTypes['ResetPasswordResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationResetPasswordArgs, 'input'>
   >;
   signInByEmail?: Resolver<
-    ResolversTypes['SignInByEmailResult'],
+    Maybe<ResolversTypes['SignInByEmailResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationSignInByEmailArgs, 'input'>
   >;
   signInByUsername?: Resolver<
-    ResolversTypes['SignInByUsernameResult'],
+    Maybe<ResolversTypes['SignInByUsernameResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationSignInByUsernameArgs, 'input'>
   >;
-  signOut?: Resolver<ResolversTypes['SignOutResult'], ParentType, ContextType>;
+  signOut?: Resolver<
+    Maybe<ResolversTypes['SignOutResult']>,
+    ParentType,
+    ContextType
+  >;
   signUp?: Resolver<
-    ResolversTypes['SignUpResult'],
+    Maybe<ResolversTypes['SignUpResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationSignUpArgs, 'input'>
   >;
   updateEmail?: Resolver<
-    ResolversTypes['UpdateEmailResult'],
+    Maybe<ResolversTypes['UpdateEmailResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationUpdateEmailArgs, 'input'>
   >;
   updatePassword?: Resolver<
-    ResolversTypes['UpdatePasswordResult'],
+    Maybe<ResolversTypes['UpdatePasswordResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationUpdatePasswordArgs, 'input'>
   >;
   verifyEmail?: Resolver<
-    ResolversTypes['VerifyEmailResult'],
+    Maybe<ResolversTypes['VerifyEmailResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationVerifyEmailArgs, 'input'>
   >;
   verifyUpdateEmail?: Resolver<
-    ResolversTypes['VerifyUpdateEmailResult'],
+    Maybe<ResolversTypes['VerifyUpdateEmailResult']>,
     ParentType,
     ContextType,
     RequireFields<MutationVerifyUpdateEmailArgs, 'input'>
   >;
-};
-
-export type NodeResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']
-> = {
-  __resolveType: TypeResolveFn<'Device' | 'User', ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
 export type ErrorResolvers<
@@ -1168,20 +1345,6 @@ export type ErrorResolvers<
 > = {
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   path?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CreateDeviceResultResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes['CreateDeviceResult'] = ResolversParentTypes['CreateDeviceResult']
-> = {
-  device?: Resolver<Maybe<ResolversTypes['Device']>, ParentType, ContextType>;
-  errors?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
-    ParentType,
-    ContextType
-  >;
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1226,6 +1389,20 @@ export type ModifyDeviceResultResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type NewDeviceResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['NewDeviceResult'] = ResolversParentTypes['NewDeviceResult']
+> = {
+  device?: Resolver<Maybe<ResolversTypes['Device']>, ParentType, ContextType>;
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type DeviceResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Device'] = ResolversParentTypes['Device']
@@ -1253,6 +1430,12 @@ export type DeviceResolvers<
     ContextType
   >;
   latitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  logs?: Resolver<
+    Maybe<ResolversTypes['LogConnection']>,
+    ParentType,
+    ContextType,
+    RequireFields<DeviceLogsArgs, 'first'>
+  >;
   longitude?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   metadata?: Resolver<
     Maybe<ResolversTypes['DeviceMetadata']>,
@@ -1265,50 +1448,38 @@ export type DeviceResolvers<
     ContextType
   >;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  owner?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  logs?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Log']>>>,
-    ParentType,
-    ContextType
-  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ViewDevicesResultResolvers<
+export type DeviceConnectionResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['ViewDevicesResult'] = ResolversParentTypes['ViewDevicesResult']
+  ParentType extends ResolversParentTypes['DeviceConnection'] = ResolversParentTypes['DeviceConnection']
 > = {
-  devices?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Device']>>>,
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['DeviceEdge']>>>,
     ParentType,
     ContextType
   >;
-  errors?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
-    ParentType,
-    ContextType
-  >;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ViewDeviceResultResolvers<
+export type DeviceEdgeResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['ViewDeviceResult'] = ResolversParentTypes['ViewDeviceResult']
+  ParentType extends ResolversParentTypes['DeviceEdge'] = ResolversParentTypes['DeviceEdge']
 > = {
-  device?: Resolver<Maybe<ResolversTypes['Device']>, ParentType, ContextType>;
-  errors?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
-    ParentType,
-    ContextType
-  >;
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['Device']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type DeleteLogsResultResolvers<
+export type FlushLogResultResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['DeleteLogsResult'] = ResolversParentTypes['DeleteLogsResult']
+  ParentType extends ResolversParentTypes['FlushLogResult'] = ResolversParentTypes['FlushLogResult']
 > = {
   errors?: Resolver<
     Maybe<Array<Maybe<ResolversTypes['Error']>>>,
@@ -1323,27 +1494,69 @@ export type LogResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes['Log'] = ResolversParentTypes['Log']
 > = {
-  time?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  deviceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  deviceId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   field1?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   field2?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   field3?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   field4?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   field5?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  time?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ViewLogsResultResolvers<
+export type LogConnectionResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['ViewLogsResult'] = ResolversParentTypes['ViewLogsResult']
+  ParentType extends ResolversParentTypes['LogConnection'] = ResolversParentTypes['LogConnection']
 > = {
-  logs?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Log']>>>,
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['LogEdge']>>>,
     ParentType,
     ContextType
   >;
-  errors?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LogEdgeResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['LogEdge'] = ResolversParentTypes['LogEdge']
+> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['Log']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NodeResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']
+> = {
+  __resolveType: TypeResolveFn<
+    'Device' | 'Log' | 'User' | 'WatchedDevice',
+    ParentType,
+    ContextType
+  >;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+};
+
+export type PageInfoResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']
+> = {
+  endCursor?: Resolver<
+    Maybe<ResolversTypes['String']>,
+    ParentType,
+    ContextType
+  >;
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasPreviousPage?: Resolver<
+    ResolversTypes['Boolean'],
+    ParentType,
+    ContextType
+  >;
+  startCursor?: Resolver<
+    Maybe<ResolversTypes['String']>,
     ParentType,
     ContextType
   >;
@@ -1456,9 +1669,10 @@ export type UserResolvers<
     ContextType
   >;
   devices?: Resolver<
-    Maybe<Array<Maybe<ResolversTypes['Device']>>>,
+    Maybe<ResolversTypes['DeviceConnection']>,
     ParentType,
-    ContextType
+    ContextType,
+    RequireFields<UserDevicesArgs, 'first'>
   >;
   firstName?: Resolver<
     Maybe<ResolversTypes['String']>,
@@ -1485,7 +1699,36 @@ export type UserResolvers<
     ContextType
   >;
   username?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  watchedDevices?: Resolver<
+    Maybe<ResolversTypes['WatchedDeviceConnection']>,
+    ParentType,
+    ContextType,
+    RequireFields<UserWatchedDevicesArgs, 'first'>
+  >;
   website?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserConnectionResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['UserConnection'] = ResolversParentTypes['UserConnection']
+> = {
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['UserEdge']>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserEdgeResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['UserEdge'] = ResolversParentTypes['UserEdge']
+> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1499,6 +1742,7 @@ export type SignInByEmailResultResolvers<
     ContextType
   >;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1512,6 +1756,7 @@ export type SignInByUsernameResultResolvers<
     ContextType
   >;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1593,35 +1838,96 @@ export type VerifyUpdateEmailResultResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type ViewUserResultResolvers<
+export type AddWatchedDeviceResultResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes['ViewUserResult'] = ResolversParentTypes['ViewUserResult']
+  ParentType extends ResolversParentTypes['AddWatchedDeviceResult'] = ResolversParentTypes['AddWatchedDeviceResult']
 > = {
   errors?: Resolver<
     Maybe<Array<Maybe<ResolversTypes['Error']>>>,
     ParentType,
     ContextType
   >;
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  watchedDevice?: Resolver<
+    Maybe<ResolversTypes['WatchedDevice']>,
+    ParentType,
+    ContextType
+  >;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RemoveWatchedDeviceResultResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['RemoveWatchedDeviceResult'] = ResolversParentTypes['RemoveWatchedDeviceResult']
+> = {
+  errors?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Error']>>>,
+    ParentType,
+    ContextType
+  >;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WatchedDeviceResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['WatchedDevice'] = ResolversParentTypes['WatchedDevice']
+> = {
+  createdDate?: Resolver<
+    Maybe<ResolversTypes['DateTime']>,
+    ParentType,
+    ContextType
+  >;
+  deviceId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WatchedDeviceConnectionResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['WatchedDeviceConnection'] = ResolversParentTypes['WatchedDeviceConnection']
+> = {
+  edges?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['WatchedDeviceEdge']>>>,
+    ParentType,
+    ContextType
+  >;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WatchedDeviceEdgeResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes['WatchedDeviceEdge'] = ResolversParentTypes['WatchedDeviceEdge']
+> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<
+    Maybe<ResolversTypes['WatchedDevice']>,
+    ParentType,
+    ContextType
+  >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = Context> = {
-  PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
-  Node?: NodeResolvers<ContextType>;
   Error?: ErrorResolvers<ContextType>;
-  CreateDeviceResult?: CreateDeviceResultResolvers<ContextType>;
   DeleteDeviceResult?: DeleteDeviceResultResolvers<ContextType>;
   DeviceMetadata?: DeviceMetadataResolvers<ContextType>;
   ModifyDeviceResult?: ModifyDeviceResultResolvers<ContextType>;
+  NewDeviceResult?: NewDeviceResultResolvers<ContextType>;
   Device?: DeviceResolvers<ContextType>;
-  ViewDevicesResult?: ViewDevicesResultResolvers<ContextType>;
-  ViewDeviceResult?: ViewDeviceResultResolvers<ContextType>;
-  DeleteLogsResult?: DeleteLogsResultResolvers<ContextType>;
+  DeviceConnection?: DeviceConnectionResolvers<ContextType>;
+  DeviceEdge?: DeviceEdgeResolvers<ContextType>;
+  FlushLogResult?: FlushLogResultResolvers<ContextType>;
   Log?: LogResolvers<ContextType>;
-  ViewLogsResult?: ViewLogsResultResolvers<ContextType>;
+  LogConnection?: LogConnectionResolvers<ContextType>;
+  LogEdge?: LogEdgeResolvers<ContextType>;
+  Node?: NodeResolvers<ContextType>;
+  PageInfo?: PageInfoResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DeleteUserResult?: DeleteUserResultResolvers<ContextType>;
   ForgotPasswordResult?: ForgotPasswordResultResolvers<ContextType>;
@@ -1630,6 +1936,8 @@ export type Resolvers<ContextType = Context> = {
   ResendVerifyEmailResult?: ResendVerifyEmailResultResolvers<ContextType>;
   ResetPasswordResult?: ResetPasswordResultResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserConnection?: UserConnectionResolvers<ContextType>;
+  UserEdge?: UserEdgeResolvers<ContextType>;
   SignInByEmailResult?: SignInByEmailResultResolvers<ContextType>;
   SignInByUsernameResult?: SignInByUsernameResultResolvers<ContextType>;
   SignOutResult?: SignOutResultResolvers<ContextType>;
@@ -1638,7 +1946,11 @@ export type Resolvers<ContextType = Context> = {
   UpdatePasswordResult?: UpdatePasswordResultResolvers<ContextType>;
   VerifyEmailResult?: VerifyEmailResultResolvers<ContextType>;
   VerifyUpdateEmailResult?: VerifyUpdateEmailResultResolvers<ContextType>;
-  ViewUserResult?: ViewUserResultResolvers<ContextType>;
+  AddWatchedDeviceResult?: AddWatchedDeviceResultResolvers<ContextType>;
+  RemoveWatchedDeviceResult?: RemoveWatchedDeviceResultResolvers<ContextType>;
+  WatchedDevice?: WatchedDeviceResolvers<ContextType>;
+  WatchedDeviceConnection?: WatchedDeviceConnectionResolvers<ContextType>;
+  WatchedDeviceEdge?: WatchedDeviceEdgeResolvers<ContextType>;
 };
 
 /**

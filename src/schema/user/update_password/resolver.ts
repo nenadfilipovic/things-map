@@ -47,12 +47,7 @@ const resolvers: Resolvers = {
 
       if (!id) {
         return {
-          errors: [
-            {
-              __typename: 'Error',
-              message: NOT_LOGGED_IN,
-            },
-          ],
+          errors: [{ __typename: 'Error', message: NOT_LOGGED_IN }],
         };
       }
 
@@ -127,23 +122,13 @@ const resolvers: Resolvers = {
           }
         } catch {
           return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: GENERIC_ERROR,
-              },
-            ],
+            errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
           };
         }
       }
 
       return {
-        errors: [
-          {
-            __typename: 'Error',
-            message: GENERIC_ERROR,
-          },
-        ],
+        errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
       };
     },
   },

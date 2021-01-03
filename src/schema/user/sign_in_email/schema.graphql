@@ -1,20 +1,25 @@
-"Provided data for sign in email."
+"Input type of SignInByEmail"
 input SignInByEmailInput {
-  "Email."
+  "The email address of the user."
   email: String!
-  "Password."
+  "The password of the user."
   password: String!
 }
 
-"Sign in by email result."
+"Return type of SignInByEmail."
 type SignInByEmailResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Message."
+  "Message returned if mutation was successful."
   message: String
+  "Returns node instance."
+  user: User
 }
 
 extend type Mutation {
-  "Sign in by email."
-  signInByEmail("Input data." input: SignInByEmailInput!): SignInByEmailResult!
+  "Signs user in by email."
+  signInByEmail(
+    "User sign in credentials."
+    input: SignInByEmailInput!
+  ): SignInByEmailResult
 }

@@ -1,39 +1,19 @@
-"Relay specification."
-type PageInfo {
-  "End cursor."
-  endCursor: String
-  "Has next page."
-  hasNextPage: Boolean!
-  "Has previous page."
-  hasPreviousPage: Boolean!
-  "Start cursor."
-  startCursor: String
-}
-
-"Root query."
+"The query root of things-map GraphQL interface."
 type Query {
-  "Node."
-  node("Input data." id: ID!): Node
-  "Page info."
-  pageInfo: PageInfo
+  "Fetches an object given its ID."
+  node("ID of the object." id: ID!): Node
 }
 
-"Root mutation."
+"The root query for implementing GraphQL mutations."
 type Mutation {
-  "Empty."
+  "Empty mutation that allow extending it in other files."
   empty: String
 }
 
-"Global node."
-interface Node {
-  "Id."
-  id: ID!
-}
-
-"Error type."
+"Type representing a error."
 type Error {
-  "Message."
+  "Message containing error."
   message: String!
-  "Path."
+  "Path of the error."
   path: String
 }

@@ -1,6 +1,6 @@
 import { Log } from 'src/database/models/Log';
 import { Device } from 'src/database/models/Device';
-import { DeleteLogsResult, Resolvers } from 'src/types';
+import { FlushLogResult, Resolvers } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
 
 const resolvers: Resolvers = {
@@ -14,11 +14,7 @@ const resolvers: Resolvers = {
      * Delete logs.
      */
 
-    deleteLogs: async (
-      parent,
-      { input },
-      { ctx },
-    ): Promise<DeleteLogsResult> => {
+    flushLog: async (parent, { input }, { ctx }): Promise<FlushLogResult> => {
       /**
        * Prepare data.
        */
@@ -53,23 +49,13 @@ const resolvers: Resolvers = {
           };
         } catch {
           return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: GENERIC_ERROR,
-              },
-            ],
+            errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
           };
         }
       }
 
       return {
-        errors: [
-          {
-            __typename: 'Error',
-            message: NOT_LOGGED_IN,
-          },
-        ],
+        errors: [{ __typename: 'Error', message: NOT_LOGGED_IN }],
       };
     },
   },

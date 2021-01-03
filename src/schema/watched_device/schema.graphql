@@ -1,0 +1,34 @@
+"Type representing watched device."
+type WatchedDevice implements Node {
+  "Identifies the date and time when the object was created."
+  createdDate: DateTime
+  "A unique identifier for the device beign watched."
+  deviceId: String
+  "A unique identifier for the watched device object."
+  id: ID!
+  "A unique identifier for the user watching device."
+  userId: String
+}
+
+"The connection type for WatchedDevice."
+type WatchedDeviceConnection {
+  "A list of edges."
+  edges: [WatchedDeviceEdge]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
+  totalCount: Int
+}
+
+"An edge in a connection."
+type WatchedDeviceEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: WatchedDevice
+}
+
+extend type Query {
+  "Display user watched devices."
+  watchedDevices: [WatchedDevice]
+}

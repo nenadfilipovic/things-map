@@ -1,18 +1,18 @@
-"Provided data for update email."
+"Input type of UpdateEmail."
 input UpdateEmailInput {
-  "Email."
+  "Provided as new email."
   email: String!
 }
 
-"Update email result."
+"Return type of UpdateEmail."
 type UpdateEmailResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Message."
+  "Message returned if mutation was successful."
   message: String
 }
 
 extend type Mutation {
-  "Update email."
-  updateEmail("Input data." input: UpdateEmailInput!): UpdateEmailResult!
+  "Updates email of the user."
+  updateEmail("New email." input: UpdateEmailInput!): UpdateEmailResult
 }

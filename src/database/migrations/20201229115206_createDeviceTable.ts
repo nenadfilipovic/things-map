@@ -3,11 +3,11 @@ import * as Knex from 'knex';
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('device', (table) => {
     // Device id.
-    table.increments('id');
+    table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
 
     // User id.
     table
-      .integer('user_id')
+      .uuid('user_id')
       .references('user.id')
       .onDelete('CASCADE')
       .notNullable();
@@ -49,10 +49,10 @@ export async function up(knex: Knex): Promise<void> {
     table.boolean('is_public').defaultTo(false);
 
     // Device modify date.
-    table.dateTime('modify_date').defaultTo(knex.fn.now());
+    table.timestamp('modify_date');
 
     // Device created date.
-    table.dateTime('created_date').defaultTo(knex.fn.now());
+    table.timestamp('created_date').defaultTo(knex.fn.now());
 
     // Index on latitude and longitude.
     table.index(['latitude', 'longitude']);

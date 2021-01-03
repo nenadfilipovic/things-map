@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('user_metadata', (table) => {
     // User id.
     table
-      .integer('user_id')
+      .uuid('user_id')
       .references('user.id')
       .onDelete('CASCADE')
       .unique()

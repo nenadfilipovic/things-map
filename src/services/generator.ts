@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  *
@@ -6,8 +6,8 @@ import crypto from 'crypto';
  *
  * Generate random tokens.
  */
-const generateRandomToken = (size = 40): string => {
-  return crypto.randomBytes(size).toString('hex');
+const generateRandomToken = (): string => {
+  return uuidv4();
 };
 
 export { generateRandomToken };

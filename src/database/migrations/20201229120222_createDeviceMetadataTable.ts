@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('device_metadata', (table) => {
     // Device id.
     table
-      .integer('device_id')
+      .uuid('device_id')
       .references('device.id')
       .onDelete('CASCADE')
       .unique()
@@ -17,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
     table.integer('last_entry_id');
 
     // Device last write date.
-    table.dateTime('last_write_date');
+    table.timestamp('last_write_date');
   });
 }
 

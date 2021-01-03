@@ -1,18 +1,23 @@
-import { Model, NonFunctionPropertyNames } from 'objection';
+import { Model } from 'objection';
 
 export class DeviceMetadata extends Model {
   static tableName = 'deviceMetadata';
   static idColumn = 'deviceId';
 
-  deviceId!: number;
-  writeKey!: string;
-  lastEntryId!: number;
-  lastWriteDate!: Date;
+  deviceId?: string;
+  writeKey?: string;
+  lastEntryId?: number;
+  lastWriteDate?: Date;
+
+  static jsonSchema = {
+    type: 'object',
+    required: ['deviceId', 'writeKey'],
+
+    properties: {
+      deviceId: { type: 'string' },
+      writeKey: { type: 'string' },
+      lastEntryId: { type: 'number' },
+      lastWriteDate: { format: 'date-time' },
+    },
+  };
 }
-
-type CreateModelObject<T extends Model> = Pick<
-  T,
-  Exclude<NonFunctionPropertyNames<T>, 'QueryBuilderType'>
->;
-
-export type DeviceMetadataModel = CreateModelObject<DeviceMetadata>;

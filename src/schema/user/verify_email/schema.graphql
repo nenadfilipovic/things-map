@@ -1,18 +1,18 @@
-"Provided data for verify email."
+"Input type of VerifyEmail."
 input VerifyEmailInput {
   "Verify email token."
   verifyEmailToken: String!
 }
 
-"Verify email result."
+"Return type of VerifyEmail."
 type VerifyEmailResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Response message."
+  "Message returned if mutation was successful."
   message: String
 }
 
 extend type Mutation {
-  "Verify email."
-  verifyEmail("Input data." input: VerifyEmailInput!): VerifyEmailResult!
+  "Verifies email of the user."
+  verifyEmail("Verify token." input: VerifyEmailInput!): VerifyEmailResult
 }

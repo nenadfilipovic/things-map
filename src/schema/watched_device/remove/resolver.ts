@@ -1,47 +1,50 @@
 import { User } from 'src/database/models/User';
-import { Device } from 'src/database/models/Device';
-import { DeleteDeviceResult, Resolvers } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
+import { RemoveWatchedDeviceResult, Resolvers } from 'src/types';
+import { WatchedDevice } from 'src/database/models/WatchedDevice';
 
 const resolvers: Resolvers = {
   Mutation: {
     /**
      *
-     * @param root
+     * @param parent
      * @param args
      * @param context
      *
-     * Delete device.
+     * Remove watched device.
      */
 
-    deleteDevice: async (
-      _,
+    removeWatchedDevice: async (
+      parent,
       { input },
       { ctx },
-    ): Promise<DeleteDeviceResult> => {
+    ): Promise<RemoveWatchedDeviceResult> => {
       /**
        * Prepare data.
        */
 
-      const userId = ctx.state.user?.id;
       const { id } = input;
+      const userId = ctx.state.user?.id;
 
       /**
-       * Find user if logged in.
+       * Check if user is logged in.
        */
 
       if (userId) {
         /**
-         * Remove device.
+         * Delete watched device.
          */
 
         try {
           await User.transaction(async (trx) => {
-            return await Device.query(trx).deleteById(id);
+            return await WatchedDevice.query(trx)
+              .where('id', id)
+              .andWhere('userId', userId)
+              .delete();
           });
 
           return {
-            message: 'Device successfully deleted',
+            message: `Successfully removed watched device`,
           };
         } catch {
           return {
