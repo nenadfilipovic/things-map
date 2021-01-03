@@ -1,23 +1,23 @@
-"Provided data for update password."
+"Input type of UpdatePassword."
 input UpdatePasswordInput {
-  "Current password."
+  "Current user password."
   currentPassword: String!
   "New password."
   newPassword: String!
 }
 
-"Update password result."
+"Return type of UpdatePassword."
 type UpdatePasswordResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Response message."
+  "Message returned if mutation was successful."
   message: String
 }
 
 extend type Mutation {
-  "Update password."
+  "Updates password of the user."
   updatePassword(
-    "Input data."
+    "Current and new password."
     input: UpdatePasswordInput!
-  ): UpdatePasswordResult!
+  ): UpdatePasswordResult
 }

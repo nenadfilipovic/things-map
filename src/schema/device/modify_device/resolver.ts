@@ -1,5 +1,5 @@
+import { Resolvers } from 'src/types';
 import { User } from 'src/database/models/User';
-import { ModifyDeviceResult, Resolvers } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
 
 const resolvers: Resolvers = {
@@ -13,11 +13,7 @@ const resolvers: Resolvers = {
      * Modifies device data.
      */
 
-    modifyDevice: async (
-      root,
-      { input },
-      { ctx },
-    ): Promise<ModifyDeviceResult> => {
+    modifyDevice: async (root, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -45,12 +41,7 @@ const resolvers: Resolvers = {
 
       if (!userId) {
         return {
-          errors: [
-            {
-              __typename: 'Error',
-              message: NOT_LOGGED_IN,
-            },
-          ],
+          errors: [{ __typename: 'Error', message: NOT_LOGGED_IN }],
         };
       }
       /**
@@ -95,23 +86,13 @@ const resolvers: Resolvers = {
           };
         } catch {
           return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: GENERIC_ERROR,
-              },
-            ],
+            errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
           };
         }
       }
 
       return {
-        errors: [
-          {
-            __typename: 'Error',
-            message: GENERIC_ERROR,
-          },
-        ],
+        errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
       };
     },
   },

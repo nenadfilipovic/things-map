@@ -1,18 +1,21 @@
-"Provided data for reset password."
+"Input type of ResetPassword"
 input ResetPasswordInput {
-  "Reset password token."
+  "Token used to reset password."
   resetPasswordToken: String!
 }
 
-"Reset password result."
+"Return type of ResetPassword."
 type ResetPasswordResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Message."
+  "Message returned if mutation was successful."
   message: String
 }
 
 extend type Mutation {
-  "Reset password."
-  resetPassword("Input data." input: ResetPasswordInput!): ResetPasswordResult!
+  "Resets user password."
+  resetPassword(
+    "Reset password token."
+    input: ResetPasswordInput!
+  ): ResetPasswordResult
 }

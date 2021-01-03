@@ -1,0 +1,37 @@
+"Type representing log that belongs to device."
+type Log implements Node {
+  "A unique identifier for the device that logs belong to."
+  deviceId: String
+  "Field 1 of the log."
+  field1: String
+  "Field 2 of the log."
+  field2: String
+  "Field 3 of the log."
+  field3: String
+  "Field 4 of the log."
+  field4: String
+  "Field 5 of the log."
+  field5: String
+  "A unique identifier for the log."
+  id: ID!
+  "The time field of the log."
+  time: DateTime
+}
+
+"The connection type for Log."
+type LogConnection {
+  "A list of edges."
+  edges: [LogEdge]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
+  totalCount: Int
+}
+
+"An edge in a connection."
+type LogEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Log
+}

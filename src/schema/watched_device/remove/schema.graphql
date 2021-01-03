@@ -1,0 +1,21 @@
+"Input type of RemoveWatchedDevice."
+input RemoveWatchedDeviceInput {
+  "A unique identifier for object."
+  id: ID!
+}
+
+"Return type of RemoveWatchedDevice."
+type RemoveWatchedDeviceResult {
+  "Errors array returned if there was error."
+  errors: [Error]
+  "Message returned if mutation was successful."
+  message: String
+}
+
+extend type Mutation {
+  "Removes watched device object."
+  removeWatchedDevice(
+    "Watched device object id."
+    input: RemoveWatchedDeviceInput!
+  ): RemoveWatchedDeviceResult
+}

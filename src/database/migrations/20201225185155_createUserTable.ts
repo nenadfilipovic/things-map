@@ -1,43 +1,50 @@
 import * as Knex from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable('user', (table) => {
-    // User id.
-    table.increments('id');
+  return (
+    knex.schema
+      // Add uuid extension.
+      .raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
 
-    // User first name.
-    table.string('first_name').notNullable();
+      // Create table.
+      .createTable('user', (table) => {
+        // User id.
+        table.uuid('id').primary().defaultTo(knex.raw('uuid_generate_v4()'));
 
-    // User last name.
-    table.string('last_name').notNullable();
+        // User first name.
+        table.string('first_name').notNullable();
 
-    // User bio.
-    table.string('bio');
+        // User last name.
+        table.string('last_name').notNullable();
 
-    // User website.
-    table.string('website');
+        // User bio.
+        table.string('bio');
 
-    // User username.
-    table.string('username').unique().notNullable();
+        // User website.
+        table.string('website');
 
-    // User public flag.
-    table.boolean('is_public').defaultTo(false);
+        // User username.
+        table.string('username').unique().notNullable();
 
-    // User latitude.
-    table.decimal('latitude', 15, 10);
+        // User public flag.
+        table.boolean('is_public').defaultTo(false);
 
-    // User longitude.
-    table.decimal('longitude', 15, 10);
+        // User latitude.
+        table.decimal('latitude', 15, 10);
 
-    // User country.
-    table.string('country');
+        // User longitude.
+        table.decimal('longitude', 15, 10);
 
-    // User last modify date.
-    table.timestamp('modify_date').defaultTo(knex.fn.now());
+        // User country.
+        table.string('country');
 
-    // User created date.
-    table.timestamp('created_date').defaultTo(knex.fn.now());
-  });
+        // User last modify date.
+        table.timestamp('modify_date');
+
+        // User created date.
+        table.timestamp('created_date').defaultTo(knex.fn.now());
+      })
+  );
 }
 
 export async function down(knex: Knex): Promise<void> {

@@ -1,12 +1,12 @@
-"Sign out result."
+"Return type of SignOut."
 type SignOutResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Message."
+  "Message returned if mutation was successful."
   message: String
 }
 
 extend type Mutation {
-  "Sign out."
-  signOut: SignOutResult!
+  "Sings out user."
+  signOut: SignOutResult
 }

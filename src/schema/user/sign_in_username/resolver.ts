@@ -1,6 +1,6 @@
+import { Resolvers } from 'src/types';
 import { User } from 'src/database/models/User';
 import { validatePassword } from 'src/services/password';
-import { Resolvers, SignInByUsernameResult } from 'src/types';
 import { BAD_CREDENTIALS, GENERIC_ERROR } from 'src/constants';
 import { buildAuthenticationToken } from 'src/services/authentication';
 
@@ -15,11 +15,7 @@ const resolvers: Resolvers = {
      * Sign in user by username.
      */
 
-    signInByUsername: async (
-      _,
-      { input },
-      { ctx },
-    ): Promise<SignInByUsernameResult> => {
+    signInByUsername: async (_, { input }, { ctx }) => {
       /**
        * Prepare data.
        */
@@ -54,12 +50,7 @@ const resolvers: Resolvers = {
 
         if (!validPassword) {
           return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: BAD_CREDENTIALS,
-              },
-            ],
+            errors: [{ __typename: 'Error', message: BAD_CREDENTIALS }],
           };
         }
 
@@ -82,27 +73,18 @@ const resolvers: Resolvers = {
           });
 
           return {
+            user,
             message: 'Successfully signed in',
           };
         } catch {
           return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: GENERIC_ERROR,
-              },
-            ],
+            errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
           };
         }
       }
 
       return {
-        errors: [
-          {
-            __typename: 'Error',
-            message: BAD_CREDENTIALS,
-          },
-        ],
+        errors: [{ __typename: 'Error', message: BAD_CREDENTIALS }],
       };
     },
   },

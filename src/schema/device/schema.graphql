@@ -1,39 +1,94 @@
-"Device type."
+"Represents device that belongs to user."
 type Device implements Node {
-  "Created date."
+  "Identifies the date and time when the object was created."
   createdDate: DateTime
-  "Device description."
+  "The description of device."
   description: String
-  "Device elevation."
+  "Elevation of the device."
   elevation: Int
-  "Device field."
+  "Field 1 of the device."
   field1: String
-  "Device field."
+  "Field 2 of the device."
   field2: String
-  "Device field."
+  "Field 3 of the device."
   field3: String
-  "Device field."
+  "Field 4 of the device."
   field4: String
-  "Device field."
+  "Field 5 of the device."
   field5: String
-  "Device id."
+  "A unique identifier for the device."
   id: ID!
-  "Device public flag."
+  "Whether the device is public or not."
   isPublic: Boolean
-  "Device latitude."
+  "Latitude of the device."
   latitude: Float
-  "Device longitude."
+  "Logs that belongs to the device."
+  logs(
+    "Returns the elements in the list that come after the specified cursor."
+    after: String
+    "Returns the elements in the list that come before the specified cursor."
+    first: Int!
+  ): LogConnection
+  "Longitude of the device."
   longitude: Float
-  "Device metadata."
+  "Metadata for the device."
   metadata: DeviceMetadata
-  "Modify date."
+  "Identifies the date and time when the object was modified."
   modifyDate: DateTime
-  "Device name."
+  "The name of the device."
   name: String
-  "Device url."
+  "Owner device is belonging to."
+  owner: User
+  "The url of the device."
   url: String
-  "Device owner."
-  user: User
-  "Device owner id."
+  "A unique identifier for the device owner."
   userId: ID!
+}
+
+"The connection type for Device."
+type DeviceConnection {
+  "A list of edges."
+  edges: [DeviceEdge]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
+  totalCount: Int
+}
+
+"An edge in a connection."
+type DeviceEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Device
+}
+
+extend type Query {
+  "Display device."
+  device("ID of the device." id: ID!): Device
+  "Display all devices."
+  devices(
+    "Returns the elements in the list that come after the specified cursor."
+    after: String
+    "Returns the first _n_ elements from the list."
+    first: Int!
+  ): DeviceConnection
+  "Display devices by location."
+  devicesByLocation(
+    "Latitude of the user."
+    latitude: Float!
+    "Longitude of the user."
+    longitude: Float!
+  ): [Device]
+  "Display device log chart."
+  deviceChart(
+    "ID of the device."
+    id: ID!
+    "Returns the elements after start date."
+    startDate: DateTime!
+    "Returns the elements before end date."
+    endDate: DateTime!
+  ): [Log]
+  "Display device activity as calendar."
+  deviceActivity("ID of the device." id: ID!): [Log]
 }

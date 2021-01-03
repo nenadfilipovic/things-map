@@ -1,0 +1,18 @@
+"Input type of FlushLog."
+input FlushLogInput {
+  "ID of the device."
+  id: ID!
+}
+
+"Return type of FlushLog."
+type FlushLogResult {
+  "Errors array returned if there was error."
+  errors: [Error]
+  "Message returned if mutation was successful."
+  message: String
+}
+
+extend type Mutation {
+  "Flushes logs of the device."
+  flushLog("ID of the device." input: FlushLogInput!): FlushLogResult
+}

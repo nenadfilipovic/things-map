@@ -1,6 +1,7 @@
 import { Device } from './Device';
 import { UserToken } from './UserToken';
 import { UserMetadata } from './UserMetadata';
+import { WatchedDevice } from './WatchedDevice';
 import { Model, NonFunctionPropertyNames } from 'objection';
 
 export class User extends Model {
@@ -17,11 +18,12 @@ export class User extends Model {
   longitude?: number;
   country?: string;
   modifyDate?: Date;
-  createdDate?: Date;
+  createdDate!: Date;
 
   token!: UserToken;
   devices!: Device[];
   metadata!: UserMetadata;
+  watchedDevices!: WatchedDevice[];
 
   static relationMappings = {
     metadata: {
@@ -48,6 +50,38 @@ export class User extends Model {
         to: 'device.userId',
       },
     },
+    watchedDevices: {
+      relation: Model.ManyToManyRelation,
+      modelClass: Device,
+      join: {
+        from: 'device.id',
+        through: {
+          from: 'watchedDevice.deviceId',
+          to: 'watchedDevice.userId',
+        },
+        to: 'user.id',
+      },
+    },
+  };
+
+  static jsonSchema = {
+    type: 'object',
+    required: ['firstName', 'lastName', 'username'],
+
+    properties: {
+      id: { type: 'string' },
+      firstName: { type: 'string' },
+      lastName: { type: 'string' },
+      bio: { type: 'string' },
+      website: { type: 'string' },
+      username: { type: 'string' },
+      isPublic: { type: 'boolean' },
+      latitude: { type: 'number' },
+      longitude: { type: 'number' },
+      country: { type: 'string' },
+      modifyDate: { format: 'date-time' },
+      createdDate: { format: 'date-time' },
+    },
   };
 }
 
@@ -58,5 +92,5 @@ type CreateModelObject<T extends Model> = Pick<
 
 export type UserModel = Omit<
   CreateModelObject<User>,
-  'token' | 'metadata' | 'devices'
+  'token' | 'metadata' | 'devices' | 'watchedDevices'
 >;

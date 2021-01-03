@@ -1,9 +1,9 @@
 "Device metadata type."
 type DeviceMetadata {
-  "Device's last entry id."
+  "Device last entry id."
   lastEntryId: Int
-  "Device's last write date."
+  "Device last write date."
   lastWriteDate: DateTime
-  "Device's write key."
+  "Device write key."
   writeKey: String
 }

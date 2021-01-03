@@ -69,14 +69,9 @@ const resolvers: Resolvers = {
             message:
               'You have successfully updated your email address, please sign in',
           };
-        } catch {
+        } catch (error) {
           return {
-            errors: [
-              {
-                __typename: 'Error',
-                message: GENERIC_ERROR,
-              },
-            ],
+            errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
           };
         }
       }

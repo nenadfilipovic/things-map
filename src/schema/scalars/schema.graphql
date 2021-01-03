@@ -1,2 +1,2 @@
-"Custom scalar for timestamps."
+"Custom scalar adding timestamp type."
 scalar DateTime

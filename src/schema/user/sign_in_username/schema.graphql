@@ -1,23 +1,25 @@
-"Provided data for sign in by username."
+"Input type of SignInByUsername."
 input SignInByUsernameInput {
-  "Password."
+  "The password of the user."
   password: String!
-  "Username."
+  "The username of the user."
   username: String!
 }
 
-"Sign in by username result."
+"Return type of SignInByUsername."
 type SignInByUsernameResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Message."
+  "Message returned if mutation was successful."
   message: String
+  "Returns node instance."
+  user: User
 }
 
 extend type Mutation {
-  "Sign in by username."
+  "Signs user in by username."
   signInByUsername(
-    "Input data."
+    "User sign in credentials."
     input: SignInByUsernameInput!
-  ): SignInByUsernameResult!
+  ): SignInByUsernameResult
 }

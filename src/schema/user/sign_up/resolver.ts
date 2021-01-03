@@ -179,12 +179,7 @@ const resolvers: Resolvers = {
         }
       } catch {
         return {
-          errors: [
-            {
-              __typename: 'Error',
-              message: GENERIC_ERROR,
-            },
-          ],
+          errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
         };
       }
 

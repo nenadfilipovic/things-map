@@ -1,4 +1,5 @@
 import { User } from 'src/database/models/User';
+import { Device } from 'src/database/models/Device';
 import { DeleteDeviceResult, Resolvers } from 'src/types';
 import { GENERIC_ERROR, NOT_LOGGED_IN } from 'src/constants';
 
@@ -31,49 +32,26 @@ const resolvers: Resolvers = {
 
       if (userId) {
         /**
-         * Find if user exist.
+         * Remove device.
          */
 
-        const user = await User.query()
-          .withGraphJoined('devices')
-          .findById(userId);
+        try {
+          await User.transaction(async (trx) => {
+            return await Device.query(trx).deleteById(id);
+          });
 
-        if (user) {
-          /**
-           * Remove device.
-           */
-
-          try {
-            await User.transaction(async (trx) => {
-              return await user
-                .$relatedQuery('devices', trx)
-                .where('id', id)
-                .delete();
-            });
-
-            return {
-              message: 'Device successfully deleted',
-            };
-          } catch {
-            return {
-              errors: [
-                {
-                  __typename: 'Error',
-                  message: GENERIC_ERROR,
-                },
-              ],
-            };
-          }
+          return {
+            message: 'Device successfully deleted',
+          };
+        } catch {
+          return {
+            errors: [{ __typename: 'Error', message: GENERIC_ERROR }],
+          };
         }
       }
 
       return {
-        errors: [
-          {
-            __typename: 'Error',
-            message: NOT_LOGGED_IN,
-          },
-        ],
+        errors: [{ __typename: 'Error', message: NOT_LOGGED_IN }],
       };
     },
   },

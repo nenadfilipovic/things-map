@@ -1,0 +1,23 @@
+"Input type of AddWatchedDevice."
+input AddWatchedDeviceInput {
+  "A unique identifier for the device."
+  deviceId: ID!
+}
+
+"Return type of AddWatchedDevice."
+type AddWatchedDeviceResult {
+  "Errors array returned if there was error."
+  errors: [Error]
+  "Message returned if mutation was successful."
+  message: String
+  "Returns created node."
+  watchedDevice: WatchedDevice
+}
+
+extend type Mutation {
+  "Creates new watched device object."
+  addWatchedDevice(
+    "Device id."
+    input: AddWatchedDeviceInput!
+  ): AddWatchedDeviceResult
+}

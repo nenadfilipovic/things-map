@@ -5,15 +5,13 @@ extensions:
     generates:
       src/types/index.ts:
         config:
-          maybeValue: T | undefined
           scalars:
             DateTime: Date
+          contextType: src/context#Context
           mappers:
             User: src/database/models/User#UserModel
-            UserMetadata: src/database/models/UserMetadata#UserMetadataModel
             Device: src/database/models/Device#DeviceModel
-            DeviceMetadata: src/database/models/DeviceMetadata#DeviceMetadataModel
-          contextType: src/context#Context
+          maybeValue: T | undefined
         plugins:
           - add:
               content: '/* eslint-disable */'

@@ -1,31 +1,75 @@
-"User type."
+"Type representing user."
 type User implements Node {
-  "User bio."
+  "The user's profile bio."
   bio: String
-  "User country."
+  "Country of the user."
   country: String
-  "User created date."
+  "Identifies the date and time when the object was created."
   createdDate: DateTime
-  "User devices."
-  devices: [Device]
-  "User first name."
+  "Devices that belongs to user."
+  devices(
+    "Returns the elements in the list that come after the specified cursor."
+    after: String
+    "Returns the first _n_ elements from the list."
+    first: Int!
+  ): DeviceConnection
+  "The first name of the user."
   firstName: String
-  "User id."
+  "A unique identifier for the user."
   id: ID!
-  "User public flag."
+  "Whether the user profile is public or not."
   isPublic: Boolean
-  "User last name."
+  "The last name of the user."
   lastName: String
-  "User latitude."
+  "Latitude of the user location."
   latitude: Float
-  "User longitude."
+  "Longitude of the user location."
   longitude: Float
-  "User metadata"
+  "Metadata of the user."
   metadata: UserMetadata
-  "User modify date."
+  "Identifies the date and time when the object was modified."
   modifyDate: DateTime
-  "User username."
+  "The username of the user."
   username: String
-  "User website."
+  "Devices that user have in watch list."
+  watchedDevices(
+    "Returns the elements in the list that come after the specified cursor."
+    after: String
+    "Returns the first _n_ elements from the list."
+    first: Int!
+  ): WatchedDeviceConnection
+  "The website of the user."
   website: String
+}
+
+"The connection type for User."
+type UserConnection {
+  "A list of edges."
+  edges: [UserEdge]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "Identifies the total count of items in the connection."
+  totalCount: Int
+}
+
+"An edge in a connection."
+type UserEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: User
+}
+
+extend type Query {
+  "Display currently logged in user."
+  me: User
+  "Display public user."
+  user("ID of the user." id: ID!): User
+  "Display all public users."
+  users(
+    "Returns the elements in the list that come after the specified cursor."
+    after: String
+    "Returns the first _n_ elements from the list."
+    first: Int!
+  ): UserConnection
 }

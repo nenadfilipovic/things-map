@@ -1,0 +1,36 @@
+"Input type of NewDevice."
+input NewDeviceInput {
+  "The description of device."
+  description: String
+  "Field 1 of the device."
+  field1: String!
+  "Field 2 of the device."
+  field2: String
+  "Field 3 of the device."
+  field3: String
+  "Field 4 of the device."
+  field4: String
+  "Field 5 of the device."
+  field5: String
+  "Latitude of the device."
+  latitude: Float!
+  "Logs that belongs to the device."
+  longitude: Float!
+  "The name of the device."
+  name: String!
+}
+
+"Return type of NewDevice."
+type NewDeviceResult {
+  "Returns created node."
+  device: Device
+  "Errors array returned if there was error."
+  errors: [Error]
+  "Message returned if mutation was successful."
+  message: String
+}
+
+extend type Mutation {
+  "Creates new device for user."
+  newDevice("Device information." input: NewDeviceInput!): NewDeviceResult
+}

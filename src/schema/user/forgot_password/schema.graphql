@@ -1,21 +1,21 @@
-"Provided data for forgot password."
+"Input type of ForgotPassword."
 input ForgotPasswordInput {
-  "Email."
+  "The users email address."
   email: String!
 }
 
-"Forgot password result."
+"Return type of ForgotPassword."
 type ForgotPasswordResult {
-  "Errors."
+  "Errors array returned if there was error."
   errors: [Error]
-  "Message."
+  "Message returned if mutation was successful."
   message: String
 }
 
 extend type Mutation {
-  "Forgot password."
+  "Gives reset password token to user."
   forgotPassword(
-    "Input data."
+    "The users email address."
     input: ForgotPasswordInput!
-  ): ForgotPasswordResult!
+  ): ForgotPasswordResult
 }
