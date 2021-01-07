@@ -1,0 +1,29 @@
+{
+  "extends": [
+    // Extend base config.
+    "../.eslintrc.json",
+
+    // Add react eslint plugin.
+    "plugin:react/recommended"
+  ],
+
+  // Parser options.
+  "parserOptions": {
+    // Add support for jsx.
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+
+  // Automatically detect the react version.
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+
+  // Fix for import react in nextjs.
+  "rules": {
+    "react/react-in-jsx-scope": "off"
+  }
+}

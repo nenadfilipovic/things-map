@@ -1,0 +1,30 @@
+{
+  "name": "things-map-client",
+  "version": "0.0.1",
+  "author": "Nenad Filipovic",
+  "license": "GPL-3.0",
+  "description": "Frontend for things-map application",
+  "scripts": {},
+  "devDependencies": {
+    "@types/react": "^17.0.0",
+    "autoprefixer": "^10.1.0",
+    "next": "10.0.4",
+    "postcss": "^8.2.2",
+    "react": "^17.0.1",
+    "react-dom": "17.0.1",
+    "tailwindcss": "^2.0.2"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nenadfilipovic/things-map.git"
+  },
+  "keywords": [
+    "iot",
+    "things",
+    "map"
+  ],
+  "bugs": {
+    "url": "https://github.com/nenadfilipovic/things-map/issues"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  // Extend base tsconfig file.
+  "extends": "../tsconfig.json",
+
+  // Apply specific options for frontend.
+  "compilerOptions": {
+    // Specify ECMAScript target version.
+    "target": "ES2015",
+
+    // Specify library files to be included in the compilation.
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+
+    // How should typescript handle tsx files.
+    "jsx": "preserve",
+
+    // Must match webpack resolution.
+    "moduleResolution": "node",
+
+    // Must match webpack resolution.
+    "resolveJsonModule": true,
+
+    // Required for babel.
+    "isolatedModules": true,
+
+    // Do not allow js files.
+    "allowJs": false,
+
+    // No need to emit files.
+    "noEmit": true
+  },
+  // Which files you want to include.
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+
+  // Which files from include I want to exclude,
+  // I want to exclude all test files because I don't need them compiled.
+  "exclude": ["**/*.test.ts?(x)"]
+}

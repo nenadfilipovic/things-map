@@ -19,7 +19,7 @@
     "removeComments": true,
 
     // Specify the root directory of input files.
-    "rootDir": "src",
+    "rootDir": ".",
 
     // Enable all strict type-checking options.
     "strict": true,
