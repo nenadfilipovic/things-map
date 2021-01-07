@@ -1,6 +1,6 @@
 {
   "name": "things-map-server",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Nenad Filipovic",
   "license": "GPL-3.0",
   "description": "Backend for things-map application",
@@ -20,7 +20,9 @@
     "validate": "run-p lint schema:lint format typecheck",
     "setup": "knex migrate:latest && knex seed:run",
     "generate": "graphql-codegen",
-    "start:watch": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src"
+    "dev:client": "cd client && npx next dev",
+    "dev:server": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src",
+    "dev": "run-p dev:*"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^2.0.2",
@@ -36,16 +38,17 @@
     "@types/koa-compress": "^4.0.1",
     "@types/nodemailer": "^6.4.0",
     "@types/uuid": "^8.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.10.0",
-    "@typescript-eslint/parser": "^4.10.0",
-    "apollo-server-koa": "^2.19.0",
+    "@typescript-eslint/eslint-plugin": "^4.12.0",
+    "@typescript-eslint/parser": "^4.12.0",
+    "apollo-server-koa": "^2.19.1",
     "argon2": "^0.27.1",
     "envalid": "^6.0.2",
-    "eslint": "^7.16.0",
+    "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-jest": "^24.1.3",
-    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.22.0",
     "graphql": "^15.4.0",
     "graphql-config": "^3.2.0",
     "graphql-iso-date": "^3.6.1",
@@ -54,13 +57,13 @@
     "is-ci-cli": "^2.1.2",
     "jest": "^26.6.3",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.21.14",
-    "koa": "^2.13.0",
+    "knex": "^0.21.15",
+    "koa": "^2.13.1",
     "koa-compress": "^5.0.1",
     "lint-staged": "^10.5.2",
     "nodemailer": "^6.4.17",
     "npm-run-all": "^4.1.5",
-    "objection": "^2.2.3",
+    "objection": "^2.2.4",
     "pg": "^8.5.1",
     "prettier": "^2.2.0",
     "ts-jest": "^26.4.4",
@@ -82,8 +85,10 @@
   "lint-staged": {
     "**/*.*": [
       "prettier --ignore-unknown --write",
-      "eslint",
       "jest --findRelatedTests"
+    ],
+    "**/*.{ts,tsx}": [
+      "eslint"
     ],
     "**/*.graphql": [
       "graphql-schema-linter src/schema/**/*.graphql"

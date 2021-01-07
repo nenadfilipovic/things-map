@@ -1,5 +1,5 @@
-import type { Config } from '@jest/types';
 import common from './jestCommon';
+import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
   // Load common config.

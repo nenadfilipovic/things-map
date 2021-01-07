@@ -15,7 +15,8 @@
     "editor.formatOnSave": true,
     "extensions.ignoreRecommendations": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "eslint.validate": ["graphql"]
+    "eslint.validate": ["graphql"],
+    "css.validate": false
   },
 
   // Extensions I want to enable in development
@@ -28,7 +29,8 @@
     "ms-azuretools.vscode-docker",
     "mikestead.dotenv",
     "GraphQL.vscode-graphql",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "bradlc.vscode-tailwindcss"
   ],
 
   // Which ports I need to open
