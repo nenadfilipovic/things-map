@@ -9,7 +9,7 @@
 
 html,
 body {
-  @apply font-jura bg-light-background text-light-primary-text dark:bg-dark-background dark:text-dark-primary-text;
+  @apply font-jura bg-light-background text-light-primary-text dark:bg-dark-background dark:text-dark-primary-text w-full h-full;
 }
 
 svg {
