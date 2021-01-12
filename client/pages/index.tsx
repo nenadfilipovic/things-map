@@ -1,15 +1,15 @@
-import Header from 'client/components/Header';
+import Header from '../components/Header';
 import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
+import React from 'react';
 
-const LandingPage = () => {
-  const Map = dynamic(() => import('../components/Map'), {
-    ssr: false,
-  });
+const LandingPage = (): JSX.Element => {
+  const Map = dynamic(() => import('../components/Map'), { ssr: false });
+
   return (
     <div>
       <Header />
-      <Map />
+      <Map height="100vh" width="100%" />
     </div>
   );
 };
