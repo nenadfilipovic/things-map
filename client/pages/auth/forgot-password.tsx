@@ -1,4 +1,5 @@
 import Header from '../../components/Header';
+import Link from 'next/link';
 
 const ForgotPassword = () => (
   <div>
@@ -17,13 +18,15 @@ const ForgotPassword = () => (
           />
         </form>
       </div>
-      <div className="text-center">
+      <div className="text-center flex flex-col">
         <button className="bg-main w-48 mx-auto py-2 rounded-sm text-white mt-4">
           SUBMIT
         </button>
-        <p className="text-sm mt-2 text-light-secondary-text">
-          Back to <span className="text-main">Sign in</span>
-        </p>
+        <Link href="/auth/sign-in">
+          <a className="text-sm mt-2 text-light-secondary-text">
+            Back to <span className="text-main">Sign in</span>
+          </a>
+        </Link>
       </div>
     </div>
   </div>

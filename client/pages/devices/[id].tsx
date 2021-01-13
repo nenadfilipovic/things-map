@@ -2,7 +2,7 @@ import Header from '../../components/Header';
 import 'leaflet/dist/leaflet.css';
 import dynamic from 'next/dynamic';
 
-const Device = () => {
+const Device = (): JSX.Element => {
   const Map = dynamic(() => import('../../components/Map'), { ssr: false });
   const Chart = dynamic(() => import('../../components/Chart'), { ssr: false });
 
@@ -146,16 +146,6 @@ const Device = () => {
           <div className="mt-4">
             <p className="text-xl">Readings</p>
             <p className="text-sm">Graphical report from device</p>
-            <button className="bg-border w-24 flex items-center justify-center py-2 rounded-sm text-white mt-4">
-              <svg
-                className="w-4 h-4 text-white mr-2"
-                viewBox="0 0 459 459"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M178.5 382.5h102v-51h-102v51zM0 76.5v51h459v-51H0zM76.5 255h306v-51h-306v51z" />
-              </svg>
-              Filter
-            </button>
             <div className="bg-light-secondary-background max-w-max p-4 my-4 flex space-x-4">
               <div className="flex flex-col">
                 <label>Start date</label>

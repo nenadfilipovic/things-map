@@ -9,7 +9,7 @@ const LandingPage = (): JSX.Element => {
   return (
     <div>
       <Header />
-      <Map height="100vh" width="100%" />
+      <Map height="calc(100vh - 64px)" width="100%" />
     </div>
   );
 };

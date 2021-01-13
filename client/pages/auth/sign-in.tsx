@@ -1,4 +1,5 @@
 import Header from '../../components/Header';
+import Link from 'next/link';
 
 const SignIn = () => (
   <div>
@@ -21,17 +22,23 @@ const SignIn = () => (
             type="password"
           />
         </form>
-        <p className="text-sm text-right mt-1 text-light-secondary-text">
-          Forgot password?
-        </p>
+        <div className="text-right">
+          <Link href="/auth/forgot-password">
+            <a className="text-sm mt-1 text-light-secondary-text">
+              Forgot password?
+            </a>
+          </Link>
+        </div>
       </div>
-      <div className="text-center">
+      <div className="text-center flex flex-col">
         <button className="bg-main w-48 mx-auto py-2 rounded-sm text-white mt-4">
           SIGN IN
         </button>
-        <p className="text-sm mt-2 text-light-secondary-text">
-          Dont have account? <span className="text-main">Sign up</span>
-        </p>
+        <Link href="/auth/sign-up">
+          <a className="text-sm mt-2 text-light-secondary-text">
+            Dont have account? <span className="text-main">Sign up</span>
+          </a>
+        </Link>
       </div>
     </div>
   </div>
