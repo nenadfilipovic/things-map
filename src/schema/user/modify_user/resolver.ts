@@ -34,7 +34,7 @@ const resolvers: Resolvers = {
        * Check if user is logged in.
        */
 
-      const { id } = ctx.state.user;
+      const id = ctx.state.user?.id;
 
       if (!id) {
         return {

@@ -1,12 +1,83 @@
 import Header from '../components/Header';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '../components/Modal';
+import {
+  useUpdateEmailMutation,
+  useUpdatePasswordMutation,
+  useDeleteUserMutation,
+  useMeQuery,
+  useModifyUserMutation,
+} from '../types';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 
 const Profile = (): JSX.Element => {
+  const [userData, setUserData] = useState({
+    firstName: '',
+    lastName: '',
+    username: '',
+    createdDate: '',
+    modifyDate: '',
+    country: '',
+    bio: '',
+    website: '',
+    metadata: { lastSignInDate: '' },
+  });
+  const { data: meQueryData, loading } = useMeQuery();
+  const router = useRouter();
+  const { register, handleSubmit } = useForm();
   const [actionMenu, setActionMenu] = useState(false);
   const [modalOpenPassword, setModalOpenPassword] = useState(false);
   const [modalOpenDelete, setModalOpenDelete] = useState(false);
   const [modalOpenEmail, setModalOpenEmail] = useState(false);
+  const [updateEmailMutation] = useUpdateEmailMutation();
+  const onSubmitEmail = (info) => {
+    updateEmailMutation({ variables: { ...info } });
+    router.push('verify-update-email');
+  };
+  const [updatePasswordMutation, { data }] = useUpdatePasswordMutation();
+  const onSubmitPassword = (info) => {
+    updatePasswordMutation({ variables: { ...info } });
+  };
+  const [deleteUserMutation] = useDeleteUserMutation();
+  const onSubmitDelete = (info) => {
+    deleteUserMutation({ variables: { ...info } });
+  };
+  const [
+    modifyUserMutation,
+    { data: modifyUserData },
+  ] = useModifyUserMutation();
+
+  const onSubmitUpdate = (info) => {
+    modifyUserMutation({ variables: { ...info } });
+  };
+
+  useEffect(() => {
+    if (meQueryData) {
+      setUserData({
+        ...meQueryData.me,
+      });
+    }
+  }, [meQueryData]);
+
+  const spinner = (
+    <div>
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 26.349 26.35"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="13.792" cy="3.082" r="3.082" />
+        <circle cx="13.792" cy="24.501" r="1.849" />
+        <circle cx="6.219" cy="6.218" r="2.774" />
+        <circle cx="21.365" cy="21.363" r="1.541" />
+        <circle cx="3.082" cy="13.792" r="2.465" />
+        <circle cx="24.501" cy="13.791" r="1.232" />
+        <path d="M4.694 19.84c-.843.843-.843 2.207 0 3.05.842.843 2.208.843 3.05 0 .843-.843.843-2.207 0-3.05-.842-.844-2.207-.852-3.05 0z" />
+        <circle cx="21.364" cy="6.218" r=".924" />
+      </svg>
+    </div>
+  );
 
   return (
     <div>
@@ -18,7 +89,7 @@ const Profile = (): JSX.Element => {
         >
           Actions
         </button>
-
+        {loading && spinner}
         {actionMenu && (
           <div className="p-4 bg-light-secondary-background w-max flex flex-col absolute space-y-2">
             <button onClick={() => setModalOpenPassword(!modalOpenPassword)}>
@@ -34,6 +105,7 @@ const Profile = (): JSX.Element => {
         )}
         <p className="text-xl">Details</p>
         <p className="text-sm">General user information</p>
+        <p>{data?.updatePassword?.message}</p>
         <div className="mt-8 pl-8 border-l-2 border-main flex flex-col flex-wrap h-44 w-3/12">
           <div className="flex items-center mb-2">
             <svg
@@ -45,7 +117,7 @@ const Profile = (): JSX.Element => {
             </svg>
             <div>
               <p>Username</p>
-              <p className="text-main">nenad88</p>
+              <p className="text-main">{userData.username}</p>
             </div>
           </div>
           <div className="flex items-center mb-2">
@@ -59,7 +131,7 @@ const Profile = (): JSX.Element => {
             </svg>
             <div>
               <p>Last login</p>
-              <p className="text-main">18/12/2020</p>
+              <p className="text-main">{userData.metadata.lastSignInDate}</p>
             </div>
           </div>
           <div className="flex items-center mb-2">
@@ -72,7 +144,7 @@ const Profile = (): JSX.Element => {
             </svg>
             <div>
               <p>Register date</p>
-              <p className="text-main">13/06/2020</p>
+              <p className="text-main">{userData.createdDate}</p>
             </div>
           </div>
           <div className="flex items-center mb-2">
@@ -85,100 +157,117 @@ const Profile = (): JSX.Element => {
             </svg>
             <div>
               <p>Last update</p>
-              <p className="text-main">13/06/2020</p>
+              <p className="text-main">{userData.modifyDate}</p>
             </div>
           </div>
         </div>
         <p className="text-xl mt-8">Information</p>
         <p className="text-sm">Review or update profile information</p>
         <div className="mt-8 pl-8 py-4 border-l-2 border-border border-opacity-70">
-          <form className="w-9/12 flex flex-col flex-wrap h-44">
+          <form
+            className="w-9/12 flex flex-col flex-wrap h-44"
+            onSubmit={handleSubmit(onSubmitUpdate)}
+          >
             <div className="pr-6 mt-2">
-              <p>First name</p>
+              <label>First name</label>
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
+                defaultValue={userData.firstName}
+                ref={register}
+                name="firstName"
               />
             </div>
             <div className="pr-6 mt-2">
-              <p>Last name</p>
+              <label>Last name</label>
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
+                defaultValue={userData.lastName}
+                ref={register}
+                name="lastName"
               />
             </div>
             <div className="pr-6 mt-2">
-              <p>Username</p>
+              <label>Username</label>
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
+                defaultValue={userData.username}
+                ref={register}
+                name="username"
               />
             </div>
             <div className="pr-6 mt-2">
-              <p>Country</p>
+              <label>Country</label>
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
+                defaultValue={userData.country}
+                ref={register}
+                name="country"
               />
             </div>
 
             <div className="pr-6 mt-2">
-              <p>Bio</p>
+              <label>Bio</label>
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
+                defaultValue={userData.bio}
+                ref={register}
+                name="bio"
               />
             </div>
             <div className="pr-6 mt-2">
-              <p>Public</p>
+              <label>Website</label>
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
+                defaultValue={userData.website}
+                ref={register}
+                name="website"
               />
             </div>
-            <div className="pr-6 mt-2">
-              <p>Latitude</p>
-              <input
-                className="text-main pl-2 border-b outline-none w-full"
-                autoComplete="none"
-              />
-            </div>
-            <div className="pr-6 mt-2">
-              <p>Longitude</p>
-              <input
-                className="text-main pl-2 border-b outline-none w-full"
-                autoComplete="none"
-              />
-            </div>
-            <div className="pr-6 mt-2">
-              <p>Website</p>
-              <input
-                className="text-main pl-2 border-b outline-none w-full"
-                autoComplete="none"
-              />
-            </div>
-          </form>
-          <button className="bg-main w-32 flex items-center justify-center py-2 rounded-sm text-white mt-4">
-            <svg
-              className="w-4 h-4 mr-2 text-white"
-              viewBox="0 0 28.265 28.265"
-              xmlns="http://www.w3.org/2000/svg"
+            <button
+              type="submit"
+              className="bg-main w-32 flex items-center justify-center py-2 rounded-sm text-white mt-4"
             >
-              <path d="M14.133 28.265c-7.061 0-12.805-5.75-12.805-12.809 0-7.06 5.744-12.807 12.805-12.807.469 0 .943.027 1.414.08V.659c0-.266.164-.508.406-.611.252-.098.531-.043.723.148l4.537 4.547c.258.258.258.67 0 .932l-4.535 4.557c-.193.188-.473.246-.725.143-.242-.104-.406-.344-.406-.609V7.47c-.469-.086-.941-.125-1.414-.125-4.473 0-8.113 3.639-8.113 8.111 0 4.471 3.641 8.113 8.113 8.113s8.111-3.643 8.111-8.113c0-.363.295-.66.662-.66h3.369c.365 0 .662.297.662.66 0 7.059-5.748 12.809-12.804 12.809z" />
-            </svg>
-            Update
-          </button>
+              <svg
+                className="w-4 h-4 mr-2 text-white"
+                viewBox="0 0 28.265 28.265"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M14.133 28.265c-7.061 0-12.805-5.75-12.805-12.809 0-7.06 5.744-12.807 12.805-12.807.469 0 .943.027 1.414.08V.659c0-.266.164-.508.406-.611.252-.098.531-.043.723.148l4.537 4.547c.258.258.258.67 0 .932l-4.535 4.557c-.193.188-.473.246-.725.143-.242-.104-.406-.344-.406-.609V7.47c-.469-.086-.941-.125-1.414-.125-4.473 0-8.113 3.639-8.113 8.111 0 4.471 3.641 8.113 8.113 8.113s8.111-3.643 8.111-8.113c0-.363.295-.66.662-.66h3.369c.365 0 .662.297.662.66 0 7.059-5.748 12.809-12.804 12.809z" />
+              </svg>
+              Update
+            </button>
+          </form>
         </div>
       </div>
       {modalOpenPassword && (
         <Modal closeModal={() => setModalOpenPassword(false)}>
           <div>
-            <form className="flex flex-col">
+            <form
+              className="flex flex-col"
+              onSubmit={handleSubmit(onSubmitPassword)}
+            >
               <label>Current password</label>
-              <input className="border-border border-opacity-10 border-b" />
+              <input
+                className="border-border border-opacity-10 border-b"
+                name="currentPassword"
+                ref={register({ required: true })}
+              />
               <label>New password</label>
-              <input className="border-border border-opacity-10 border-b" />
-              <button className="place-self-center mt-4 px-2 bg-main w-32 rounded-sm ml-2 text-white">
+              <input
+                className="border-border border-opacity-10 border-b"
+                name="newPassword"
+                ref={register({ required: true })}
+              />
+              <button
+                type="submit"
+                className="place-self-center mt-4 px-2 bg-main w-32 rounded-sm ml-2 text-white"
+              >
                 Submit
               </button>
             </form>
@@ -188,10 +277,17 @@ const Profile = (): JSX.Element => {
       {modalOpenEmail && (
         <Modal closeModal={() => setModalOpenEmail(false)}>
           <div>
-            <form className="space-x-2">
+            <form className="space-x-2" onSubmit={handleSubmit(onSubmitEmail)}>
               <label>New email</label>
-              <input className="border-border border-opacity-10 border-b" />
-              <button className="px-2 bg-main w-32 rounded-sm ml-2 text-white">
+              <input
+                className="border-border border-opacity-10 border-b"
+                name="email"
+                ref={register({ required: true })}
+              />
+              <button
+                type="submit"
+                className="px-2 bg-main w-32 rounded-sm ml-2 text-white"
+              >
                 Submit
               </button>
             </form>
@@ -200,10 +296,22 @@ const Profile = (): JSX.Element => {
       )}
       {modalOpenDelete && (
         <Modal closeModal={() => setModalOpenDelete(false)}>
-          <p>Are you sure?</p>
-          <button className="px-2 bg-main w-32 rounded-sm ml-2 text-white">
-            YES
-          </button>
+          <div>
+            <p>Enter your current password</p>
+            <form onSubmit={handleSubmit(onSubmitDelete)}>
+              <input
+                className="border-border border-opacity-10 border-b"
+                name="password"
+                ref={register({ required: true })}
+              />
+              <button
+                type="submit"
+                className="px-2 bg-main w-32 rounded-sm ml-2 text-white"
+              >
+                YES
+              </button>
+            </form>
+          </div>
         </Modal>
       )}
     </div>

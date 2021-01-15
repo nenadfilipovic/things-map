@@ -17,3 +17,15 @@ extensions:
               content: '/* eslint-disable */'
           - 'typescript'
           - 'typescript-resolvers'
+
+      client/types/index.tsx:
+        documents: 'client/apollo/*.tsx'
+        overwrite: true
+        config:
+          withHooks: true
+        plugins:
+          - add:
+              content: '/* eslint-disable */'
+          - 'typescript'
+          - 'typescript-operations'
+          - 'typescript-react-apollo'
