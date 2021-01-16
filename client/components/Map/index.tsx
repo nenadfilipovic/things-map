@@ -31,14 +31,18 @@ interface Marker {
 const Map = ({
   height,
   width,
+  longitude = 51.505,
+  latitude = -0.09,
 }: {
   height: string;
   width: string;
+  longitude?: number;
+  latitude?: number;
 }): JSX.Element => (
   <MapContainer
     zoom={13}
     scrollWheelZoom={false}
-    center={[51.505, -0.09]}
+    center={[longitude, latitude]}
     style={{ height, width }}
   >
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

@@ -1,19 +1,64 @@
 import Header from '../../components/Header';
 import 'leaflet/dist/leaflet.css';
 import dynamic from 'next/dynamic';
+import { useDeviceQuery, useModifyDeviceMutation } from '../../types';
+import { device } from '../../apollo/queries';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { devices } from '../../apollo/queries';
 
 const Device = (): JSX.Element => {
   const Map = dynamic(() => import('../../components/Map'), { ssr: false });
   const Chart = dynamic(() => import('../../components/Chart'), { ssr: false });
+  const router = useRouter();
+  const { register, handleSubmit } = useForm();
 
+  const { data, loading } = useDeviceQuery({
+    variables: { id: router.query.id },
+  });
+  const [modifyDeviceMutation] = useModifyDeviceMutation();
+
+  const onSubmit = (info) => {
+    modifyDeviceMutation({
+      variables: {
+        id: router.query.id,
+        name: info.name,
+        description: info.description,
+      },
+      refetchQueries: [
+        { query: device, variables: { id: router.query.id } },
+        { query: devices },
+      ],
+    });
+  };
+
+  const spinner = (
+    <div>
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 26.349 26.35"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="13.792" cy="3.082" r="3.082" />
+        <circle cx="13.792" cy="24.501" r="1.849" />
+        <circle cx="6.219" cy="6.218" r="2.774" />
+        <circle cx="21.365" cy="21.363" r="1.541" />
+        <circle cx="3.082" cy="13.792" r="2.465" />
+        <circle cx="24.501" cy="13.791" r="1.232" />
+        <path d="M4.694 19.84c-.843.843-.843 2.207 0 3.05.842.843 2.208.843 3.05 0 .843-.843.843-2.207 0-3.05-.842-.844-2.207-.852-3.05 0z" />
+        <circle cx="21.364" cy="6.218" r=".924" />
+      </svg>
+    </div>
+  );
   return (
     <div>
       <Header />
+      {loading && spinner}
       <div className="p-4 flex">
         <div className="w-6/12">
           <p className="text-xl">Details</p>
           <p className="text-sm">General device information</p>
-          <div className="pl-8 mt-4 border-l-2 border-main flex flex-col flex-wrap w-max h-32 justify-center">
+          <div className="pl-8 mt-4 border-l-2 border-main">
             <div className="flex items-center mb-2 mr-2">
               <svg
                 className="mr-2 w-4 h-4"
@@ -25,7 +70,7 @@ const Device = (): JSX.Element => {
               <div>
                 <p className="text-sm">Owner</p>
                 <p className="text-main pl-2 border-b outline-none w-full">
-                  nenad88
+                  {data?.device?.owner?.username}
                 </p>
               </div>
             </div>
@@ -40,7 +85,7 @@ const Device = (): JSX.Element => {
               <div>
                 <p className="text-sm">Total entries</p>
                 <p className="text-main pl-2 border-b outline-none w-full">
-                  433
+                  {data?.device?.metadata?.lastEntryId}
                 </p>
               </div>
             </div>
@@ -55,7 +100,7 @@ const Device = (): JSX.Element => {
               <div>
                 <p className="text-sm">Creation date</p>
                 <p className="text-main pl-2 border-b outline-none w-full">
-                  12/03/2020
+                  {data?.device?.createdDate}
                 </p>
               </div>
             </div>
@@ -70,7 +115,7 @@ const Device = (): JSX.Element => {
               <div>
                 <p className="text-sm">Last activity</p>
                 <p className="text-main pl-2 border-b outline-none w-full">
-                  12/03/2020
+                  {data?.device?.metadata?.lastWriteDate}
                 </p>
               </div>
             </div>
@@ -85,7 +130,7 @@ const Device = (): JSX.Element => {
               <div>
                 <p className="text-sm">Last update</p>
                 <p className="text-main pl-2 border-b outline-none w-full">
-                  12/03/2020
+                  {data?.device?.modifyDate}
                 </p>
               </div>
             </div>
@@ -100,7 +145,7 @@ const Device = (): JSX.Element => {
               <div>
                 <p className="text-sm">Write key</p>
                 <p className="text-main pl-2 border-b outline-none w-full">
-                  12/03/2020
+                  {data?.device?.metadata?.writeKey}
                 </p>
               </div>
             </div>
@@ -109,7 +154,12 @@ const Device = (): JSX.Element => {
             <p className="text-xl mt-2">Location</p>
             <p className="text-sm">Device geographical location</p>
             <div className="mt-4">
-              <Map height="300px" width="300px" />
+              <Map
+                height="300px"
+                width="300px"
+                latitude={data?.device?.latitude}
+                longitude={data?.device?.longitude}
+              />
             </div>
           </div>
         </div>
@@ -118,26 +168,33 @@ const Device = (): JSX.Element => {
             <p className="text-xl">Information</p>
             <p className="text-sm">Review or update device information</p>
             <div className="border-l-2 border-border border-opacity-10 pl-8 mt-4">
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex items-center mb-2">
                   <div className="flex flex-col">
                     <label className="text-sm">Name</label>
-                    <input className="text-main pl-2 border-b outline-none w-full" />
+                    <input
+                      className="text-main pl-2 border-b outline-none w-full"
+                      defaultValue={data?.device?.name}
+                      ref={register}
+                      name="name"
+                    />
                   </div>
                 </div>
                 <div className="flex items-center mb-2">
                   <div className="flex flex-col">
                     <label className="text-sm">Description</label>
-                    <input className="text-main pl-2 border-b outline-none w-full" />
+                    <textarea
+                      className="text-main pl-2 border-b outline-none"
+                      defaultValue={data?.device?.description}
+                      ref={register}
+                      name="description"
+                    />
                   </div>
                 </div>
-                <div className="flex items-center mb-2">
-                  <div className="flex flex-col">
-                    <label className="text-sm">Website</label>
-                    <input className="text-main pl-2 border-b outline-none w-full" />
-                  </div>
-                </div>
-                <button className="bg-main w-32 flex items-center justify-center py-2 rounded-sm text-white mt-4">
+                <button
+                  type="submit"
+                  className="bg-main w-32 flex items-center justify-center py-2 rounded-sm text-white mt-4"
+                >
                   Update
                 </button>
               </form>

@@ -1,6 +1,27 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const device = gql`
+  query device($id: ID!) {
+    device(id: $id) {
+      owner {
+        username
+      }
+      createdDate
+      modifyDate
+      name
+      description
+      latitude
+      longitude
+      metadata {
+        writeKey
+        lastWriteDate
+        lastEntryId
+      }
+    }
+  }
+`;
+
+const me = gql`
   query me {
     me {
       username
@@ -20,3 +41,24 @@ export default gql`
     }
   }
 `;
+
+const devices = gql`
+  query devices {
+    devices(first: 5) {
+      edges {
+        cursor
+        node {
+          id
+          name
+          createdDate
+          description
+          metadata {
+            lastEntryId
+          }
+        }
+      }
+    }
+  }
+`;
+
+export { me, devices, device };

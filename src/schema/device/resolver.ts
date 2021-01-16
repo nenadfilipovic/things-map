@@ -29,7 +29,7 @@ const resolvers: Resolvers = {
 
       const [device] = await Device.query()
         .where('userId', userId)
-        .andWhere('isPublic', true);
+        .andWhere('id', id);
 
       return device;
     },
@@ -46,7 +46,7 @@ const resolvers: Resolvers = {
     devices: async (parent, { after, first }, { ctx }) => {
       const devices = after
         ? await Device.query()
-            .where('isPublic', true)
+            // .where('isPublic', true)
             .andWhere(
               'createdDate',
               '<',
@@ -55,9 +55,13 @@ const resolvers: Resolvers = {
             .limit(first + 1)
             .orderBy('createdDate', 'desc')
         : await Device.query()
-            .where('isPublic', true)
+            // .where('isPublic', true)
             .limit(first + 1)
             .orderBy('createdDate', 'desc');
+
+      if (!devices) {
+        return;
+      }
 
       const hasNextPage = devices.length > first;
       const nodes = hasNextPage ? devices.slice(0, -1) : devices;

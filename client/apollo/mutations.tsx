@@ -1,6 +1,44 @@
 import gql from 'graphql-tag';
 
-export default gql`
+const deleteDevice = gql`
+  mutation deleteDevice($id: ID!) {
+    deleteDevice(input: { id: $id }) {
+      message
+    }
+  }
+`;
+
+const newDevice = gql`
+  mutation newDevice(
+    $name: String!
+    $description: String
+    $latitude: Float!
+    $longitude: Float!
+    $field1: String!
+  ) {
+    newDevice(
+      input: {
+        name: $name
+        description: $description
+        latitude: $latitude
+        longitude: $longitude
+        field1: $field1
+      }
+    ) {
+      message
+    }
+  }
+`;
+
+const modifyDevice = gql`
+  mutation modifyDevice($id: ID!, $name: String, $description: String) {
+    modifyDevice(input: { id: $id, name: $name, description: $description }) {
+      message
+    }
+  }
+`;
+
+const modifyUser = gql`
   mutation modifyUser(
     $bio: String
     $country: String
@@ -31,6 +69,7 @@ export default gql`
         }
       }
       user {
+        id
         firstName
         lastName
         username
@@ -47,6 +86,9 @@ export default gql`
       }
     }
   }
+`;
+
+export default gql`
   mutation deleteUser($password: String!) {
     deleteUser(input: { password: $password }) {
       message
@@ -204,3 +246,5 @@ export default gql`
     }
   }
 `;
+
+export { modifyUser, newDevice, modifyDevice, deleteDevice };

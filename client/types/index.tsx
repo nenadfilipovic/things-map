@@ -848,6 +848,42 @@ export type WatchedDeviceEdge = {
   node?: Maybe<WatchedDevice>;
 };
 
+export type DeleteDeviceMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type DeleteDeviceMutation = { __typename?: 'Mutation' } & {
+  deleteDevice?: Maybe<
+    { __typename?: 'DeleteDeviceResult' } & Pick<DeleteDeviceResult, 'message'>
+  >;
+};
+
+export type NewDeviceMutationVariables = Exact<{
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  field1: Scalars['String'];
+}>;
+
+export type NewDeviceMutation = { __typename?: 'Mutation' } & {
+  newDevice?: Maybe<
+    { __typename?: 'NewDeviceResult' } & Pick<NewDeviceResult, 'message'>
+  >;
+};
+
+export type ModifyDeviceMutationVariables = Exact<{
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+}>;
+
+export type ModifyDeviceMutation = { __typename?: 'Mutation' } & {
+  modifyDevice?: Maybe<
+    { __typename?: 'ModifyDeviceResult' } & Pick<ModifyDeviceResult, 'message'>
+  >;
+};
+
 export type ModifyUserMutationVariables = Exact<{
   bio?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
@@ -870,6 +906,7 @@ export type ModifyUserMutation = { __typename?: 'Mutation' } & {
         user?: Maybe<
           { __typename?: 'User' } & Pick<
             User,
+            | 'id'
             | 'firstName'
             | 'lastName'
             | 'username'
@@ -1119,6 +1156,32 @@ export type SignUpMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
+export type DeviceQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type DeviceQuery = { __typename?: 'Query' } & {
+  device?: Maybe<
+    { __typename?: 'Device' } & Pick<
+      Device,
+      | 'createdDate'
+      | 'modifyDate'
+      | 'name'
+      | 'description'
+      | 'latitude'
+      | 'longitude'
+    > & {
+        owner?: Maybe<{ __typename?: 'User' } & Pick<User, 'username'>>;
+        metadata?: Maybe<
+          { __typename?: 'DeviceMetadata' } & Pick<
+            DeviceMetadata,
+            'writeKey' | 'lastWriteDate' | 'lastEntryId'
+          >
+        >;
+      }
+  >;
+};
+
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = { __typename?: 'Query' } & {
@@ -1144,6 +1207,200 @@ export type MeQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type DevicesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type DevicesQuery = { __typename?: 'Query' } & {
+  devices?: Maybe<
+    { __typename?: 'DeviceConnection' } & {
+      edges?: Maybe<
+        Array<
+          Maybe<
+            { __typename?: 'DeviceEdge' } & Pick<DeviceEdge, 'cursor'> & {
+                node?: Maybe<
+                  { __typename?: 'Device' } & Pick<
+                    Device,
+                    'id' | 'name' | 'createdDate' | 'description'
+                  > & {
+                      metadata?: Maybe<
+                        { __typename?: 'DeviceMetadata' } & Pick<
+                          DeviceMetadata,
+                          'lastEntryId'
+                        >
+                      >;
+                    }
+                >;
+              }
+          >
+        >
+      >;
+    }
+  >;
+};
+
+export const DeleteDeviceDocument = gql`
+  mutation deleteDevice($id: ID!) {
+    deleteDevice(input: { id: $id }) {
+      message
+    }
+  }
+`;
+export type DeleteDeviceMutationFn = Apollo.MutationFunction<
+  DeleteDeviceMutation,
+  DeleteDeviceMutationVariables
+>;
+
+/**
+ * __useDeleteDeviceMutation__
+ *
+ * To run a mutation, you first call `useDeleteDeviceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDeviceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDeviceMutation, { data, loading, error }] = useDeleteDeviceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteDeviceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteDeviceMutation,
+    DeleteDeviceMutationVariables
+  >,
+) {
+  return Apollo.useMutation<
+    DeleteDeviceMutation,
+    DeleteDeviceMutationVariables
+  >(DeleteDeviceDocument, baseOptions);
+}
+export type DeleteDeviceMutationHookResult = ReturnType<
+  typeof useDeleteDeviceMutation
+>;
+export type DeleteDeviceMutationResult = Apollo.MutationResult<DeleteDeviceMutation>;
+export type DeleteDeviceMutationOptions = Apollo.BaseMutationOptions<
+  DeleteDeviceMutation,
+  DeleteDeviceMutationVariables
+>;
+export const NewDeviceDocument = gql`
+  mutation newDevice(
+    $name: String!
+    $description: String
+    $latitude: Float!
+    $longitude: Float!
+    $field1: String!
+  ) {
+    newDevice(
+      input: {
+        name: $name
+        description: $description
+        latitude: $latitude
+        longitude: $longitude
+        field1: $field1
+      }
+    ) {
+      message
+    }
+  }
+`;
+export type NewDeviceMutationFn = Apollo.MutationFunction<
+  NewDeviceMutation,
+  NewDeviceMutationVariables
+>;
+
+/**
+ * __useNewDeviceMutation__
+ *
+ * To run a mutation, you first call `useNewDeviceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useNewDeviceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [newDeviceMutation, { data, loading, error }] = useNewDeviceMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      description: // value for 'description'
+ *      latitude: // value for 'latitude'
+ *      longitude: // value for 'longitude'
+ *      field1: // value for 'field1'
+ *   },
+ * });
+ */
+export function useNewDeviceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    NewDeviceMutation,
+    NewDeviceMutationVariables
+  >,
+) {
+  return Apollo.useMutation<NewDeviceMutation, NewDeviceMutationVariables>(
+    NewDeviceDocument,
+    baseOptions,
+  );
+}
+export type NewDeviceMutationHookResult = ReturnType<
+  typeof useNewDeviceMutation
+>;
+export type NewDeviceMutationResult = Apollo.MutationResult<NewDeviceMutation>;
+export type NewDeviceMutationOptions = Apollo.BaseMutationOptions<
+  NewDeviceMutation,
+  NewDeviceMutationVariables
+>;
+export const ModifyDeviceDocument = gql`
+  mutation modifyDevice($id: ID!, $name: String, $description: String) {
+    modifyDevice(input: { id: $id, name: $name, description: $description }) {
+      message
+    }
+  }
+`;
+export type ModifyDeviceMutationFn = Apollo.MutationFunction<
+  ModifyDeviceMutation,
+  ModifyDeviceMutationVariables
+>;
+
+/**
+ * __useModifyDeviceMutation__
+ *
+ * To run a mutation, you first call `useModifyDeviceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useModifyDeviceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [modifyDeviceMutation, { data, loading, error }] = useModifyDeviceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      description: // value for 'description'
+ *   },
+ * });
+ */
+export function useModifyDeviceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ModifyDeviceMutation,
+    ModifyDeviceMutationVariables
+  >,
+) {
+  return Apollo.useMutation<
+    ModifyDeviceMutation,
+    ModifyDeviceMutationVariables
+  >(ModifyDeviceDocument, baseOptions);
+}
+export type ModifyDeviceMutationHookResult = ReturnType<
+  typeof useModifyDeviceMutation
+>;
+export type ModifyDeviceMutationResult = Apollo.MutationResult<ModifyDeviceMutation>;
+export type ModifyDeviceMutationOptions = Apollo.BaseMutationOptions<
+  ModifyDeviceMutation,
+  ModifyDeviceMutationVariables
+>;
 export const ModifyUserDocument = gql`
   mutation modifyUser(
     $bio: String
@@ -1175,6 +1432,7 @@ export const ModifyUserDocument = gql`
         }
       }
       user {
+        id
         firstName
         lastName
         username
@@ -1914,6 +2172,65 @@ export type SignUpMutationOptions = Apollo.BaseMutationOptions<
   SignUpMutation,
   SignUpMutationVariables
 >;
+export const DeviceDocument = gql`
+  query device($id: ID!) {
+    device(id: $id) {
+      owner {
+        username
+      }
+      createdDate
+      modifyDate
+      name
+      description
+      latitude
+      longitude
+      metadata {
+        writeKey
+        lastWriteDate
+        lastEntryId
+      }
+    }
+  }
+`;
+
+/**
+ * __useDeviceQuery__
+ *
+ * To run a query within a React component, call `useDeviceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDeviceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDeviceQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeviceQuery(
+  baseOptions: Apollo.QueryHookOptions<DeviceQuery, DeviceQueryVariables>,
+) {
+  return Apollo.useQuery<DeviceQuery, DeviceQueryVariables>(
+    DeviceDocument,
+    baseOptions,
+  );
+}
+export function useDeviceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<DeviceQuery, DeviceQueryVariables>,
+) {
+  return Apollo.useLazyQuery<DeviceQuery, DeviceQueryVariables>(
+    DeviceDocument,
+    baseOptions,
+  );
+}
+export type DeviceQueryHookResult = ReturnType<typeof useDeviceQuery>;
+export type DeviceLazyQueryHookResult = ReturnType<typeof useDeviceLazyQuery>;
+export type DeviceQueryResult = Apollo.QueryResult<
+  DeviceQuery,
+  DeviceQueryVariables
+>;
 export const MeDocument = gql`
   query me {
     me {
@@ -1966,3 +2283,62 @@ export function useMeLazyQuery(
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const DevicesDocument = gql`
+  query devices {
+    devices(first: 5) {
+      edges {
+        cursor
+        node {
+          id
+          name
+          createdDate
+          description
+          metadata {
+            lastEntryId
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useDevicesQuery__
+ *
+ * To run a query within a React component, call `useDevicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDevicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDevicesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDevicesQuery(
+  baseOptions?: Apollo.QueryHookOptions<DevicesQuery, DevicesQueryVariables>,
+) {
+  return Apollo.useQuery<DevicesQuery, DevicesQueryVariables>(
+    DevicesDocument,
+    baseOptions,
+  );
+}
+export function useDevicesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    DevicesQuery,
+    DevicesQueryVariables
+  >,
+) {
+  return Apollo.useLazyQuery<DevicesQuery, DevicesQueryVariables>(
+    DevicesDocument,
+    baseOptions,
+  );
+}
+export type DevicesQueryHookResult = ReturnType<typeof useDevicesQuery>;
+export type DevicesLazyQueryHookResult = ReturnType<typeof useDevicesLazyQuery>;
+export type DevicesQueryResult = Apollo.QueryResult<
+  DevicesQuery,
+  DevicesQueryVariables
+>;

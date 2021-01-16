@@ -1,14 +1,35 @@
 import Header from '../../components/Header';
 import Link from 'next/link';
+import { useDevicesQuery } from '../../types';
 import { useState } from 'react';
+import Device from '../../components/Device';
 
 const Devices = (): JSX.Element => {
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const [deleteDeviceMenuOpen, setDeleteDeviceMenuOpen] = useState(false);
+  const { data, loading } = useDevicesQuery();
 
+  const spinner = (
+    <div>
+      <svg
+        className="h-4 w-4"
+        viewBox="0 0 26.349 26.35"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="13.792" cy="3.082" r="3.082" />
+        <circle cx="13.792" cy="24.501" r="1.849" />
+        <circle cx="6.219" cy="6.218" r="2.774" />
+        <circle cx="21.365" cy="21.363" r="1.541" />
+        <circle cx="3.082" cy="13.792" r="2.465" />
+        <circle cx="24.501" cy="13.791" r="1.232" />
+        <path d="M4.694 19.84c-.843.843-.843 2.207 0 3.05.842.843 2.208.843 3.05 0 .843-.843.843-2.207 0-3.05-.842-.844-2.207-.852-3.05 0z" />
+        <circle cx="21.364" cy="6.218" r=".924" />
+      </svg>
+    </div>
+  );
   return (
     <div>
       <Header />
+      {loading && spinner}
       <div className="p-4">
         <div className="flex">
           <Link href="/devices/new">
@@ -66,80 +87,24 @@ const Devices = (): JSX.Element => {
         )}
         <p className="text-xl">Devices</p>
         <p className="text-sm">All available devices</p>
-        <div className="mt-4 w-2/12 bg-light-secondary-background p-4 rounded-sm">
-          <div className="flex relative">
-            <p className="text-main text-xl">Device name</p>
-            <button
-              onClick={() => setDeleteDeviceMenuOpen(!deleteDeviceMenuOpen)}
-              className="ml-auto"
+        {!data && (
+          <div className="p-5 text-main text-xl flex items-center justify-center">
+            <svg
+              className="h-10 w-10 mr-2"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                className="h-4 w-4"
-                viewBox="0 0 515.56 515.56"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="m496.68 212.21c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138 65.971-25.167 91.138 0m-193.33 0c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138 65.971-25.167 91.138 0m-193.33 0c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138 65.971-25.167 91.138 0" />
-              </svg>
-            </button>
-            {deleteDeviceMenuOpen && (
-              <div className="bg-light-secondary-background p-4 absolute border -right-20 top-5 border-opacity-10 border-border rounded-sm">
-                <button>Delete device</button>
-              </div>
-            )}
+              <path d="m256 0c-141.5 0-256 114.51-256 256 0 141.5 114.51 256 256 256 141.5 0 256-114.51 256-256 0-141.5-114.51-256-256-256zm0 472c-119.39 0-216-96.615-216-216 0-119.39 96.615-216 216-216 119.39 0 216 96.615 216 216 0 119.39-96.615 216-216 216z" />
+              <path d="m256 128.88c-11.046 0-20 8.954-20 20v128.79c0 11.046 8.954 20 20 20s20-8.954 20-20v-128.79c0-11.046-8.954-20-20-20z" />
+              <circle cx="256" cy="349.16" r="27" />
+            </svg>
+            no devices
           </div>
-          <div className="mt-4">
-            <div className="flex items-center">
-              <svg
-                className="w-4 h-4 mr-2"
-                viewBox="0 0 30 30"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M27 0H3C1.35 0 0 1.351 0 3v24c0 1.648 1.35 3 3 3h24c1.65 0 3-1.352 3-3V3c0-1.649-1.35-3-3-3zM8.096 26.402H3.5v-4.088h4.596v4.088zm0-5.459H3.5v-4.086h4.596v4.086zM7.75 4.547c-.703 0-1.273-.569-1.273-1.273S7.047 2 7.75 2s1.273.569 1.273 1.273-.57 1.274-1.273 1.274zm6.479 21.855H9.634v-4.088h4.595v4.088zm0-5.459H9.634v-4.086h4.595v4.086zm0-5.455H9.634v-4.086h4.595v4.086zm-.502-12.215C13.727 2.569 14.297 2 15 2s1.273.569 1.273 1.273-.57 1.273-1.273 1.273-1.273-.568-1.273-1.273zm6.639 17.67H15.77v-4.086h4.597v4.086zm0-5.455H15.77v-4.086h4.597v4.086zm.611-12.215c0-.704.57-1.273 1.273-1.273s1.273.569 1.273 1.273-.57 1.273-1.273 1.273-1.273-.568-1.273-1.273zm5.523 17.67h-4.596v-4.086H26.5v4.086zm0-5.455h-4.596v-4.086H26.5v4.086z" />
-              </svg>
-              <div>
-                <p className="text-sm">Device created</p>
-                <p className="text-main text-sm">04/05/2020</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <svg
-                className="w-4 h-4 mr-2"
-                enableBackground="new 0 0 500 500"
-                version="1.1"
-                viewBox="0 0 500 500"
-                xmlSpace="preserve"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="m464.84 0h-429.69c-19.412 0-35.156 15.74-35.156 35.156v429.69c0 19.416 15.744 35.156 35.156 35.156h429.69c19.416 0 35.156-15.74 35.156-35.156v-429.69c0-19.416-15.74-35.156-35.156-35.156zm-342.7 397.62c-19.392 0-35.164-15.776-35.164-35.172 0-19.388 15.772-35.164 35.164-35.164s35.172 15.776 35.172 35.164c0 19.396-15.78 35.172-35.172 35.172zm0-105.47c-19.392 0-35.164-15.776-35.164-35.172 0-19.388 15.772-35.164 35.164-35.164s35.172 15.776 35.172 35.164c0 19.396-15.78 35.172-35.172 35.172zm0-105.47c-19.392 0-35.164-15.776-35.164-35.172 0-19.388 15.772-35.164 35.164-35.164s35.172 15.776 35.172 35.164c0 19.396-15.78 35.172-35.172 35.172zm297.18 188.31h-203.36c-6.472 0-11.72-5.248-11.72-11.72 0-6.476 5.248-11.72 11.72-11.72h203.36c6.472 0 11.72 5.244 11.72 11.72 0 6.472-5.248 11.72-11.72 11.72zm0-105.47h-203.36c-6.472 0-11.72-5.248-11.72-11.72 0-6.476 5.248-11.72 11.72-11.72h203.36c6.472 0 11.72 5.244 11.72 11.72 0 6.468-5.248 11.72-11.72 11.72zm0-105.47h-203.36c-6.472 0-11.72-5.248-11.72-11.72 0-6.476 5.248-11.72 11.72-11.72h203.36c6.472 0 11.72 5.244 11.72 11.72 0 6.468-5.248 11.72-11.72 11.72z" />
-              </svg>
-              <div>
-                <p className="text-sm">Device description</p>
-                <p className="text-main text-sm">
-                  Short description about device
-                </p>
-              </div>
-            </div>
-            <div className="pl-4 border-l-2 py-4 border-main">
-              <div className="flex items-center">
-                <svg
-                  className="w-4 h-4 mr-2"
-                  viewBox="0 0 330 330"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M328.417 208.293l-40-80c-2.541-5.082-7.735-8.292-13.417-8.292-5.682 0-10.875 3.21-13.416 8.292l-44.868 89.735L158.98 69.565c-2.181-5.609-7.503-9.371-13.519-9.557-6.006-.173-11.559 3.243-14.081 8.708L75.402 190.001H15c-8.284 0-15 6.716-15 15 0 8.284 6.716 15 15 15h70c5.851 0 11.168-3.402 13.619-8.714l45.201-97.934 57.2 147.085c2.15 5.53 7.358 9.273 13.285 9.547.233.011.466.016.699.016 5.659 0 10.864-3.194 13.413-8.292L275 168.542l26.584 53.167c3.705 7.41 12.716 10.414 20.124 6.708 7.41-3.704 10.413-12.714 6.709-20.124z" />
-                </svg>
-                <div>
-                  <p className="text-sm">Last activity</p>
-                  <p className="text-main text-sm">04/05/2020</p>
-                </div>
-              </div>
-            </div>
-            <Link href="devices/123">
-              <button className="bg-main w-full flex items-center justify-center py-2 rounded-sm text-white mt-4">
-                DETAILS
-              </button>
-            </Link>
-          </div>
+        )}
+        <div className="flex space-x-1">
+          {data?.devices?.edges?.map((edge) => (
+            <Device key={edge?.node?.id} props={edge?.node} />
+          ))}
         </div>
       </div>
     </div>

@@ -10,55 +10,38 @@ import {
 } from '../types';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
+import { me } from '../apollo/queries';
 
 const Profile = (): JSX.Element => {
-  const [userData, setUserData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    createdDate: '',
-    modifyDate: '',
-    country: '',
-    bio: '',
-    website: '',
-    metadata: { lastSignInDate: '' },
-  });
-  const { data: meQueryData, loading } = useMeQuery();
   const router = useRouter();
   const { register, handleSubmit } = useForm();
   const [actionMenu, setActionMenu] = useState(false);
   const [modalOpenPassword, setModalOpenPassword] = useState(false);
   const [modalOpenDelete, setModalOpenDelete] = useState(false);
   const [modalOpenEmail, setModalOpenEmail] = useState(false);
+
   const [updateEmailMutation] = useUpdateEmailMutation();
+  const { data, loading } = useMeQuery();
+  const [updatePasswordMutation] = useUpdatePasswordMutation();
+  const [deleteUserMutation] = useDeleteUserMutation();
+  const [modifyUserMutation] = useModifyUserMutation();
+
   const onSubmitEmail = (info) => {
     updateEmailMutation({ variables: { ...info } });
     router.push('verify-update-email');
   };
-  const [updatePasswordMutation, { data }] = useUpdatePasswordMutation();
   const onSubmitPassword = (info) => {
     updatePasswordMutation({ variables: { ...info } });
   };
-  const [deleteUserMutation] = useDeleteUserMutation();
   const onSubmitDelete = (info) => {
     deleteUserMutation({ variables: { ...info } });
   };
-  const [
-    modifyUserMutation,
-    { data: modifyUserData },
-  ] = useModifyUserMutation();
-
   const onSubmitUpdate = (info) => {
-    modifyUserMutation({ variables: { ...info } });
+    modifyUserMutation({
+      variables: { ...info },
+      refetchQueries: [{ query: me }],
+    });
   };
-
-  useEffect(() => {
-    if (meQueryData) {
-      setUserData({
-        ...meQueryData.me,
-      });
-    }
-  }, [meQueryData]);
 
   const spinner = (
     <div>
@@ -105,7 +88,6 @@ const Profile = (): JSX.Element => {
         )}
         <p className="text-xl">Details</p>
         <p className="text-sm">General user information</p>
-        <p>{data?.updatePassword?.message}</p>
         <div className="mt-8 pl-8 border-l-2 border-main flex flex-col flex-wrap h-44 w-3/12">
           <div className="flex items-center mb-2">
             <svg
@@ -117,7 +99,7 @@ const Profile = (): JSX.Element => {
             </svg>
             <div>
               <p>Username</p>
-              <p className="text-main">{userData.username}</p>
+              <p className="text-main">{data?.me?.username}</p>
             </div>
           </div>
           <div className="flex items-center mb-2">
@@ -131,7 +113,7 @@ const Profile = (): JSX.Element => {
             </svg>
             <div>
               <p>Last login</p>
-              <p className="text-main">{userData.metadata.lastSignInDate}</p>
+              <p className="text-main">{data?.me?.metadata?.lastSignInDate}</p>
             </div>
           </div>
           <div className="flex items-center mb-2">
@@ -144,7 +126,7 @@ const Profile = (): JSX.Element => {
             </svg>
             <div>
               <p>Register date</p>
-              <p className="text-main">{userData.createdDate}</p>
+              <p className="text-main">{data?.me?.createdDate}</p>
             </div>
           </div>
           <div className="flex items-center mb-2">
@@ -157,7 +139,7 @@ const Profile = (): JSX.Element => {
             </svg>
             <div>
               <p>Last update</p>
-              <p className="text-main">{userData.modifyDate}</p>
+              <p className="text-main">{data?.me?.modifyDate}</p>
             </div>
           </div>
         </div>
@@ -173,7 +155,7 @@ const Profile = (): JSX.Element => {
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
-                defaultValue={userData.firstName}
+                defaultValue={data?.me?.firstName}
                 ref={register}
                 name="firstName"
               />
@@ -183,7 +165,7 @@ const Profile = (): JSX.Element => {
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
-                defaultValue={userData.lastName}
+                defaultValue={data?.me?.lastName}
                 ref={register}
                 name="lastName"
               />
@@ -193,7 +175,7 @@ const Profile = (): JSX.Element => {
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
-                defaultValue={userData.username}
+                defaultValue={data?.me?.username}
                 ref={register}
                 name="username"
               />
@@ -203,7 +185,7 @@ const Profile = (): JSX.Element => {
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
-                defaultValue={userData.country}
+                defaultValue={data?.me?.country}
                 ref={register}
                 name="country"
               />
@@ -214,7 +196,7 @@ const Profile = (): JSX.Element => {
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
-                defaultValue={userData.bio}
+                defaultValue={data?.me?.bio}
                 ref={register}
                 name="bio"
               />
@@ -224,7 +206,7 @@ const Profile = (): JSX.Element => {
               <input
                 className="text-main pl-2 border-b outline-none w-full"
                 autoComplete="none"
-                defaultValue={userData.website}
+                defaultValue={data?.me?.website}
                 ref={register}
                 name="website"
               />
@@ -297,7 +279,7 @@ const Profile = (): JSX.Element => {
       {modalOpenDelete && (
         <Modal closeModal={() => setModalOpenDelete(false)}>
           <div>
-            <p>Enter your current password</p>
+            <p>Enter your current password to delete account</p>
             <form onSubmit={handleSubmit(onSubmitDelete)}>
               <input
                 className="border-border border-opacity-10 border-b"
@@ -308,7 +290,7 @@ const Profile = (): JSX.Element => {
                 type="submit"
                 className="px-2 bg-main w-32 rounded-sm ml-2 text-white"
               >
-                YES
+                Submit
               </button>
             </form>
           </div>
