@@ -1,13 +1,51 @@
 import Header from '../../components/Header';
 import Link from 'next/link';
 import { useDevicesQuery } from '../../types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Device from '../../components/Device';
 
 const Devices = (): JSX.Element => {
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const { data, loading } = useDevicesQuery();
+  const { data, loading } = useDevicesQuery({ ssr: false });
+  const [deviceData, setDeviceData] = useState([]);
+  const [deviceList, setDeviceList] = useState([]);
+  const [input, setInput] = useState('');
+  const [createdDate, setCreatedDate] = useState(1);
+  const [orderBy, setOrderBy] = useState('name');
 
+  useEffect(() => {
+    const devices = data?.devices?.edges;
+
+    setDeviceData(devices);
+    let filtered = devices
+      ?.filter((device) => device.node.name.toLowerCase().includes(input))
+      .filter((device) => {
+        const d = new Date();
+        d.setDate(d.getDate() - createdDate);
+
+        return device.node.createdDate > d.toISOString();
+      });
+
+    const sortBy = (type: string) => {
+      if (type === 'name') {
+        return filtered?.sort((a, b) => a.node.name.localeCompare(b.node.name));
+      } else if (type === 'date') {
+        return filtered?.sort(
+          (a, b) => b.node.createdDate - a.node.createdDate,
+        );
+      }
+    };
+
+    filtered = sortBy(orderBy);
+
+    setDeviceList(filtered);
+  }, [data, input, createdDate, orderBy]);
+
+  const options = [
+    { value: 1, label: 'Yesterday' },
+    { value: 30, label: 'Month' },
+    { value: 365, label: 'Year' },
+  ];
   const spinner = (
     <div>
       <svg
@@ -64,21 +102,35 @@ const Devices = (): JSX.Element => {
             <div className="flex flex-col">
               <label>Search</label>
               <input
+                onChange={(e) => {
+                  setInput(e.target.value);
+                }}
+                value={input}
                 className="p-2 border-border border-opacity-10 border text-light-secondary-text"
                 placeholder="Search..."
               />
             </div>
             <div className="flex flex-col">
-              <label>Activity</label>
-              <select className="h-full">
-                <option>Today</option>
-                <option>This month</option>
-                <option>This year</option>
+              <label>Created since</label>
+              <select
+                value={createdDate}
+                onChange={(e) => setCreatedDate(e.target.value)}
+                className="h-full"
+              >
+                {options.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex flex-col">
               <label>Order</label>
-              <select className="h-full">
+              <select
+                value={orderBy}
+                onChange={(e) => setOrderBy(e.target.value)}
+                className="h-full"
+              >
                 <option value="name">Name</option>
                 <option value="date">Date</option>
               </select>
@@ -87,7 +139,13 @@ const Devices = (): JSX.Element => {
         )}
         <p className="text-xl">Devices</p>
         <p className="text-sm">All available devices</p>
-        {!data && (
+        {deviceList && deviceList.length > 0 ? (
+          <div className="flex space-x-1">
+            {deviceList.map((edge) => (
+              <Device key={edge?.node?.id} props={edge?.node} />
+            ))}
+          </div>
+        ) : (
           <div className="p-5 text-main text-xl flex items-center justify-center">
             <svg
               className="h-10 w-10 mr-2"
@@ -101,11 +159,6 @@ const Devices = (): JSX.Element => {
             no devices
           </div>
         )}
-        <div className="flex space-x-1">
-          {data?.devices?.edges?.map((edge) => (
-            <Device key={edge?.node?.id} props={edge?.node} />
-          ))}
-        </div>
       </div>
     </div>
   );
