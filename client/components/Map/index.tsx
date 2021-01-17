@@ -1,7 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import markerIcon from '../Marker';
-import leaflet from 'leaflet';
-import MapCluster from '../MapCluster';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import MarkerCluster from '../MapCluster';
 
 const markers = [
   {
@@ -22,15 +20,33 @@ const markers = [
   },
 ];
 
-const Map = () => (
+interface Marker {
+  position: {
+    lng: number;
+    lat: number;
+  };
+  text: string;
+}
+
+const Map = ({
+  height,
+  width,
+  longitude = 51.505,
+  latitude = -0.09,
+}: {
+  height: string;
+  width: string;
+  longitude?: number;
+  latitude?: number;
+}): JSX.Element => (
   <MapContainer
     zoom={13}
     scrollWheelZoom={false}
-    style={{ height: 'calc(100vh - 64px)', width: '100%' }}
+    center={[longitude, latitude]}
+    style={{ height, width }}
   >
-    <TileLayer url="http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg" />
-    <MapCluster markers={markers} />
+    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    {/* <MarkerCluster markers={markers} /> */}
   </MapContainer>
 );
-
 export default Map;

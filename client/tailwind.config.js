@@ -11,6 +11,7 @@ module.exports = {
         border: '#222F44',
         light: {
           background: '#ffffff',
+          'secondary-background': '#F0F2F7',
           'primary-text': '#212732',
           'secondary-text': '#1A202C',
         },

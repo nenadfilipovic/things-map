@@ -26,6 +26,7 @@ const buildAuthenticationToken = (ctx: Context, payload: Payload): void => {
   ctx.cookies.set(PAYLOAD_COOKIE, `${tokenHeader}.${tokenPayload}`, {
     ...cookieConfig,
     httpOnly: false,
+    overwrite: true,
   });
 
   ctx.cookies.set(SIGNATURE_COOKIE, `${tokenSignature}`, cookieConfig);
