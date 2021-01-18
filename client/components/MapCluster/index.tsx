@@ -1,48 +1,43 @@
-import leaflet from 'leaflet';
-import 'leaflet.markercluster';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import Marker from '../Marker';
-import { useEffect } from 'react';
-import { useMap } from 'react-leaflet';
+import leaflet, { marker } from 'leaflet';
+import markerIcon from '../Marker';
+import { useMap, Marker, Popup } from 'react-leaflet';
+import Link from 'next/link';
 
-// const createClusterCustomIcon = function (cluster) {
-//   return leaflet.divIcon({
-//     html: `<span>${cluster.getChildCount()}</span>`,
-//     className: 'marker-cluster-icon',
-//     iconSize: leaflet.point(40, 40, true),
-//   });
-// };
-
-interface Marker {
-  position: {
-    lng: number;
-    lat: number;
-  };
-  text: string;
-}
-
-const mcg = leaflet.markerClusterGroup();
-
-const MarkerCluster = ({ markers }: { markers: Marker[] }) => {
+const MarkerGroup = ({
+  markers,
+  fit,
+  enablePopup,
+}: {
+  markers: { id: string; lat: number; lng: number };
+  fit: boolean;
+  enablePopup: boolean;
+}): JSX.Element => {
   const map = useMap();
 
-  useEffect(() => {
-    mcg.clearLayers();
-    markers.forEach(({ position, text }) =>
-      leaflet
-        .marker(new leaflet.LatLng(position.lat, position.lng), {
-          icon: Marker,
-        })
-        .addTo(mcg)
-        .bindPopup(text),
-    );
+  if (markers && fit) {
+    const group = leaflet.latLngBounds(markers);
+    map.fitBounds(group);
+  }
 
-    map.fitBounds(mcg.getBounds());
-    map.addLayer(mcg);
-  }, [markers, map]);
+  const renderMarkers = markers?.map((marker) => (
+    <Marker
+      key={marker.id}
+      position={[marker.lat, marker.lng]}
+      icon={markerIcon}
+    >
+      {enablePopup && (
+        <Popup>
+          <p className="text-lg">Name</p>
+          <p className="text-main">{marker.name}</p>
+          <p className="text-lg">Description</p>
+          <p className="text-main">{marker.description}</p>
+          <Link href={`/devices/${marker.id}`}>Go to device</Link>
+        </Popup>
+      )}
+    </Marker>
+  ));
 
-  return null;
+  return <div>{renderMarkers}</div>;
 };
 
-export default MarkerCluster;
+export default MarkerGroup;

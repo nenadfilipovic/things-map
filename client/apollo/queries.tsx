@@ -52,6 +52,8 @@ const devices = gql`
           name
           createdDate
           description
+          latitude
+          longitude
           metadata {
             lastEntryId
           }
