@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { useDevicesQuery } from '../../types';
 import { useState, useEffect } from 'react';
 import Device from '../../components/Device';
+import { useRouter } from 'next/router';
 
-const Devices = (): JSX.Element => {
+const Devices = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
   const { data, loading } = useDevicesQuery({ ssr: false });
   const [deviceData, setDeviceData] = useState([]);
@@ -12,9 +13,14 @@ const Devices = (): JSX.Element => {
   const [input, setInput] = useState('');
   const [createdDate, setCreatedDate] = useState(1);
   const [orderBy, setOrderBy] = useState('name');
+  const router = useRouter();
 
   useEffect(() => {
     const devices = data?.devices?.edges;
+
+    if (!isAuth) {
+      router.push('/auth/sign-in');
+    }
 
     setDeviceData(devices);
     let filtered = devices
@@ -39,7 +45,7 @@ const Devices = (): JSX.Element => {
     filtered = sortBy(orderBy);
 
     setDeviceList(filtered);
-  }, [data, input, createdDate, orderBy]);
+  }, [isAuth, data, input, createdDate, orderBy]);
 
   const options = [
     { value: 1, label: 'Yesterday' },
@@ -165,3 +171,14 @@ const Devices = (): JSX.Element => {
 };
 
 export default Devices;
+
+export async function getServerSideProps(context) {
+  let isAuth = false;
+  if (context.req.cookies.payload) {
+    isAuth = true;
+  }
+
+  return {
+    props: { isAuth },
+  };
+}

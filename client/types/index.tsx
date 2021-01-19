@@ -1219,7 +1219,12 @@ export type DevicesQuery = { __typename?: 'Query' } & {
                 node?: Maybe<
                   { __typename?: 'Device' } & Pick<
                     Device,
-                    'id' | 'name' | 'createdDate' | 'description'
+                    | 'id'
+                    | 'name'
+                    | 'createdDate'
+                    | 'description'
+                    | 'latitude'
+                    | 'longitude'
                   > & {
                       metadata?: Maybe<
                         { __typename?: 'DeviceMetadata' } & Pick<
@@ -2293,6 +2298,8 @@ export const DevicesDocument = gql`
           name
           createdDate
           description
+          latitude
+          longitude
           metadata {
             lastEntryId
           }

@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { me } from '../apollo/queries';
 
-const Profile = (): JSX.Element => {
+const Profile = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
   const router = useRouter();
   const { register, handleSubmit } = useForm();
   const [actionMenu, setActionMenu] = useState(false);
@@ -25,6 +25,12 @@ const Profile = (): JSX.Element => {
   const [updatePasswordMutation] = useUpdatePasswordMutation();
   const [deleteUserMutation] = useDeleteUserMutation();
   const [modifyUserMutation] = useModifyUserMutation();
+
+  useEffect(() => {
+    if (!isAuth) {
+      router.push('/auth/sign-in');
+    }
+  }, [isAuth]);
 
   const onSubmitEmail = (info) => {
     updateEmailMutation({ variables: { ...info } });
@@ -301,3 +307,14 @@ const Profile = (): JSX.Element => {
 };
 
 export default Profile;
+
+export async function getServerSideProps(context) {
+  let isAuth = false;
+  if (context.req.cookies.payload) {
+    isAuth = true;
+  }
+
+  return {
+    props: { isAuth },
+  };
+}

@@ -3,15 +3,26 @@ import Link from 'next/link';
 import { useSignInByEmailMutation } from '../../types';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
-const SignIn = (): JSX.Element => {
+const SignIn = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
   const [signInByEmailMutation, { data }] = useSignInByEmailMutation();
   const { register, handleSubmit } = useForm();
   const router = useRouter();
 
+  useEffect(() => {
+    if (isAuth) {
+      router.push('/');
+    }
+  }, [isAuth]);
+
   const onSubmit = (info) => {
-    signInByEmailMutation({ variables: { ...info } });
-    router.push('/');
+    signInByEmailMutation({ variables: { ...info } })
+      .then(() => {
+        router.push('/');
+        return;
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -72,3 +83,14 @@ const SignIn = (): JSX.Element => {
 };
 
 export default SignIn;
+
+export async function getServerSideProps(context) {
+  let isAuth = false;
+  if (context.req.cookies.payload) {
+    isAuth = true;
+  }
+
+  return {
+    props: { isAuth },
+  };
+}

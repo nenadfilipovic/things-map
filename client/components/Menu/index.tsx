@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { useSignOutMutation } from '../../types';
+import { useRouter } from 'next/router';
 
 const Menu = () => {
-  const [signOutMutation] = useSignOutMutation();
+  const [signOutMutation, { data }] = useSignOutMutation();
+  const router = useRouter();
   return (
     <div className="ml-auto">
       <ul className="flex flex-row space-x-6">
@@ -53,7 +55,16 @@ const Menu = () => {
         <li>
           <button
             className="flex items-center"
-            onClick={() => signOutMutation()}
+            onClick={() => {
+              signOutMutation()
+                .then(() => {
+                  router.push('/auth/sign-in');
+                  return;
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
           >
             <svg
               className="h-3 w-3 mr-1"
@@ -66,15 +77,6 @@ const Menu = () => {
             Logout
           </button>
         </li>
-        <button>
-          <svg
-            className="w-3 h-3"
-            viewBox="0 0 292.3 292.3"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M153.699 292.138C68.95 292.138 0 223.185 0 138.439 0 79.742 32.675 27.002 85.28.807a6.143 6.143 0 017.077 1.144 6.166 6.166 0 011.183 7.074C83.941 28.527 79.077 49.496 79.077 71.33c0 77.972 63.432 141.407 141.395 141.407 22.08 0 43.247-4.978 62.942-14.777a6.133 6.133 0 017.074 1.141 6.146 6.146 0 011.177 7.073c-26.055 53.021-78.927 85.964-137.966 85.964z" />
-          </svg>
-        </button>
       </ul>
     </div>
   );
