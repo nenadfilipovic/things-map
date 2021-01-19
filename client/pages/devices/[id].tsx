@@ -6,12 +6,19 @@ import { device } from '../../apollo/queries';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { devices } from '../../apollo/queries';
+import { useEffect } from 'react';
 
-const Device = (): JSX.Element => {
+const Device = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
   const Map = dynamic(() => import('../../components/Map'), { ssr: false });
   const Chart = dynamic(() => import('../../components/Chart'), { ssr: false });
   const router = useRouter();
   const { register, handleSubmit } = useForm();
+
+  useEffect(() => {
+    if (!isAuth) {
+      router.push('/auth/sign-in');
+    }
+  }, [isAuth]);
 
   const { data, loading } = useDeviceQuery({
     variables: { id: router.query.id },
@@ -236,3 +243,14 @@ const Device = (): JSX.Element => {
 };
 
 export default Device;
+
+export async function getServerSideProps(context) {
+  let isAuth = false;
+  if (context.req.cookies.payload) {
+    isAuth = true;
+  }
+
+  return {
+    props: { isAuth },
+  };
+}

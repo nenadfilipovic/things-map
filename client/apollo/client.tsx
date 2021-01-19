@@ -10,7 +10,7 @@ let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function createApolloClient() {
   return new ApolloClient({
-    ssrMode: false,
+    ssrMode: typeof window === 'undefined',
     uri: 'http://localhost:3005/api/graphql',
     credentials: 'include',
     cache: new InMemoryCache(),
