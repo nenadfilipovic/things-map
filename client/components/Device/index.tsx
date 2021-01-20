@@ -6,7 +6,7 @@ const Device = ({ props }) => {
   const [deleteDeviceMutation] = useDeleteDeviceMutation();
 
   return (
-    <div className="mt-4 w-2/12 bg-light-secondary-background p-4 rounded-sm">
+    <div className="mt-4 sm:w-full md:w-3/12 p-4 bg-light-secondary-background rounded-sm">
       <div className="flex relative">
         <p className="text-main text-xl">{props.name}</p>
 

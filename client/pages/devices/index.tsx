@@ -104,8 +104,8 @@ const Devices = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
           </button>
         </div>
         {filterMenuOpen && (
-          <div className="bg-light-secondary-background max-w-max p-4 my-4 flex space-x-4">
-            <div className="flex flex-col">
+          <div className="bg-light-secondary-background flex-wrap w-full md:max-w-max p-4 my-4 flex">
+            <div className="flex flex-col pr-1">
               <label>Search</label>
               <input
                 onChange={(e) => {
@@ -116,7 +116,7 @@ const Devices = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
                 placeholder="Search..."
               />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col pr-1">
               <label>Created since</label>
               <select
                 value={createdDate}
@@ -130,12 +130,12 @@ const Devices = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
                 ))}
               </select>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col pr-1">
               <label>Order</label>
               <select
                 value={orderBy}
                 onChange={(e) => setOrderBy(e.target.value)}
-                className="h-full"
+                className="h-14"
               >
                 <option value="name">Name</option>
                 <option value="date">Date</option>
@@ -146,7 +146,7 @@ const Devices = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
         <p className="text-xl">Devices</p>
         <p className="text-sm">All available devices</p>
         {deviceList && deviceList.length > 0 ? (
-          <div className="flex space-x-1">
+          <div className="flex flex-col md:space-x-2 md:flex-row md:flex-wrap">
             {deviceList.map((edge) => (
               <Device key={edge?.node?.id} props={edge?.node} />
             ))}
