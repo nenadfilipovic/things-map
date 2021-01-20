@@ -1,5 +1,5 @@
 const Logo = () => (
-  <div className="flex items-center">
+  <div className="flex items-center flex-1">
     <svg
       className="h-8 w-8"
       enableBackground="new 0 0 296.999 296.999"

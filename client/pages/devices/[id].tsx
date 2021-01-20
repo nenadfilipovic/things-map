@@ -63,8 +63,8 @@ const Device = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
       <Header />
       {loading && spinner}
       {data?.device ? (
-        <div className="p-4 flex">
-          <div className="w-6/12">
+        <div className="p-4 flex flex-col md:flex-row">
+          <div className="w-full md:w-6/12">
             <p className="text-xl">Details</p>
             <p className="text-sm">General device information</p>
             <div className="pl-8 mt-4 border-l-2 border-main">
@@ -174,7 +174,7 @@ const Device = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
               </div>
             </div>
           </div>
-          <div className="w-6/12">
+          <div className="w-full md:w-6/12">
             <div>
               <p className="text-xl">Information</p>
               <p className="text-sm">Review or update device information</p>

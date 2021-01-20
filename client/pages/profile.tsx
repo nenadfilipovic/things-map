@@ -94,7 +94,7 @@ const Profile = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
         )}
         <p className="text-xl">Details</p>
         <p className="text-sm">General user information</p>
-        <div className="mt-8 pl-8 border-l-2 border-main flex flex-col flex-wrap h-44 w-3/12">
+        <div className="mt-8 pl-8 border-l-2 border-main flex flex-col w-full md:w-3/12 md:h-44 md:flex-wrap">
           <div className="flex items-center mb-2">
             <svg
               className="w-4 h-4 mr-3"
@@ -153,7 +153,7 @@ const Profile = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
         <p className="text-sm">Review or update profile information</p>
         <div className="mt-8 pl-8 py-4 border-l-2 border-border border-opacity-70">
           <form
-            className="w-9/12 flex flex-col flex-wrap h-44"
+            className="w-full flex flex-col md:flex-wrap md:h-44 md:w-9/12"
             onSubmit={handleSubmit(onSubmitUpdate)}
           >
             <div className="pr-6 mt-2">
