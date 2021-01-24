@@ -7,6 +7,7 @@ import {
   useDeleteUserMutation,
   useMeQuery,
   useModifyUserMutation,
+  useSignOutMutation,
 } from '../types';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
@@ -25,6 +26,7 @@ const Profile = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
   const [updatePasswordMutation] = useUpdatePasswordMutation();
   const [deleteUserMutation] = useDeleteUserMutation();
   const [modifyUserMutation] = useModifyUserMutation();
+  const [signOutMutation] = useSignOutMutation();
 
   useEffect(() => {
     if (!isAuth) {
@@ -37,7 +39,9 @@ const Profile = ({ isAuth }: { isAuth: boolean }): JSX.Element => {
     router.push('verify-update-email');
   };
   const onSubmitPassword = (info) => {
-    updatePasswordMutation({ variables: { ...info } });
+    updatePasswordMutation({ variables: { ...info } }).then(() => {
+      signOutMutation().then(() => router.push('/auth/sign-in'));
+    });
   };
   const onSubmitDelete = (info) => {
     deleteUserMutation({ variables: { ...info } });

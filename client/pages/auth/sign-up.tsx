@@ -10,18 +10,15 @@ const SignUp = (): JSX.Element => {
   const [signUpMutation, { data, loading, error }] = useSignUpMutation();
 
   const onSubmit = (info) => {
-    signUpMutation({ variables: { ...info } });
-    if (data?.signUp?.errors?.length < 1) {
-      redirect(info);
-    }
-  };
+    console.log(info);
 
-  function redirect(info) {
-    router.push({
-      pathname: 'verify-email',
-      query: { email: info.email },
-    });
-  }
+    signUpMutation({ variables: { ...info } }).then(() =>
+      router.push({
+        pathname: 'verify-email',
+        query: { email: info.email },
+      }),
+    );
+  };
 
   return (
     <div>

@@ -19,7 +19,7 @@ const Map = ({
 }): JSX.Element => {
   const { data, loading } = useDevicesQuery();
 
-  const markers = data?.devices?.edges.map((marker) => {
+  const markers = data?.devices?.edges?.map((marker) => {
     return {
       lat: marker?.node?.latitude,
       lng: marker?.node?.longitude,

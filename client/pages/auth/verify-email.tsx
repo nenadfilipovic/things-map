@@ -15,15 +15,11 @@ const VerifyEmail = (): JSX.Element => {
   const { register, handleSubmit } = useForm();
   const [verifyEmailMutation, { data }] = useVerifyEmailMutation();
   const onSubmit = (info) => {
-    verifyEmailMutation({ variables: { ...info } });
-    if (data?.verifyEmail?.errors?.length < 1) {
-      redirect();
-    }
+    verifyEmailMutation({ variables: { ...info } }).then(() => {
+      router.push('/auth/sign-in');
+    });
   };
 
-  function redirect() {
-    router.push('sign-in');
-  }
   return (
     <div>
       <Header />
