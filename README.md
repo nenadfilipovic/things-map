@@ -14,7 +14,9 @@ git clone https://github.com/nenadfilipovic/things-map
 
 ### Installing
 
-Installing is simple as running `docker-compose up` inside root folder where docker-compose.yml file is located.
+Provide populated .env file, example file is in root directory.
+
+Installing is simple as running `docker-compose up` inside root folder where docker-compose.yml file is located. Run migrations with npm run setup and run whole stack with npm run dev.
 
 If you want to run it from VS-Code you can install [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) extension that enables you to run docker files from editor without using docker cli.
 
